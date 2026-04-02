@@ -182,7 +182,8 @@ h3,
 }
 
 .hero__actions,
-.future__actions {
+.future__actions,
+.feature__actions {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
@@ -379,6 +380,10 @@ h3,
   margin: 28px 0 0;
 }
 
+.feature__actions {
+  margin-top: 24px;
+}
+
 .feature__meta div,
 .approach__grid article {
   padding: 18px;
@@ -487,7 +492,8 @@ body.has-motion [data-reveal].is-visible {
   }
 
   .hero__actions,
-  .future__actions {
+  .future__actions,
+  .feature__actions {
     flex-direction: column;
   }
 
