@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Games Hub</title>
+    <meta
+      name="description"
+      content="A public-facing studio hub for Swarmbreaker, Mandate 2029, Civicrise, and the next wave of playable worlds."
+    />
+    <meta property="og:title" content="Games Hub" />
+    <meta
+      property="og:description"
+      content="Three games in active development, one polished studio landing page, and room for every future release."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="atmosphere" aria-hidden="true">
+      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
+      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
+      <div class="atmosphere__orb atmosphere__orb--gold"></div>
+      <div class="atmosphere__grid"></div>
+    </div>
+
+    <header class="site-header">
+      <a class="site-brand" href="#top">Games Hub</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#lineup">Lineup</a>
+        <a href="#approach">Approach</a>
+        <a href="#future">Future Releases</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero__copy" data-reveal>
+          <p class="eyebrow">Public Studio Hub</p>
+          <h1>Small teams. Big swings. Real games.</h1>
+          <p class="hero__lede">
+            This is the public front door for a growing lineup of playable worlds: pressure-cooker politics, dense city
+            building, and sharp-edged arcade chaos.
+          </p>
+          <div class="hero__actions">
+            <a class="button button--primary" href="#lineup">Browse The Lineup</a>
+            <a class="button button--ghost" href="https://github.com/koltregaskes/games-hub">View Repository</a>
+          </div>
+          <ul class="hero__facts" aria-label="Studio facts">
+            <li>3 active games</li>
+            <li>Browser and desktop projects</li>
+            <li>Built to grow into demos, store pages, and releases</li>
+          </ul>
+        </div>
+
+        <div class="hero__visual" data-reveal>
+          <div class="hero-stack">
+            <article class="hero-stack__card hero-stack__card--front">
+              <img src="assets/mandate-2029.svg" alt="Mandate 2029 preview art" />
+              <div class="hero-stack__meta">
+                <span>Political strategy</span>
+                <strong>Mandate 2029</strong>
+              </div>
+            </article>
+            <article class="hero-stack__card hero-stack__card--left">
+              <img src="assets/swarmbreaker.svg" alt="Swarmbreaker preview art" />
+            </article>
+            <article class="hero-stack__card hero-stack__card--right">
+              <img src="assets/civicrise.svg" alt="Civicrise preview art" />
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="studio-strip" aria-label="Studio status" data-reveal>
+        <div>
+          <span class="studio-strip__label">Status</span>
+          <strong>Active development</strong>
+        </div>
+        <div>
+          <span class="studio-strip__label">Public layer</span>
+          <strong>GitHub Pages-ready</strong>
+        </div>
+        <div>
+          <span class="studio-strip__label">Next unlock</span>
+          <strong>Demos, trailers, Steam links</strong>
+        </div>
+      </section>
+
+      <section class="lineup" id="lineup">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Current Lineup</p>
+          <h2>Three worlds, three very different moods.</h2>
+          <p>
+            The site is designed to hold public releases over time. Right now it introduces the flagship projects and
+            gives each one enough room to feel distinct.
+          </p>
+        </div>
+
+        <article class="feature feature--split" id="mandate-2029" data-reveal>
+          <div class="feature__art">
+            <img src="assets/mandate-2029.svg" alt="Mandate 2029 poster art" />
+          </div>
+          <div class="feature__copy">
+            <p class="feature__kicker">Browser Strategy</p>
+            <h3>Mandate 2029</h3>
+            <p class="feature__summary">
+              A governing sim about momentum, compromise, cabinet pressure, media storms, and the brutal arithmetic of
+              staying electable while trying to change a country.
+            </p>
+            <ul class="feature__list">
+              <li>Polling pressure and election pacing</li>
+              <li>Reactive crisis deck and political capital tradeoffs</li>
+              <li>Regional swingboard and legacy-score framing</li>
+            </ul>
+            <dl class="feature__meta">
+              <div>
+                <dt>Status</dt>
+                <dd>Playable prototype</dd>
+              </div>
+              <div>
+                <dt>Platform</dt>
+                <dd>Browser</dd>
+              </div>
+              <div>
+                <dt>Public rollout</dt>
+                <dd>Demo-ready site slot prepared</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="feature feature--reverse" id="civicrise" data-reveal>
+          <div class="feature__art">
+            <img src="assets/civicrise.svg" alt="Civicrise poster art" />
+          </div>
+          <div class="feature__copy">
+            <p class="feature__kicker">Browser City Builder</p>
+            <h3>Civicrise</h3>
+            <p class="feature__summary">
+              A living isometric city builder about shaping dense urban systems, balancing civic needs, and watching a
+              place emerge block by block into a believable metropolis.
+            </p>
+            <ul class="feature__list">
+              <li>Readable isometric city drama</li>
+              <li>Citizen services, transport, and layered planning</li>
+              <li>Onboarding and help flows built for repeat sessions</li>
+            </ul>
+            <dl class="feature__meta">
+              <div>
+                <dt>Status</dt>
+                <dd>Verified playable build</dd>
+              </div>
+              <div>
+                <dt>Platform</dt>
+                <dd>Browser</dd>
+              </div>
+              <div>
+                <dt>Public rollout</dt>
+                <dd>Ready for screenshots and web demo slot</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="feature feature--split" id="swarmbreaker" data-reveal>
+          <div class="feature__art">
+            <img src="assets/swarmbreaker.svg" alt="Swarmbreaker poster art" />
+          </div>
+          <div class="feature__copy">
+            <p class="feature__kicker">Desktop Arcade</p>
+            <h3>Swarmbreaker</h3>
+            <p class="feature__summary">
+              Fast, vivid arcade defence with segmented swarms, poisoned mushrooms, wave pressure, and the kind of
+              score-chasing tension that feels right at home in a late-night “one more run” session.
+            </p>
+            <ul class="feature__list">
+              <li>Classic arcade loop with modern quality-of-life polish</li>
+              <li>Wave scaling, audio controls, and extra-life thresholds</li>
+              <li>Purpose-built for immediate, readable action</li>
+            </ul>
+            <dl class="feature__meta">
+              <div>
+                <dt>Status</dt>
+                <dd>Playable desktop build</dd>
+              </div>
+              <div>
+                <dt>Platform</dt>
+                <dd>Windows desktop</dd>
+              </div>
+              <div>
+                <dt>Public rollout</dt>
+                <dd>Download and trailer slot prepared</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+      </section>
+
+      <section class="approach" id="approach">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Approach</p>
+          <h2>A public shell built to expand with every release.</h2>
+        </div>
+        <div class="approach__grid">
+          <article data-reveal>
+            <span class="approach__index">01</span>
+            <h3>Showcase first</h3>
+            <p>The site is already structured for richer pages, media drops, and clearer public identity as the lineup grows.</p>
+          </article>
+          <article data-reveal>
+            <span class="approach__index">02</span>
+            <h3>Static by default</h3>
+            <p>It runs cleanly on GitHub Pages today, with no framework lock-in and no build complexity needed for the first release.</p>
+          </article>
+          <article data-reveal>
+            <span class="approach__index">03</span>
+            <h3>Ready for upgrades</h3>
+            <p>Store buttons, public demos, mailing-list links, devlogs, and per-game detail pages can slot in without rebuilding the whole thing.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="future" id="future" data-reveal>
+        <p class="eyebrow">Future Releases</p>
+        <h2>This page becomes the release rail for every next step.</h2>
+        <p>
+          As projects open up, this hub can carry browser demos, screenshots, downloadable builds, patch notes, Steam
+          links, and the next games that arrive behind them.
+        </p>
+        <div class="future__actions">
+          <a class="button button--primary" href="https://github.com/koltregaskes/games-hub">Open The Repo</a>
+          <a class="button button--ghost" href="#top">Back To Top</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Games Hub</p>
+      <p>Built as a public-facing studio page with room for demos, downloads, and future launches.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
