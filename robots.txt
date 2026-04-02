@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://koltregaskes.github.io/games-hub/sitemap.xml
