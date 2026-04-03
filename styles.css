@@ -310,6 +310,7 @@ h3,
 }
 
 .lineup,
+.emerging,
 .approach,
 .future {
   padding: 110px 0 0;
@@ -382,6 +383,41 @@ h3,
 
 .feature__actions {
   margin-top: 24px;
+}
+
+.emerging-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.emerging-card {
+  overflow: hidden;
+  border: 1px solid var(--panel-border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03)),
+    rgba(8, 16, 29, 0.8);
+  box-shadow: var(--shadow);
+}
+
+.emerging-card img {
+  width: 100%;
+  aspect-ratio: 5 / 3;
+  object-fit: cover;
+}
+
+.emerging-card__body {
+  padding: 20px 20px 24px;
+}
+
+.emerging-card__body h3 {
+  font-size: clamp(2rem, 3vw, 2.6rem);
+  line-height: 0.96;
+}
+
+.emerging-card__body p:last-of-type {
+  color: rgba(233, 240, 250, 0.8);
+  line-height: 1.72;
 }
 
 .feature__meta div,
@@ -460,6 +496,7 @@ body.has-motion [data-reveal].is-visible {
   }
 
   .studio-strip,
+  .emerging-grid,
   .approach__grid,
   .feature__meta,
   .site-footer {
