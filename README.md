@@ -1,6 +1,6 @@
-# Games Hub
+# Games Hub by E-lusion Studios
 
-Public-facing studio hub for the current game lineup.
+Public-facing studio hub for the current E-lusion Studios game lineup.
 
 This repo is set up as a static GitHub Pages site. It intentionally does not include the private local-launch controls from the desktop hub. Instead, it acts as the public layer where game pages, screenshots, demos, and store links can grow over time.
 
