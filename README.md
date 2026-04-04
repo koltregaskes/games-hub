@@ -4,14 +4,6 @@ Public-facing studio hub for the current game lineup.
 
 This repo is set up as a static GitHub Pages site. It intentionally does not include the private local-launch controls from the desktop hub. Instead, it acts as the public layer where game pages, screenshots, demos, and store links can grow over time.
 
-## Included studio docs
-
-The repo now also carries the current review and planning context in [`docs/`](./docs):
-
-- [`docs/SATURDAY-REVIEW-INDEX.md`](./docs/SATURDAY-REVIEW-INDEX.md)
-- [`docs/GAME-PLANS.md`](./docs/GAME-PLANS.md)
-- [`docs/SESSION-SPLIT-PLAN.md`](./docs/SESSION-SPLIT-PLAN.md)
-
 ## Local preview
 
 ```powershell
