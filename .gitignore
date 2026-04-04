@@ -1,0 +1,19 @@
+.DS_Store
+Thumbs.db
+.serve.log
+.serve.err.log
+
+# Local-only planning and scratch docs
+docs/local/
+planning-local/
+review-local/
+.local/
+scratch/
+todo.local.md
+tasks.local.md
+working-notes.md
+WORKING-NOTES.md
+review-notes.md
+REVIEW-NOTES.md
+session-notes.md
+SESSION-NOTES.md
