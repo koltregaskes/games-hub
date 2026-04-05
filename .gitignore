@@ -2,6 +2,7 @@
 Thumbs.db
 .serve.log
 .serve.err.log
+local-hub/
 
 # Local-only planning and scratch docs
 docs/local/
