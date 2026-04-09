@@ -1,0 +1,45 @@
+{
+  "title": "Games News by Elusion Works",
+  "updatedAt": "2026-04-09",
+  "status": "pipeline-ready",
+  "summary": "Public-safe game development and gaming news surfaces powered by a separate scheduled pipeline.",
+  "notice": "The page is wired for generated feed outputs. The first scheduled games run still needs to publish its initial items into this manifest.",
+  "feeds": [
+    {
+      "id": "game-dev",
+      "title": "Game Dev News",
+      "summary": "Engine releases, tooling, middleware, store policy, production craft, and the business of making games.",
+      "status": "pipeline-ready",
+      "generatedAt": null,
+      "items": [],
+      "sources": [
+        "Game Developer",
+        "GDC",
+        "Godot",
+        "Unity",
+        "Unreal Engine",
+        "Steamworks",
+        "How To Market A Game"
+      ]
+    },
+    {
+      "id": "gaming",
+      "title": "Gaming News",
+      "summary": "Platform moves, major announcements, releases, notable studio stories, and wider games industry coverage.",
+      "status": "pipeline-ready",
+      "generatedAt": null,
+      "items": [],
+      "sources": [
+        "IGN",
+        "Eurogamer",
+        "GamesIndustry.biz",
+        "Polygon",
+        "Rock Paper Shotgun",
+        "Steam",
+        "Nintendo",
+        "PlayStation",
+        "Xbox"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,324 @@
+{
+  "title": "Build Games Like a Solo Studio",
+  "summary": "A public-safe reference system for solo devs and small teams using agents, practical production habits, and clear demo-to-release thinking.",
+  "updatedAt": "2026-04-09",
+  "landing": {
+    "id": "build-games-like-a-solo-studio",
+    "title": "Build Games Like a Solo Studio",
+    "path": "shared/game-development/build-games-like-a-solo-studio.md",
+    "summary": "A clear starting point for vibe coders and solo studio builders who need structure, not jargon."
+  },
+  "sections": [
+    {
+      "id": "production-and-scope",
+      "title": "Production and Scope",
+      "summary": "How to shape a vertical slice, control scope, and keep a game moving toward a real release.",
+      "path": "shared/game-development/production-and-scope.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes its browser-first or demo-gate rules.",
+      "relatedResearchRun": "games-browser-reviewability",
+      "references": [
+        {
+          "label": "Steamworks Documentation",
+          "url": "https://partner.steamgames.com/doc/home"
+        },
+        {
+          "label": "Game Developer",
+          "url": "https://www.gamedeveloper.com/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Tighten my scope",
+          "body": "Ask your agent to cut a vague game idea down into one vertical slice with a visible review gate.",
+          "prompt": "Act as a game production director. Turn this game idea into one vertical slice with a clear title/menu flow, one complete playable loop, one art direction sentence, one audio direction sentence, a review gate, and a list of things that are explicitly out of scope for the first demo."
+        }
+      ]
+    },
+    {
+      "id": "sound-and-music",
+      "title": "Sound and Music",
+      "summary": "Audio direction for teams that need atmosphere, clarity, and practical milestone ladders without hiring a full audio department on day one.",
+      "path": "shared/game-development/sound-and-music.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes its demo-ready audio bar or toolchain.",
+      "relatedResearchRun": "knowledge-sound-music-ladder",
+      "references": [
+        {
+          "label": "FMOD Documentation",
+          "url": "https://www.fmod.com/docs/"
+        },
+        {
+          "label": "Wwise Documentation",
+          "url": "https://www.audiokinetic.com/en/library/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Plan first-pass audio",
+          "body": "Get an agent to define what audio has to exist for the next reviewable build.",
+          "prompt": "Act as an audio director for a small game studio. Based on this game concept, write a first-pass audio plan covering menu mood, gameplay feedback, danger cues, music direction, placeholder rules, and the minimum audio pack required for a demo review."
+        }
+      ]
+    },
+    {
+      "id": "graphics",
+      "title": "Graphics",
+      "summary": "Art direction, asset choices, and visual identity rules for small teams that need a strong look before they need huge content volume.",
+      "path": "shared/game-development/graphics.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes its art-pipeline defaults or engine mix.",
+      "relatedResearchRun": "knowledge-graphics-pipelines",
+      "references": [
+        {
+          "label": "Godot Documentation",
+          "url": "https://docs.godotengine.org/en/stable/"
+        },
+        {
+          "label": "Unity Learn",
+          "url": "https://learn.unity.com/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Define a visual lane",
+          "body": "Get a short art direction brief that makes your game immediately more specific.",
+          "prompt": "Act as a game art director. Turn this game idea into a practical visual direction brief covering palette, lighting, camera feel, asset density, environment mood, UI relationship, and the fastest way to avoid placeholder-looking scenes."
+        }
+      ]
+    },
+    {
+      "id": "engines",
+      "title": "Engines",
+      "summary": "How to choose engines and stacks without making the decision feel bigger than the game itself.",
+      "path": "shared/game-development/engines.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When major engine releases or platform constraints change the tradeoffs.",
+      "relatedResearchRun": "knowledge-engines-platform-choice",
+      "references": [
+        {
+          "label": "Godot Docs",
+          "url": "https://docs.godotengine.org/en/stable/"
+        },
+        {
+          "label": "Unity Manual",
+          "url": "https://docs.unity3d.com/Manual/index.html"
+        },
+        {
+          "label": "Unreal Engine Documentation",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-documentation"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Pick the engine",
+          "body": "Have an agent compare browser, Godot, Unity, and Unreal against your actual game constraints.",
+          "prompt": "Act as a technical game director. Compare the best engine or stack options for this game, including browser, Godot, Unity, and Unreal where relevant. Recommend one default path, one fallback path, the migration trigger, and the biggest technical risk for each option."
+        }
+      ]
+    },
+    {
+      "id": "story",
+      "title": "Story",
+      "summary": "Narrative planning for teams that want flavor, hooks, and campaign texture without drowning in lore bloat.",
+      "path": "shared/game-development/story.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes its story-vs-systems balance in the core slate.",
+      "relatedResearchRun": "knowledge-story-scope-control",
+      "references": [
+        {
+          "label": "Game Developer",
+          "url": "https://www.gamedeveloper.com/"
+        },
+        {
+          "label": "GDC",
+          "url": "https://gdconf.com/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Keep the story controllable",
+          "body": "Ask for a narrative scope that supports the loop instead of overpowering it.",
+          "prompt": "Act as a narrative designer for a small commercial game. Turn this concept into a story framework with one clear player fantasy, one clean opening hook, a light character/world cast, and the minimum narrative structure needed for the next demo without creating lore debt."
+        }
+      ]
+    },
+    {
+      "id": "marketing",
+      "title": "Marketing",
+      "summary": "Discoverability, wishlist thinking, and public communication habits that should start before launch week.",
+      "path": "shared/game-development/marketing.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When store algorithms, festival norms, or launch channels shift.",
+      "relatedResearchRun": "knowledge-marketing-discoverability",
+      "references": [
+        {
+          "label": "How To Market A Game",
+          "url": "https://howtomarketagame.com/"
+        },
+        {
+          "label": "GameDiscoverCo",
+          "url": "https://newsletter.gamediscover.co/"
+        },
+        {
+          "label": "Steamworks Marketing Docs",
+          "url": "https://partner.steamgames.com/doc/marketing"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Plan my first audience loop",
+          "body": "Ask an agent to turn the game into a repeatable message, clip plan, and wishlist loop.",
+          "prompt": "Act as an indie game marketing strategist. Based on this game, define the target audience, the one-sentence hook, three repeatable content angles, the best call to action for the current stage, and a low-overhead marketing loop a solo developer can actually maintain."
+        }
+      ]
+    },
+    {
+      "id": "distribution",
+      "title": "Distribution",
+      "summary": "Where to ship, how to package, and when to treat stores, demos, and public builds differently.",
+      "path": "shared/game-development/distribution.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When store policy, packaging requirements, or platform targets change.",
+      "relatedResearchRun": "knowledge-distribution-release-ops",
+      "references": [
+        {
+          "label": "Steamworks Documentation",
+          "url": "https://partner.steamgames.com/doc/home"
+        },
+        {
+          "label": "itch.io Creator Docs",
+          "url": "https://itch.io/docs/creators/getting-started"
+        },
+        {
+          "label": "GOG Submit Your Game",
+          "url": "https://www.gog.com/submit-your-game"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Choose release channels",
+          "body": "Ask an agent to turn your current build stage into a sane store and distribution plan.",
+          "prompt": "Act as a release operations producer. Based on this game and its current stage, recommend the right distribution channels, what to ship publicly now, what to keep private, the packaging expectations per channel, and the release risks that should be solved before a paid launch."
+        }
+      ]
+    },
+    {
+      "id": "ux-onboarding",
+      "title": "UI/UX and Onboarding",
+      "summary": "Menus, tutorials, readability, and player orientation for projects that want to feel professional before they feel huge.",
+      "path": "shared/game-development/ui-ux-and-onboarding.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the demo gate or controller/readability requirements change.",
+      "relatedResearchRun": "knowledge-ux-onboarding",
+      "references": [
+        {
+          "label": "Steam Input Docs",
+          "url": "https://partner.steamgames.com/doc/features/steam_controller"
+        },
+        {
+          "label": "Game Developer",
+          "url": "https://www.gamedeveloper.com/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Fix onboarding",
+          "body": "Ask for the smallest changes that make the first ten minutes clearer.",
+          "prompt": "Act as a game UX designer. Review this game concept and propose a title flow, first-run onboarding sequence, tutorial style, HUD readability rules, and settings menu essentials for a commercial-quality demo."
+        }
+      ]
+    },
+    {
+      "id": "qa-playtesting-performance",
+      "title": "QA, Playtesting, and Performance",
+      "summary": "How to check whether the game really works, not just whether the code runs on your machine.",
+      "path": "shared/game-development/qa-playtesting-and-performance.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When verification rules, capture tooling, or performance targets shift.",
+      "relatedResearchRun": "games-browser-reviewability",
+      "references": [
+        {
+          "label": "Steamworks Testing Docs",
+          "url": "https://partner.steamgames.com/doc/store/testing"
+        },
+        {
+          "label": "Godot Docs",
+          "url": "https://docs.godotengine.org/en/stable/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Create a review plan",
+          "body": "Get a reusable checklist for a browser or desktop demo pass.",
+          "prompt": "Act as a game QA lead. Create a practical review checklist for this game covering launch path, menus, onboarding, one full loop, performance hotspots, UI clarity, sound behavior, and the evidence pack needed for a manager signoff."
+        }
+      ]
+    },
+    {
+      "id": "launch-store-readiness",
+      "title": "Launch and Store Readiness",
+      "summary": "The difference between a promising build and a product that is genuinely ready to face players and stores.",
+      "path": "shared/game-development/launch-and-store-readiness.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When store processes, trailer expectations, or launch checklists change.",
+      "relatedResearchRun": "knowledge-launch-readiness",
+      "references": [
+        {
+          "label": "Steamworks Store Presence",
+          "url": "https://partner.steamgames.com/doc/store"
+        },
+        {
+          "label": "Steamworks Upcoming Events",
+          "url": "https://partner.steamgames.com/doc/marketing/upcoming_events"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Tell me if this is launch-ready",
+          "body": "Ask an agent to score a build against real launch criteria instead of vibes.",
+          "prompt": "Act as a release producer. Evaluate this game against launch-readiness criteria covering content structure, save stability, menus, settings, onboarding, audiovisual finish, store assets, trailer readiness, screenshots, and packaging. Return a no-go, conditional, or go decision with the smallest set of fixes needed."
+        }
+      ]
+    },
+    {
+      "id": "agents-handoffs-workflow",
+      "title": "Agents, Handoffs, and Studio Workflow",
+      "summary": "How to work with AI agents as a solo studio without letting the workflow turn into chaos.",
+      "path": "shared/game-development/agents-handoffs-and-studio-workflow.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes its manager/session split or handoff model.",
+      "relatedResearchRun": "workspace-handoff-quality",
+      "references": [
+        {
+          "label": "Playframe repo",
+          "url": "https://github.com/koltregaskes/open-source-playframe"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Brief my agent",
+          "body": "Get a handoff prompt that tells an implementation agent exactly what success looks like.",
+          "prompt": "Act as a studio manager. Write a decision-complete implementation brief for an AI coding agent working on this game. Include product goal, current state, exact demo gate, constraints, acceptance criteria, evidence required, and what not to change."
+        }
+      ]
+    }
+  ],
+  "promptPacks": {
+    "id": "research-prompt-packs",
+    "title": "Research Prompt Packs",
+    "path": "shared/game-development/research-prompt-packs.md",
+    "summary": "Reusable deep-research prompts for the categories in this reference system."
+  }
+}

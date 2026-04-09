@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elusion Works // Games News</title>
+    <meta
+      name="description"
+      content="Public-safe games news surfaces from Elusion Works covering game development and the wider games industry."
+    />
+    <meta property="og:title" content="Games News by Elusion Works" />
+    <meta
+      property="og:description"
+      content="Two public news rails: game development news and wider gaming news, designed to plug into a scheduled pipeline."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/news.html" />
+    <meta name="theme-color" content="#08101d" />
+    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/news.html" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="news">
+    <div class="atmosphere" aria-hidden="true">
+      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
+      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
+      <div class="atmosphere__orb atmosphere__orb--gold"></div>
+      <div class="atmosphere__grid"></div>
+    </div>
+
+    <header class="site-header">
+      <a class="site-brand" href="index.html">Elusion Works</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="index.html">Games Hub</a>
+        <a href="game-development.html">Game Development</a>
+        <a href="news.html" aria-current="page">Games News</a>
+        <a href="https://github.com/koltregaskes/games-hub">Repo</a>
+      </nav>
+    </header>
+
+    <main class="docs-main">
+      <section class="docs-hero">
+        <div class="docs-hero__copy" data-reveal>
+          <p class="eyebrow">Games News</p>
+          <h1>One rail for building games, one rail for the wider industry around them.</h1>
+          <p class="hero__lede">
+            The Games Hub uses generated feeds rather than browser-side scraping. `Game Dev News` covers engines,
+            tooling, store policy, and production craft. `Gaming News` covers releases, platform moves, and major
+            industry stories.
+          </p>
+        </div>
+        <div class="docs-hero__facts" data-reveal id="newsSummary"></div>
+      </section>
+
+      <section class="news-shell">
+        <div class="news-tabs" id="newsTabs" data-reveal></div>
+        <div class="news-feed" id="newsFeed" data-reveal></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Elusion Works</p>
+      <p>Games News is the public-safe publishing layer for scheduled games reporting and curated source coverage.</p>
+      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
