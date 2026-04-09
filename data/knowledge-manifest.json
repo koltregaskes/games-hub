@@ -37,6 +37,37 @@
       ]
     },
     {
+      "id": "demo-signoff-and-desktop-migration",
+      "title": "Demo Signoff and Desktop Migration",
+      "summary": "How to separate browser-review health, honest demo readiness, and the moment it makes sense to move to a desktop production path.",
+      "path": "shared/game-development/demo-signoff-and-desktop-migration.md",
+      "lastReviewed": "2026-04-09",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When demo signoff language or migration defaults change.",
+      "relatedResearchRun": "games-browser-reviewability",
+      "references": [
+        {
+          "label": "Steamworks Documentation",
+          "url": "https://partner.steamgames.com/doc/home"
+        },
+        {
+          "label": "Godot Documentation",
+          "url": "https://docs.godotengine.org/en/stable/"
+        },
+        {
+          "label": "Unreal Engine Documentation",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-documentation"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Should I stay on the web?",
+          "body": "Ask an agent to score the current slice honestly and tell you whether the browser is still helping or is now the bottleneck.",
+          "prompt": "Act as a studio production director. Evaluate this game using three separate labels: Browser Review Green, Demo Go, and Desktop Migration Triggered. Explain the current state honestly, define the smallest remaining gap, and say exactly when the team should stay in the browser versus move to the desktop production path."
+        }
+      ]
+    },
+    {
       "id": "sound-and-music",
       "title": "Sound and Music",
       "summary": "Audio direction for teams that need atmosphere, clarity, and practical milestone ladders without hiring a full audio department on day one.",
