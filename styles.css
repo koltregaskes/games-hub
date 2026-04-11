@@ -720,6 +720,7 @@ h3,
 
 .feed-hero,
 .feed-sources,
+.feed-platforms,
 .empty-state {
   padding: 24px;
 }
@@ -729,6 +730,12 @@ h3,
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 12px;
+}
+
+.news-card__pills {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .source-pill {

@@ -216,6 +216,18 @@ function createPromptSection(cards = []) {
   `;
 }
 
+function renderPillRow(labels = [], pillClass = "source-pill") {
+  if (!labels.length) {
+    return "";
+  }
+
+  return `
+    <div class="source-pill-row">
+      ${labels.map((label) => `<span class="${pillClass}">${escapeHtml(label)}</span>`).join("")}
+    </div>
+  `;
+}
+
 async function initHome() {
   const knowledgePreview = document.getElementById("knowledgePreview");
   const newsPreview = document.getElementById("newsPreview");
@@ -250,6 +262,7 @@ async function initHome() {
           <p>${escapeHtml(feed.summary)}</p>
           <p>${feed.generatedAt ? `Latest output ${escapeHtml(feed.generatedAt)}.` : "Pipeline-ready. Waiting for the first generated export."}</p>
           <p>Tracked sources: ${feed.sources.map((source) => escapeHtml(source)).join(", ")}</p>
+          <p>Platform focus: ${(feed.platformFocus || []).map((platform) => escapeHtml(platform)).join(", ")}</p>
           <a class="button button--ghost" href="news.html#${encodeURIComponent(feed.id)}">Open feed</a>
         </article>
       `,
@@ -468,6 +481,7 @@ async function initReviewsPage() {
           <p>${escapeHtml(feed.summary)}</p>
           <p>${feed.generatedAt ? `Latest output ${escapeHtml(feed.generatedAt)}.` : escapeHtml(news.notice)}</p>
           <p>Tracked sources: ${feed.sources.map((source) => escapeHtml(source)).join(", ")}</p>
+          <p>Platform focus: ${(feed.platformFocus || []).map((platform) => escapeHtml(platform)).join(", ")}</p>
           <a class="button button--ghost" href="news.html#${encodeURIComponent(feed.id)}">Open feed</a>
         </article>
       `,
@@ -490,12 +504,15 @@ async function initNewsPage() {
       manifest.status || "pipeline-ready",
     )}</strong></article>`,
     `<article class="summary-chip"><span class="summary-chip__label">Feeds</span><strong class="summary-chip__value is-grey">${feeds.length}</strong></article>`,
+    `<article class="summary-chip"><span class="summary-chip__label">Tracked Platforms</span><strong class="summary-chip__value is-grey">${(manifest.platformPolicy?.allowed || []).length}</strong></article>`,
     `<article class="summary-chip"><span class="summary-chip__label">Updated</span><strong class="summary-chip__value is-yellow">${escapeHtml(
       manifest.updatedAt,
     )}</strong></article>`,
   ].join("");
 
   function renderFeed(feedData) {
+    const supportedPlatforms = feedData.platformFocus || manifest.platformPolicy?.allowed || [];
+    const taggingRules = feedData.taggingRules || [];
     feed.innerHTML = `
       <article class="feed-hero">
         <p class="feature__kicker">${escapeHtml(feedData.title)}</p>
@@ -504,9 +521,19 @@ async function initNewsPage() {
       </article>
       <section class="feed-sources">
         <p class="feature__kicker">Tracked sources</p>
-        <div class="source-pill-row">
-          ${feedData.sources.map((source) => `<span class="source-pill">${escapeHtml(source)}</span>`).join("")}
-        </div>
+        ${renderPillRow(feedData.sources || [])}
+      </section>
+      <section class="feed-platforms">
+        <p class="feature__kicker">Platform focus</p>
+        ${renderPillRow(supportedPlatforms)}
+        <p>${escapeHtml(manifest.platformPolicy?.summary || "Platform tags should stay explicit and honest.")}</p>
+        ${
+          taggingRules.length
+            ? `<ul class="docs-link-list">${taggingRules
+                .map((rule) => `<li>${escapeHtml(rule)}</li>`)
+                .join("")}</ul>`
+            : ""
+        }
       </section>
       ${
         feedData.items.length
@@ -518,6 +545,14 @@ async function initNewsPage() {
                     <p class="feature__kicker">${escapeHtml(item.section || feedData.title)}</p>
                     <h3><a href="${item.url}" target="_blank" rel="noreferrer">${escapeHtml(item.headline)}</a></h3>
                     <p>${escapeHtml(item.summary)}</p>
+                    ${
+                      (item.platforms || []).length || (item.tags || []).length
+                        ? `<div class="news-card__pills">
+                            ${renderPillRow(item.platforms || [])}
+                            ${renderPillRow(item.tags || [])}
+                          </div>`
+                        : ""
+                    }
                     <div class="news-card__meta">
                       <span>${escapeHtml(item.source)}</span>
                       <span>${escapeHtml(item.publishedDate)}</span>

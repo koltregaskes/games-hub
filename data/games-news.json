@@ -4,6 +4,29 @@
   "status": "pipeline-ready",
   "summary": "Public-safe game development, gaming, review, and preview news surfaces powered by a separate scheduled pipeline.",
   "notice": "The page is wired for generated feed outputs. The first scheduled games runs still need to publish their initial items into this manifest.",
+  "platformPolicy": {
+    "summary": "Games coverage on this hub is filtered to Windows, Xbox, and PlayStation only. Xbox and PlayStation stories must carry the specific hardware or service model where known.",
+    "allowed": [
+      "Windows PC",
+      "Xbox One",
+      "Xbox Series X",
+      "Xbox Series S",
+      "PlayStation 4",
+      "PlayStation 5"
+    ],
+    "excluded": [
+      "Nintendo",
+      "Apple",
+      "iOS",
+      "Android",
+      "macOS"
+    ],
+    "modelRules": [
+      "Use `Windows PC` for PC-first coverage. Add store tags like `Steam`, `GOG`, or `Epic Games Store` only as extra tags, not as separate platform families.",
+      "Use explicit Xbox model tags such as `Xbox One`, `Xbox Series X`, `Xbox Series S`, `Xbox Game Pass`, or `Xbox Cloud Gaming` when the story is platform-specific.",
+      "Use explicit PlayStation model tags such as `PlayStation 4`, `PlayStation 5`, `PS VR2`, or `PlayStation Plus` when the story is platform-specific."
+    ]
+  },
   "feeds": [
     {
       "id": "game-dev",
@@ -11,6 +34,16 @@
       "summary": "Engine releases, tooling, middleware, store policy, production craft, and the business of making games.",
       "status": "pipeline-ready",
       "generatedAt": null,
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "taggingRules": [
+        "Tag only if the development story is materially tied to a shipping platform or platform holder.",
+        "Prefer `Windows PC` for engine, middleware, and tooling stories unless a console platform holder is central to the announcement."
+      ],
       "items": [],
       "sources": [
         "Game Developer",
@@ -28,6 +61,18 @@
       "summary": "Platform moves, major announcements, releases, notable studio stories, and wider games industry coverage.",
       "status": "pipeline-ready",
       "generatedAt": null,
+      "platformFocus": [
+        "Windows PC",
+        "Xbox One",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 4",
+        "PlayStation 5"
+      ],
+      "taggingRules": [
+        "Every item should carry platform tags when the platform is known.",
+        "Xbox and PlayStation items should use the specific model or service where the story makes that distinction."
+      ],
       "items": [],
       "sources": [
         "IGN",
@@ -36,9 +81,8 @@
         "Polygon",
         "Rock Paper Shotgun",
         "Steam",
-        "Nintendo",
-        "PlayStation",
-        "Xbox"
+        "PlayStation Blog",
+        "Xbox Wire"
       ]
     },
     {
@@ -47,6 +91,18 @@
       "summary": "Final verdicts, scored criticism, and notable critical consensus from major games outlets.",
       "status": "pipeline-ready",
       "generatedAt": null,
+      "platformFocus": [
+        "Windows PC",
+        "Xbox One",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 4",
+        "PlayStation 5"
+      ],
+      "taggingRules": [
+        "Review items should always distinguish final scored reviews from updated reviews in progress.",
+        "Platform tags should reflect the reviewed build or platform availability called out by the outlet."
+      ],
       "items": [],
       "sources": [
         "IGN",
@@ -63,6 +119,16 @@
       "summary": "Hands-on impressions, early verdicts, showcase reactions, and first-look coverage before final review.",
       "status": "pipeline-ready",
       "generatedAt": null,
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "taggingRules": [
+        "Preview items should stay unscored and should not be mixed into final review coverage.",
+        "Tag the most specific platform shown or discussed in the preview coverage."
+      ],
       "items": [],
       "sources": [
         "IGN",
@@ -71,8 +137,7 @@
         "PC Gamer",
         "GamesRadar+",
         "PlayStation Blog",
-        "Xbox Wire",
-        "Nintendo"
+        "Xbox Wire"
       ]
     }
   ]

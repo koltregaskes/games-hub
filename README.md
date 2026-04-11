@@ -4,6 +4,14 @@ Public-facing studio hub for the current Elusion Works game lineup, plus public-
 
 This repo is set up as a static GitHub Pages site. It intentionally does not include the private local-launch controls from the desktop hub. Instead, it acts as the public layer where game pages, screenshots, demos, store links, shared craft guidance, and generated news feeds can grow over time.
 
+`Games News` is split into four public rails:
+- `Game Dev News`
+- `Gaming News`
+- `Games Reviews`
+- `Games Previews`
+
+That news layer is filtered to `Windows PC`, `Xbox`, and `PlayStation`. Xbox and PlayStation coverage should use specific model or service tags such as `Xbox Series X`, `Xbox Series S`, `PlayStation 5`, `Xbox Game Pass`, or `PlayStation Plus` where the source supports that detail.
+
 ## Public vs Private
 
 - This repo is public-facing only.
