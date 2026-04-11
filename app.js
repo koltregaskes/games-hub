@@ -9,6 +9,17 @@ const reviewsPageTitle = document.getElementById("reviewsPageTitle");
 const reviewsPageDescription = document.getElementById("reviewsPageDescription");
 const reviewsPageContent = document.getElementById("reviewsPageContent");
 const reviewsFeedFocus = document.getElementById("reviewsFeedFocus");
+const calendarPreview = document.getElementById("calendarPreview");
+const calendarSummary = document.getElementById("calendarSummary");
+const calendarNotice = document.getElementById("calendarNotice");
+const calendarPolicy = document.getElementById("calendarPolicy");
+const calendarViewToggle = document.getElementById("calendarViewToggle");
+const calendarWeekdays = document.getElementById("calendarWeekdays");
+const calendarGrid = document.getElementById("calendarGrid");
+const calendarDetail = document.getElementById("calendarDetail");
+const calendarRangeLabel = document.getElementById("calendarRangeLabel");
+const calendarPrevButton = document.getElementById("calendarPrevButton");
+const calendarNextButton = document.getElementById("calendarNextButton");
 
 function initReveal() {
   if (!("IntersectionObserver" in window)) {
@@ -228,14 +239,242 @@ function renderPillRow(labels = [], pillClass = "source-pill") {
   `;
 }
 
+function parseDateKey(value) {
+  const [year, month, day] = String(value || "")
+    .split("-")
+    .map((item) => Number.parseInt(item, 10));
+  if (!year || !month || !day) {
+    return null;
+  }
+  return new Date(year, month - 1, day);
+}
+
+function parseMonthKey(value) {
+  const [year, month] = String(value || "")
+    .split("-")
+    .map((item) => Number.parseInt(item, 10));
+  if (!year || !month) {
+    return null;
+  }
+  return new Date(year, month - 1, 1);
+}
+
+function startOfDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function addDays(date, amount) {
+  const next = new Date(date);
+  next.setDate(next.getDate() + amount);
+  return startOfDay(next);
+}
+
+function dateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function monthKey(date) {
+  return dateKey(new Date(date.getFullYear(), date.getMonth(), 1)).slice(0, 7);
+}
+
+function startOfWeek(date) {
+  const normalized = startOfDay(date);
+  const dayIndex = (normalized.getDay() + 6) % 7;
+  return addDays(normalized, -dayIndex);
+}
+
+function formatShortDate(date) {
+  return new Intl.DateTimeFormat([], {
+    month: "short",
+    day: "numeric",
+  }).format(date);
+}
+
+function formatLongDate(date) {
+  return new Intl.DateTimeFormat([], {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
+}
+
+function formatMonthLabel(date) {
+  return new Intl.DateTimeFormat([], {
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function formatWeekLabel(startDate) {
+  const endDate = addDays(startDate, 6);
+  return `${formatShortDate(startDate)} - ${formatShortDate(endDate)}, ${endDate.getFullYear()}`;
+}
+
+function buildReleaseCalendarModel(manifest) {
+  const dated = (manifest.releases || [])
+    .filter((item) => item.date)
+    .map((item) => {
+      const releaseDate = parseDateKey(item.date);
+      return releaseDate ? { ...item, releaseDate } : null;
+    })
+    .filter(Boolean)
+    .sort((left, right) => {
+      if (left.date === right.date) {
+        return left.title.localeCompare(right.title);
+      }
+      return left.date.localeCompare(right.date);
+    });
+
+  const byDate = new Map();
+  dated.forEach((item) => {
+    const items = byDate.get(item.date) || [];
+    items.push(item);
+    byDate.set(item.date, items);
+  });
+
+  const months = Array.from(new Set(dated.map((item) => item.date.slice(0, 7))));
+  return {
+    manifest,
+    dated,
+    byDate,
+    months,
+    undated: manifest.undated || [],
+  };
+}
+
+function groupedPlatformCounts(items = []) {
+  const counts = new Map();
+  items.forEach((item) => {
+    (item.platforms || []).forEach((platform) => {
+      counts.set(platform, (counts.get(platform) || 0) + 1);
+    });
+  });
+
+  return Array.from(counts.entries())
+    .sort((left, right) => {
+      if (right[1] === left[1]) {
+        return left[0].localeCompare(right[0]);
+      }
+      return right[1] - left[1];
+    })
+    .map(([platform, count]) => ({ platform, count }));
+}
+
+function densityClass(count, densityRules = {}) {
+  if (count >= (densityRules.heavy || 4)) {
+    return "is-heavy";
+  }
+  if (count >= (densityRules.busy || 2)) {
+    return "is-busy";
+  }
+  if (count > 0) {
+    return "is-active";
+  }
+  return "is-empty";
+}
+
+function peakReleaseDay(model) {
+  let best = null;
+  model.byDate.forEach((items, dayKey) => {
+    if (!best || items.length > best.count) {
+      best = { dayKey, count: items.length, items };
+    }
+  });
+  return best;
+}
+
+function focusMonthStats(model, focusMonth) {
+  const items = model.dated.filter((item) => item.date.startsWith(focusMonth));
+  return {
+    month: focusMonth,
+    count: items.length,
+    platforms: groupedPlatformCounts(items),
+  };
+}
+
+function releaseListMarkup(items = []) {
+  return items
+    .map((item) => {
+      const platforms = (item.platforms || []).join(", ");
+      const title = item.igdbUrl
+        ? `<a href="${item.igdbUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.title)}</a>`
+        : escapeHtml(item.title);
+      return `
+        <li class="calendar-release-item">
+          <div>
+            <strong>${title}</strong>
+            <p>${escapeHtml(platforms || "Platform not recorded")}</p>
+          </div>
+          <span>${escapeHtml(item.source || "Tracked list")}</span>
+        </li>
+      `;
+    })
+    .join("");
+}
+
+function renderCalendarPreview(manifest) {
+  if (!calendarPreview) return;
+
+  const model = buildReleaseCalendarModel(manifest);
+  const focusMonth = manifest.defaultFocusMonth || model.months[0];
+  const focusStats = focusMonth ? focusMonthStats(model, focusMonth) : null;
+  const peakDay = peakReleaseDay(model);
+  const peakDate = peakDay ? parseDateKey(peakDay.dayKey) : null;
+
+  calendarPreview.innerHTML = [
+    focusStats
+      ? `
+        <article class="preview-card">
+          <p class="feature__kicker">Focus month</p>
+          <h3>${escapeHtml(formatMonthLabel(parseMonthKey(focusStats.month)))}</h3>
+          <p>${focusStats.count} tracked releases in the default seeded month.</p>
+          <p>${focusStats.platforms
+            .slice(0, 3)
+            .map((item) => `${item.count} ${item.platform}`)
+            .join(", ")}</p>
+          <a class="button button--ghost" href="calendar.html">Open calendar</a>
+        </article>
+      `
+      : "",
+    peakDay && peakDate
+      ? `
+        <article class="preview-card">
+          <p class="feature__kicker">Peak day</p>
+          <h3>${escapeHtml(formatLongDate(peakDate))}</h3>
+          <p>${peakDay.count} tracked release${peakDay.count === 1 ? "" : "s"} land on this day.</p>
+          <p>${groupedPlatformCounts(peakDay.items)
+            .slice(0, 2)
+            .map((item) => `${item.count} ${item.platform}`)
+            .join(", ")}</p>
+          <a class="button button--ghost" href="calendar.html">Inspect the day</a>
+        </article>
+      `
+      : "",
+    `
+      <article class="preview-card">
+        <p class="feature__kicker">Still TBD</p>
+        <h3>${manifest.undated?.length || 0} tracked titles</h3>
+        <p>Undated or wide-window releases stay visible so the calendar does not pretend uncertainty has been solved.</p>
+        <p>${escapeHtml(manifest.notice || "Tracked release data is still being tightened.")}</p>
+        <a class="button button--ghost" href="calendar.html">See undated games</a>
+      </article>
+    `,
+  ].join("");
+}
+
 async function initHome() {
   const knowledgePreview = document.getElementById("knowledgePreview");
   const newsPreview = document.getElementById("newsPreview");
   if (!knowledgePreview || !newsPreview) return;
 
-  const [knowledge, news] = await Promise.all([
+  const [knowledge, news, calendar] = await Promise.all([
     fetchJson("data/knowledge-manifest.json"),
     fetchJson("data/games-news.json"),
+    fetchJson("data/release-calendar.json"),
   ]);
 
   knowledgePreview.innerHTML = knowledge.sections
@@ -268,6 +507,8 @@ async function initHome() {
       `,
     )
     .join("");
+
+  renderCalendarPreview(calendar);
 }
 
 async function initKnowledgePage() {
@@ -595,6 +836,185 @@ async function initNewsPage() {
   renderFeed(activeFeed);
 }
 
+async function initCalendarPage() {
+  if (
+    !calendarSummary ||
+    !calendarNotice ||
+    !calendarPolicy ||
+    !calendarViewToggle ||
+    !calendarWeekdays ||
+    !calendarGrid ||
+    !calendarDetail ||
+    !calendarRangeLabel ||
+    !calendarPrevButton ||
+    !calendarNextButton
+  ) {
+    return;
+  }
+
+  const manifest = await fetchJson("data/release-calendar.json");
+  const model = buildReleaseCalendarModel(manifest);
+  const focusMonthDate = parseMonthKey(manifest.defaultFocusMonth) || parseDateKey(model.dated[0]?.date) || new Date();
+  let view = manifest.defaultView || "month";
+  let cursorDate = startOfDay(focusMonthDate);
+  let selectedDateKey = model.dated.find((item) => item.date.startsWith(monthKey(focusMonthDate)))?.date || model.dated[0]?.date || null;
+
+  calendarSummary.innerHTML = [
+    ["Status", manifest.status || "seeded", "is-yellow"],
+    ["Dated releases", model.dated.length, "is-green"],
+    ["Still TBD", model.undated.length, "is-grey"],
+    ["Tracked platforms", (manifest.platformPolicy?.allowed || []).length, "is-grey"],
+  ]
+    .map(
+      ([label, value, tone]) => `
+        <article class="summary-chip">
+          <span class="summary-chip__label">${label}</span>
+          <strong class="summary-chip__value ${tone}">${escapeHtml(String(value))}</strong>
+        </article>
+      `,
+    )
+    .join("");
+
+  calendarNotice.textContent = manifest.notice || "";
+  calendarPolicy.innerHTML = `
+    <div class="feed-sources">
+      <p class="feature__kicker">Platform scope</p>
+      ${renderPillRow(manifest.platformPolicy?.allowed || [])}
+      <p>${escapeHtml(manifest.platformPolicy?.summary || "")}</p>
+    </div>
+  `;
+
+  calendarWeekdays.innerHTML = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    .map((label) => `<span>${label}</span>`)
+    .join("");
+
+  function currentCells() {
+    if (view === "week") {
+      const start = startOfWeek(cursorDate);
+      return Array.from({ length: 7 }, (_, index) => {
+        const day = addDays(start, index);
+        return { date: day, key: dateKey(day), outsideMonth: false };
+      });
+    }
+
+    const monthStart = new Date(cursorDate.getFullYear(), cursorDate.getMonth(), 1);
+    const gridStart = startOfWeek(monthStart);
+    return Array.from({ length: 42 }, (_, index) => {
+      const day = addDays(gridStart, index);
+      return { date: day, key: dateKey(day), outsideMonth: monthKey(day) !== monthKey(monthStart) };
+    });
+  }
+
+  function ensureSelectedDate(cells) {
+    if (selectedDateKey && cells.some((cell) => cell.key === selectedDateKey)) {
+      return;
+    }
+
+    const releaseCell = cells.find((cell) => (model.byDate.get(cell.key) || []).length);
+    selectedDateKey = releaseCell?.key || cells[0]?.key || null;
+  }
+
+  function renderDetail() {
+    const selectedDate = selectedDateKey ? parseDateKey(selectedDateKey) : null;
+    const releases = selectedDateKey ? model.byDate.get(selectedDateKey) || [] : [];
+    const platformCounts = groupedPlatformCounts(releases);
+
+    calendarDetail.innerHTML = `
+      <div class="calendar-detail__head">
+        <div>
+          <p class="feature__kicker">Selected day</p>
+          <h2>${selectedDate ? escapeHtml(formatLongDate(selectedDate)) : "Choose a day"}</h2>
+        </div>
+        <p>${releases.length ? `${releases.length} tracked release${releases.length === 1 ? "" : "s"}` : "No tracked releases on this day."}</p>
+      </div>
+      ${platformCounts.length ? renderPillRow(platformCounts.map((item) => `${item.count} ${item.platform}`)) : ""}
+      ${
+        releases.length
+          ? `<ul class="calendar-release-list">${releaseListMarkup(releases)}</ul>`
+          : `<div class="empty-state"><h3>Quiet day</h3><p>No tracked releases are currently recorded for this date.</p></div>`
+      }
+      ${
+        model.undated.length
+          ? `
+            <section class="calendar-undated">
+              <p class="feature__kicker">Still TBD</p>
+              <ul class="calendar-release-list">${releaseListMarkup(model.undated)}</ul>
+            </section>
+          `
+          : ""
+      }
+    `;
+  }
+
+  function renderCalendar() {
+    const cells = currentCells();
+    ensureSelectedDate(cells);
+    Array.from(calendarViewToggle.querySelectorAll(".calendar-toggle__button")).forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.view === view);
+    });
+
+    calendarRangeLabel.textContent = view === "week" ? formatWeekLabel(startOfWeek(cursorDate)) : formatMonthLabel(cursorDate);
+    calendarGrid.classList.toggle("is-week", view === "week");
+    calendarGrid.innerHTML = cells
+      .map((cell) => {
+        const releases = model.byDate.get(cell.key) || [];
+        const density = densityClass(releases.length, manifest.densityRules);
+        const platformCounts = groupedPlatformCounts(releases)
+          .slice(0, 2)
+          .map((item) => `<span>${escapeHtml(`${item.count} ${item.platform}`)}</span>`)
+          .join("");
+        return `
+          <button
+            class="calendar-day ${density} ${cell.outsideMonth ? "is-outside-month" : ""} ${selectedDateKey === cell.key ? "is-selected" : ""}"
+            data-date-key="${cell.key}"
+            type="button"
+          >
+            <span class="calendar-day__date">${escapeHtml(
+              new Intl.DateTimeFormat([], { month: "short", day: "numeric" }).format(cell.date),
+            )}</span>
+            <strong class="calendar-day__count">${releases.length ? `${releases.length} release${releases.length === 1 ? "" : "s"}` : "Quiet"}</strong>
+            <span class="calendar-day__platforms">${platformCounts || "&nbsp;"}</span>
+          </button>
+        `;
+      })
+      .join("");
+
+    Array.from(calendarGrid.querySelectorAll(".calendar-day")).forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedDateKey = button.dataset.dateKey;
+        renderCalendar();
+      });
+    });
+
+    renderDetail();
+  }
+
+  Array.from(calendarViewToggle.querySelectorAll(".calendar-toggle__button")).forEach((button) => {
+    button.addEventListener("click", () => {
+      view = button.dataset.view || "month";
+      renderCalendar();
+    });
+  });
+
+  calendarPrevButton.addEventListener("click", () => {
+    cursorDate =
+      view === "week"
+        ? addDays(cursorDate, -7)
+        : new Date(cursorDate.getFullYear(), cursorDate.getMonth() - 1, 1);
+    renderCalendar();
+  });
+
+  calendarNextButton.addEventListener("click", () => {
+    cursorDate =
+      view === "week"
+        ? addDays(cursorDate, 7)
+        : new Date(cursorDate.getFullYear(), cursorDate.getMonth() + 1, 1);
+    renderCalendar();
+  });
+
+  renderCalendar();
+}
+
 async function init() {
   initReveal();
 
@@ -612,6 +1032,10 @@ async function init() {
   }
   if (page === "news") {
     await initNewsPage();
+    return;
+  }
+  if (page === "calendar") {
+    await initCalendarPage();
   }
 }
 

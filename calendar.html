@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elusion Works // Release Calendar</title>
+    <meta
+      name="description"
+      content="A monthly and weekly release calendar for tracked Windows PC, Xbox, and PlayStation games on the Elusion Works Games Hub."
+    />
+    <meta property="og:title" content="Release Calendar by Elusion Works" />
+    <meta
+      property="og:description"
+      content="Track upcoming and logged releases across Windows PC, Xbox, and PlayStation with day-level platform density and drill-down details."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/calendar.html" />
+    <meta name="theme-color" content="#08101d" />
+    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/calendar.html" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="calendar">
+    <div class="atmosphere" aria-hidden="true">
+      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
+      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
+      <div class="atmosphere__orb atmosphere__orb--gold"></div>
+      <div class="atmosphere__grid"></div>
+    </div>
+
+    <header class="site-header">
+      <a class="site-brand" href="index.html">Elusion Works</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="index.html">Games Hub</a>
+        <a href="game-development.html">Game Development</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="news.html">Games News</a>
+        <a href="calendar.html" aria-current="page">Release Calendar</a>
+        <a href="https://github.com/koltregaskes/games-hub">Repo</a>
+      </nav>
+    </header>
+
+    <main class="docs-main">
+      <section class="docs-hero">
+        <div class="docs-hero__copy" data-reveal>
+          <p class="eyebrow">Release Calendar</p>
+          <h1>See the shape of the release slate, then drill into the days that matter.</h1>
+          <p class="hero__lede">
+            This calendar view is built for tracked Windows PC, Xbox, and PlayStation releases. It highlights dense
+            days, rolls up platform counts like `2 Xbox releases` or `3 PlayStation releases`, and lets you jump from
+            the calendar straight into the release list for that day.
+          </p>
+        </div>
+        <div class="docs-hero__facts" data-reveal id="calendarSummary"></div>
+      </section>
+
+      <section class="calendar-page" data-reveal>
+        <div class="calendar-toolbar">
+          <div class="calendar-toolbar__left">
+            <div class="calendar-toggle" id="calendarViewToggle" aria-label="Calendar view">
+              <button class="calendar-toggle__button" data-view="month" type="button">Month</button>
+              <button class="calendar-toggle__button" data-view="week" type="button">Week</button>
+            </div>
+            <p class="calendar-toolbar__note" id="calendarNotice"></p>
+          </div>
+          <div class="calendar-toolbar__right">
+            <button class="calendar-nav__button" id="calendarPrevButton" type="button">Previous</button>
+            <p class="calendar-range" id="calendarRangeLabel">Loading calendar...</p>
+            <button class="calendar-nav__button" id="calendarNextButton" type="button">Next</button>
+          </div>
+        </div>
+
+        <div class="calendar-policy" id="calendarPolicy"></div>
+        <div class="calendar-weekdays" id="calendarWeekdays" aria-hidden="true"></div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+        <div class="calendar-detail" id="calendarDetail"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Elusion Works</p>
+      <p>Release Calendar is the public-safe tracked-release layer inside the wider Games Hub.</p>
+      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

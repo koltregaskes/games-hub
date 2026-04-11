@@ -1,6 +1,6 @@
 # Games Hub by Elusion Works
 
-Public-facing studio hub for the current Elusion Works game lineup, plus public-safe `Game Development`, `Reviews`, and `Games News` surfaces.
+Public-facing studio hub for the current Elusion Works game lineup, plus public-safe `Game Development`, `Reviews`, `Games News`, and `Release Calendar` surfaces.
 
 This repo is set up as a static GitHub Pages site. It intentionally does not include the private local-launch controls from the desktop hub. Instead, it acts as the public layer where game pages, screenshots, demos, store links, shared craft guidance, and generated news feeds can grow over time.
 
@@ -9,6 +9,8 @@ This repo is set up as a static GitHub Pages site. It intentionally does not inc
 - `Gaming News`
 - `Games Reviews`
 - `Games Previews`
+
+`Release Calendar` adds a tracked monthly and weekly view for Windows PC, Xbox, and PlayStation releases, with day-level density rollups and drill-down lists.
 
 That news layer is filtered to `Windows PC`, `Xbox`, and `PlayStation`. Xbox and PlayStation coverage should use specific model or service tags such as `Xbox Series X`, `Xbox Series S`, `PlayStation 5`, `Xbox Game Pass`, or `PlayStation Plus` where the source supports that detail.
 

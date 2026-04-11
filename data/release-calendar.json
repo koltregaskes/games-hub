@@ -1,0 +1,414 @@
+{
+  "title": "Release Calendar by Elusion Works",
+  "updatedAt": "2026-04-11",
+  "status": "seeded-from-tracked-list",
+  "summary": "A calendar view of tracked releases across Windows PC, Xbox, and PlayStation, seeded from the current Wanted List rather than a live release API.",
+  "notice": "This first version is seeded from tracked release dates in the Wanted List. Live IGDB/API syncing and rolling release updates are still pending, so treat it as a curated tracking calendar rather than a complete market-wide schedule.",
+  "source": {
+    "label": "Wanted List: Games",
+    "kind": "tracked-sheet",
+    "url": "https://docs.google.com/spreadsheets/d/1vCDwmRfrvTi9Vx2WoWt_2aq7eJE9NtD4l86jPKCrc9w/edit"
+  },
+  "defaultView": "month",
+  "defaultFocusMonth": "2022-11",
+  "weekStartsOn": "monday",
+  "densityRules": {
+    "busy": 2,
+    "heavy": 4
+  },
+  "platformPolicy": {
+    "summary": "Release tracking on this hub is limited to Windows PC, Xbox, and PlayStation only. Xbox and PlayStation entries should use the most specific model or service tags available.",
+    "allowed": [
+      "Windows PC",
+      "Xbox One",
+      "Xbox Series X",
+      "Xbox Series S",
+      "PlayStation 4",
+      "PlayStation 5"
+    ],
+    "excluded": [
+      "Nintendo",
+      "Apple",
+      "iOS",
+      "Android",
+      "macOS"
+    ]
+  },
+  "releases": [
+    {
+      "id": "mmorpg-tycoon-2",
+      "title": "MMORPG Tycoon 2",
+      "date": "2020-01-06",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "rugby-challenge-4",
+      "title": "Rugby Challenge 4",
+      "date": "2021-01-13",
+      "platforms": [
+        "Xbox One"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "destruction-allstars",
+      "title": "Destruction AllStars",
+      "date": "2021-02-02",
+      "platforms": [
+        "PlayStation 5"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted",
+      "igdbUrl": "https://www.igdb.com/g/2vuj"
+    },
+    {
+      "id": "colt-canyon",
+      "title": "Colt Canyon",
+      "date": "2020-06-16",
+      "platforms": [
+        "Xbox One"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "exocorps",
+      "title": "ExoCorps",
+      "date": "2020-09-17",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "wobbly-life",
+      "title": "Wobbly Life",
+      "date": "2021-07-16",
+      "platforms": [
+        "Xbox One"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "bonfire-peaks",
+      "title": "Bonfire Peaks",
+      "date": "2021-09-30",
+      "platforms": [
+        "PlayStation 4"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "highrise-mogul",
+      "title": "Highrise Mogul",
+      "date": "2021-12-02",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "dying-light-2-stay-human",
+      "title": "Dying Light 2: Stay Human",
+      "date": "2022-02-04",
+      "platforms": [
+        "Xbox One"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "project-warlock-2",
+      "title": "Project Warlock 2",
+      "date": "2022-06-10",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "the-quarry",
+      "title": "The Quarry",
+      "date": "2022-06-10",
+      "platforms": [
+        "Windows PC",
+        "Xbox One",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 4",
+        "PlayStation 5"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted",
+      "igdbUrl": "https://www.igdb.com/g/4604"
+    },
+    {
+      "id": "neon-blight",
+      "title": "Neon Blight",
+      "date": "2022-07-11",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "two-point-campus",
+      "title": "Two Point Campus",
+      "date": "2022-08-09",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "rollerdrome",
+      "title": "Rollerdrome",
+      "date": "2022-08-16",
+      "platforms": [
+        "PlayStation 4"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "f1-manager-2022",
+      "title": "F1 Manager 2022",
+      "date": "2022-08-30",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "return-to-monkey-island",
+      "title": "Return to Monkey Island",
+      "date": "2022-09-19",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "naiad",
+      "title": "NAIAD",
+      "date": "2022-10-06",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "ghost-song",
+      "title": "Ghost Song",
+      "date": "2022-11-03",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "god-of-war-ragnarok",
+      "title": "God of War Ragnarok",
+      "date": "2022-11-09",
+      "platforms": [
+        "PlayStation 4",
+        "PlayStation 5"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted",
+      "igdbUrl": "https://www.igdb.com/g/2f3f"
+    },
+    {
+      "id": "warhammer-40000-darktide",
+      "title": "Warhammer 40,000: Darktide",
+      "date": "2022-11-30",
+      "platforms": [
+        "Xbox Series X",
+        "Xbox Series S"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "forspoken",
+      "title": "Forspoken",
+      "date": "2023-01-24",
+      "platforms": [
+        "PlayStation 5"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "the-day-before",
+      "title": "The Day Before",
+      "date": "2023-03-01",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "resident-evil-4-2023",
+      "title": "Resident Evil 4",
+      "date": "2023-03-24",
+      "platforms": [
+        "PlayStation 5"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    }
+  ],
+  "undated": [
+    {
+      "id": "abandoned",
+      "title": "Abandoned",
+      "releaseWindow": "2022",
+      "platforms": [
+        "PlayStation 5"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted",
+      "igdbUrl": "https://www.igdb.com/g/3jfg"
+    },
+    {
+      "id": "ara-history-untold",
+      "title": "Ara: History Untold",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted",
+      "igdbUrl": "https://www.igdb.com/g/4dvw"
+    },
+    {
+      "id": "contraband",
+      "title": "Contraband",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "Xbox Series X",
+        "Xbox Series S"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "crysis-4",
+      "title": "Crysis 4",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "slitterhead",
+      "title": "Slitterhead",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "PlayStation 5"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "star-wars-eclipse",
+      "title": "Star Wars: Eclipse",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "PlayStation 5",
+        "Xbox Series X",
+        "Xbox Series S",
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "starfield",
+      "title": "Starfield",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "tempest-rising",
+      "title": "Tempest Rising",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "palia",
+      "title": "Palia",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "pioner",
+      "title": "Pioner",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "Windows PC"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "dune-awakening",
+      "title": "Dune: Awakening",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "Windows PC",
+        "PlayStation 5",
+        "Xbox Series X",
+        "Xbox Series S"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    },
+    {
+      "id": "firewall-ultra",
+      "title": "Firewall Ultra",
+      "releaseWindow": "TBD",
+      "platforms": [
+        "PlayStation 5"
+      ],
+      "source": "Wanted List: Games",
+      "trackingState": "wanted"
+    }
+  ]
+}
