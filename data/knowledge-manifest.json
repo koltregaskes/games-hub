@@ -68,6 +68,68 @@
       ]
     },
     {
+      "id": "what-a-2026-demo-must-include",
+      "title": "What A 2026 Demo Must Include",
+      "summary": "A clear bar for what separates a serious public-facing demo from a merely playable prototype in 2026.",
+      "path": "shared/game-development/what-a-2026-demo-must-include.md",
+      "lastReviewed": "2026-04-11",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes its demo shortlist or demo-go criteria.",
+      "relatedResearchRun": "games-browser-reviewability",
+      "references": [
+        {
+          "label": "Steamworks Documentation",
+          "url": "https://partner.steamgames.com/doc/home"
+        },
+        {
+          "label": "Game Developer",
+          "url": "https://www.gamedeveloper.com/"
+        },
+        {
+          "label": "GDC",
+          "url": "https://gdconf.com/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Judge this demo honestly",
+          "body": "Ask an agent to score the build against a proper modern demo bar instead of just checking whether it runs.",
+          "prompt": "Act as a game director and demo producer. Evaluate this build against a serious 2026 demo bar. Judge title flow, onboarding, core loop, closure, readability, audio support, and overall public-facing clarity. Return: what already works, what is missing, the smallest set of fixes needed, and whether this is a real demo, a promising prototype, or still only a proof slice."
+        }
+      ]
+    },
+    {
+      "id": "shared-demo-systems-across-the-slate",
+      "title": "Shared Demo Systems Across The Slate",
+      "summary": "The cross-game systems that should stay consistent even when the genres and platforms differ.",
+      "path": "shared/game-development/shared-demo-systems-across-the-slate.md",
+      "lastReviewed": "2026-04-11",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes its shared demo discipline or manager workflow.",
+      "relatedResearchRun": "games-browser-reviewability",
+      "references": [
+        {
+          "label": "Steamworks Documentation",
+          "url": "https://partner.steamgames.com/doc/home"
+        },
+        {
+          "label": "Godot Documentation",
+          "url": "https://docs.godotengine.org/en/stable/"
+        },
+        {
+          "label": "Unreal Engine Documentation",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-engine-5-documentation"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Audit the shared demo systems",
+          "body": "Ask an agent which cross-game demo systems are already solid and which still need work.",
+          "prompt": "Act as a studio production lead. For this game, identify which shared demo systems are already in place, which are weak, and which are missing. Focus on entry flow, review route, onboarding, core loop, closure, audio, settings, and manager discipline. Return the smallest practical upgrade plan for reaching demo-ready discipline."
+        }
+      ]
+    },
+    {
       "id": "sound-and-music",
       "title": "Sound and Music",
       "summary": "Audio direction for teams that need atmosphere, clarity, and practical milestone ladders without hiring a full audio department on day one.",
