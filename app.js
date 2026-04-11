@@ -2,6 +2,13 @@ document.body.classList.add("has-motion");
 
 const revealItems = document.querySelectorAll("[data-reveal]");
 const page = document.body.dataset.page || "home";
+const reviewsSummary = document.getElementById("reviewsSummary");
+const reviewsPageNav = document.getElementById("reviewsPageNav");
+const reviewsPageMeta = document.getElementById("reviewsPageMeta");
+const reviewsPageTitle = document.getElementById("reviewsPageTitle");
+const reviewsPageDescription = document.getElementById("reviewsPageDescription");
+const reviewsPageContent = document.getElementById("reviewsPageContent");
+const reviewsFeedFocus = document.getElementById("reviewsFeedFocus");
 
 function initReveal() {
   if (!("IntersectionObserver" in window)) {
@@ -364,6 +371,110 @@ async function initKnowledgePage() {
   await openDocument(activeDocument);
 }
 
+async function initReviewsPage() {
+  if (!reviewsPageNav || !reviewsPageTitle || !reviewsPageDescription || !reviewsPageContent || !reviewsSummary || !reviewsFeedFocus) {
+    return;
+  }
+
+  const [manifest, news] = await Promise.all([fetchJson("data/reviews-manifest.json"), fetchJson("data/games-news.json")]);
+  const landing = manifest.landing;
+  const sections = manifest.sections || [];
+  const documents = [
+    {
+      id: landing.id,
+      title: landing.title,
+      summary: manifest.summary,
+      description: landing.summary,
+      path: landing.path,
+      promptCards: [],
+      references: [],
+      group: "Start here",
+    },
+    ...sections.map((section) => ({
+      ...section,
+      description: section.summary,
+      group: "Categories",
+    })),
+  ];
+
+  reviewsSummary.innerHTML = [
+    `<article class="summary-chip"><span class="summary-chip__label">Scoring</span><strong class="summary-chip__value is-green">10-point</strong></article>`,
+    `<article class="summary-chip"><span class="summary-chip__label">Formats</span><strong class="summary-chip__value is-yellow">${sections.length + 1}</strong></article>`,
+    `<article class="summary-chip"><span class="summary-chip__label">Feed rails</span><strong class="summary-chip__value is-grey">${manifest.feedFocus?.length || 0}</strong></article>`,
+  ].join("");
+
+  async function openDocument(document) {
+    const markdown = await fetchMarkdown(document.path);
+    reviewsPageMeta.textContent = document.group;
+    reviewsPageTitle.textContent = document.title;
+    reviewsPageDescription.textContent = document.description || "";
+    reviewsPageContent.innerHTML = `
+      ${createReferenceList(document.references)}
+      ${createPromptSection(document.promptCards)}
+      <div class="markdown-body">${markdownToHtml(markdown)}</div>
+    `;
+
+    Array.from(reviewsPageNav.querySelectorAll(".docs-nav__button")).forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.docId === document.id);
+    });
+
+    const hash = encodeURIComponent(document.id);
+    if (window.location.hash !== `#${hash}`) {
+      history.replaceState(null, "", `#${hash}`);
+    }
+  }
+
+  const startGroup = document.createElement("section");
+  startGroup.className = "docs-nav__group";
+  startGroup.innerHTML = `<h2>Start here</h2>`;
+
+  const startButton = document.createElement("button");
+  startButton.type = "button";
+  startButton.className = "docs-nav__button";
+  startButton.dataset.docId = landing.id;
+  startButton.innerHTML = `<strong>${landing.title}</strong><span>${landing.summary}</span>`;
+  startButton.addEventListener("click", () => openDocument(documents[0]));
+  startGroup.appendChild(startButton);
+  reviewsPageNav.appendChild(startGroup);
+
+  const categoriesGroup = document.createElement("section");
+  categoriesGroup.className = "docs-nav__group";
+  categoriesGroup.innerHTML = `<h2>Categories</h2>`;
+
+  sections.forEach((section) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "docs-nav__button";
+    button.dataset.docId = section.id;
+    button.innerHTML = `<strong>${section.title}</strong><span>${section.summary}</span>`;
+    button.addEventListener("click", () => openDocument(documents.find((document) => document.id === section.id)));
+    categoriesGroup.appendChild(button);
+  });
+
+  reviewsPageNav.appendChild(categoriesGroup);
+
+  const requestedId = decodeURIComponent(window.location.hash.replace(/^#/, "")) || landing.id;
+  const activeDocument = documents.find((document) => document.id === requestedId) || documents[0];
+  await openDocument(activeDocument);
+
+  const feedFocusIds = new Set((manifest.feedFocus || []).map((item) => item.id));
+  const feedCards = (news.feeds || []).filter((feed) => feedFocusIds.has(feed.id));
+  reviewsFeedFocus.innerHTML = feedCards
+    .map(
+      (feed) => `
+        <article class="preview-card">
+          <p class="feature__kicker">${escapeHtml(feed.title)}</p>
+          <h3>${escapeHtml(feed.title)}</h3>
+          <p>${escapeHtml(feed.summary)}</p>
+          <p>${feed.generatedAt ? `Latest output ${escapeHtml(feed.generatedAt)}.` : escapeHtml(news.notice)}</p>
+          <p>Tracked sources: ${feed.sources.map((source) => escapeHtml(source)).join(", ")}</p>
+          <a class="button button--ghost" href="news.html#${encodeURIComponent(feed.id)}">Open feed</a>
+        </article>
+      `,
+    )
+    .join("");
+}
+
 async function initNewsPage() {
   const summary = document.getElementById("newsSummary");
   const tabs = document.getElementById("newsTabs");
@@ -458,6 +569,10 @@ async function init() {
   }
   if (page === "game-development") {
     await initKnowledgePage();
+    return;
+  }
+  if (page === "reviews") {
+    await initReviewsPage();
     return;
   }
   if (page === "news") {

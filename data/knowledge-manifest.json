@@ -385,6 +385,41 @@
       ]
     },
     {
+      "id": "reviews-and-criticism",
+      "title": "Reviews and Criticism",
+      "summary": "How to write a game review, score a build honestly, and use a reviewer loop to sharpen demos before the public arrives.",
+      "path": "shared/game-reviews/reviewing-games-like-a-real-critic.md",
+      "lastReviewed": "2026-04-11",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the internal reviewer rubric or review-process guidance changes.",
+      "relatedResearchRun": "games-reviewer-system",
+      "references": [
+        {
+          "label": "GameSpot Review Guidelines",
+          "url": "https://www.gamespot.com/review-guidelines/"
+        },
+        {
+          "label": "PC Gamer Reviews Policy",
+          "url": "https://www.pcgamer.com/pc-gamer-reviews-policy/"
+        },
+        {
+          "label": "GamesRadar+ Review Guidelines",
+          "url": "https://www.gamesradar.com/review-guidelines-how-we-score/"
+        },
+        {
+          "label": "Steamworks User Reviews",
+          "url": "https://partner.steamgames.com/doc/store/reviews"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Review this build like a critic",
+          "body": "Ask an agent to review a game as a critic, not as a cheerleader, and return a score only if the evidence is strong enough.",
+          "prompt": "Act as a professional games critic. Review this build honestly using publication-style standards. Decide whether the right format is preview, demo review, review in progress, or full review. If the evidence supports a score, use a whole-number ten-point scale. Return: verdict, score or no-score decision, breakdown, strengths, weaknesses, who this is for, and the single highest-impact next fix."
+        }
+      ]
+    },
+    {
       "id": "agents-handoffs-workflow",
       "title": "Agents, Handoffs, and Studio Workflow",
       "summary": "How to work with AI agents as a solo studio without letting the workflow turn into chaos.",

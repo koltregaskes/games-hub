@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elusion Works // Games Reviews</title>
+    <meta
+      name="description"
+      content="Public-safe guidance from Elusion Works on writing game reviews, scoring games honestly, and running an internal reviewer loop."
+    />
+    <meta property="og:title" content="Games Reviews by Elusion Works" />
+    <meta
+      property="og:description"
+      content="How to review games, how to score them, and how a small studio can simulate serious public criticism."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/reviews.html" />
+    <meta name="theme-color" content="#08101d" />
+    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/reviews.html" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="reviews">
+    <div class="atmosphere" aria-hidden="true">
+      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
+      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
+      <div class="atmosphere__orb atmosphere__orb--gold"></div>
+      <div class="atmosphere__grid"></div>
+    </div>
+
+    <header class="site-header">
+      <a class="site-brand" href="index.html">Elusion Works</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="index.html">Games Hub</a>
+        <a href="game-development.html">Game Development</a>
+        <a href="reviews.html" aria-current="page">Reviews</a>
+        <a href="news.html">Games News</a>
+        <a href="https://github.com/koltregaskes/games-hub">Repo</a>
+      </nav>
+    </header>
+
+    <main class="docs-main">
+      <section class="docs-hero">
+        <div class="docs-hero__copy" data-reveal>
+          <p class="eyebrow">Games Reviews</p>
+          <h1>Learn how to review games properly before the public does it for you.</h1>
+          <p class="hero__lede">
+            This page turns game reviewing into a repeatable discipline: how to write a review, how to score a game,
+            when not to score it, and how a small studio can use an internal critic to keep demos honest.
+          </p>
+        </div>
+        <div class="docs-hero__facts" data-reveal id="reviewsSummary"></div>
+      </section>
+
+      <section class="docs-layout">
+        <aside class="docs-nav" id="reviewsPageNav" data-reveal></aside>
+        <article class="docs-viewer" data-reveal>
+          <div class="docs-viewer__meta">
+            <p class="eyebrow" id="reviewsPageMeta">Games Reviews</p>
+            <h2 id="reviewsPageTitle">Loading reviewer reference...</h2>
+            <p class="section-copy" id="reviewsPageDescription"></p>
+          </div>
+          <div class="docs-viewer__content" id="reviewsPageContent"></div>
+        </article>
+      </section>
+
+      <section class="news-preview">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Feed Focus</p>
+          <h2>Reviews and previews belong in the Games News pipeline too.</h2>
+          <p>
+            The reviewer discipline is not just for our own games. The public Games News surface now tracks dedicated
+            `Games Reviews` and `Games Previews` rails alongside development and industry reporting.
+          </p>
+        </div>
+        <div class="news-preview__grid" id="reviewsFeedFocus" data-reveal></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Elusion Works</p>
+      <p>Games Reviews is the public-safe criticism and feedback layer inside the wider Games Hub.</p>
+      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

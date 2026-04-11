@@ -1,9 +1,9 @@
 {
   "title": "Games News by Elusion Works",
-  "updatedAt": "2026-04-09",
+  "updatedAt": "2026-04-11",
   "status": "pipeline-ready",
-  "summary": "Public-safe game development and gaming news surfaces powered by a separate scheduled pipeline.",
-  "notice": "The page is wired for generated feed outputs. The first scheduled games run still needs to publish its initial items into this manifest.",
+  "summary": "Public-safe game development, gaming, review, and preview news surfaces powered by a separate scheduled pipeline.",
+  "notice": "The page is wired for generated feed outputs. The first scheduled games runs still need to publish their initial items into this manifest.",
   "feeds": [
     {
       "id": "game-dev",
@@ -39,6 +39,40 @@
         "Nintendo",
         "PlayStation",
         "Xbox"
+      ]
+    },
+    {
+      "id": "reviews",
+      "title": "Games Reviews",
+      "summary": "Final verdicts, scored criticism, and notable critical consensus from major games outlets.",
+      "status": "pipeline-ready",
+      "generatedAt": null,
+      "items": [],
+      "sources": [
+        "IGN",
+        "GameSpot",
+        "Eurogamer",
+        "PC Gamer",
+        "GamesRadar+",
+        "Rock Paper Shotgun"
+      ]
+    },
+    {
+      "id": "previews",
+      "title": "Games Previews",
+      "summary": "Hands-on impressions, early verdicts, showcase reactions, and first-look coverage before final review.",
+      "status": "pipeline-ready",
+      "generatedAt": null,
+      "items": [],
+      "sources": [
+        "IGN",
+        "GameSpot",
+        "Eurogamer",
+        "PC Gamer",
+        "GamesRadar+",
+        "PlayStation Blog",
+        "Xbox Wire",
+        "Nintendo"
       ]
     }
   ]

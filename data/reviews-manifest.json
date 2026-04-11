@@ -1,0 +1,164 @@
+{
+  "title": "Game Reviews by Elusion Works",
+  "summary": "A public-safe reference on how serious game reviews, previews, scores, and review processes actually work.",
+  "updatedAt": "2026-04-11",
+  "landing": {
+    "id": "build-a-game-reviewer",
+    "title": "Build A Game Reviewer",
+    "path": "shared/game-reviews/reviewing-games-like-a-real-critic.md",
+    "summary": "How to think like a reviewer, not just a tester, when judging whether a game is worth a player's time and money."
+  },
+  "sections": [
+    {
+      "id": "how-to-write-a-game-review",
+      "title": "How To Write A Game Review",
+      "summary": "Structure, criticism, disclosure, and the difference between a useful review and a vague opinion dump.",
+      "path": "shared/game-reviews/how-to-write-a-game-review.md",
+      "lastReviewed": "2026-04-11",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes its reviewer workflow or public demo bar.",
+      "relatedResearchRun": "games-reviewer-rubric",
+      "references": [
+        {
+          "label": "GameSpot Review Guidelines",
+          "url": "https://www.gamespot.com/review-guidelines/"
+        },
+        {
+          "label": "PC Gamer Reviews Policy",
+          "url": "https://www.pcgamer.com/pc-gamer-reviews-policy/"
+        },
+        {
+          "label": "GamesRadar Review Scores",
+          "url": "https://www.gamesradar.com/review-guidelines-how-we-score/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Write a critic-style review",
+          "body": "Ask an agent to write a review that reads like criticism rather than QA notes.",
+          "prompt": "Act as a games critic. Based on this build, write a review with a clear thesis, context for what the game is trying to do, evidence-backed strengths, evidence-backed weaknesses, technical notes, and a closing verdict about whether it is worth a player's time right now."
+        }
+      ]
+    },
+    {
+      "id": "how-to-score-a-game",
+      "title": "How To Score A Game",
+      "summary": "How major outlets use scales, when not to score at all, and how to avoid fake precision.",
+      "path": "shared/game-reviews/how-to-score-a-game.md",
+      "lastReviewed": "2026-04-11",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes its internal scoring scale or review modes.",
+      "relatedResearchRun": "games-reviewer-rubric",
+      "references": [
+        {
+          "label": "GameSpot Review Guidelines",
+          "url": "https://www.gamespot.com/review-guidelines/"
+        },
+        {
+          "label": "PC Gamer Reviews Policy",
+          "url": "https://www.pcgamer.com/pc-gamer-reviews-policy/"
+        },
+        {
+          "label": "GamesRadar Review Scores",
+          "url": "https://www.gamesradar.com/review-guidelines-how-we-score/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Score this build honestly",
+          "body": "Ask an agent to decide whether the build deserves a score or should stay unscored.",
+          "prompt": "Act as a senior games reviewer. Decide whether this build should be treated as a preview, review in progress, updated review, or final scored review. If it deserves a score, use a whole-number score out of 10 and explain exactly why. If it does not deserve a score, say what evidence is still missing."
+        }
+      ]
+    },
+    {
+      "id": "review-process-and-disclosure",
+      "title": "Review Process And Disclosure",
+      "summary": "Assignment, play time, disclosure, review-in-progress logic, and updated-review rules.",
+      "path": "shared/game-reviews/review-process-previews-and-ethics.md",
+      "lastReviewed": "2026-04-11",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes reviewer cadence or disclosure policy.",
+      "relatedResearchRun": "games-reviewer-rubric",
+      "references": [
+        {
+          "label": "PC Gamer Reviews Policy",
+          "url": "https://www.pcgamer.com/pc-gamer-reviews-policy/"
+        },
+        {
+          "label": "GamesRadar Review Scores",
+          "url": "https://www.gamesradar.com/review-guidelines-how-we-score/"
+        },
+        {
+          "label": "Steamworks Store Page Accolades",
+          "url": "https://partner.steamgames.com/doc/store/page/accolades"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Set up a fair review pass",
+          "body": "Ask an agent to define the right review mode and disclosures before scoring a build.",
+          "prompt": "Act as a reviews editor. For this build, define the correct review mode, required disclosures, minimum play coverage, what must still be tested before scoring, and whether the output should be a preview, review in progress, updated review, or final review."
+        }
+      ]
+    },
+    {
+      "id": "previews-vs-reviews",
+      "title": "Previews Vs Reviews",
+      "summary": "How to handle limited-access builds honestly and why previews should inform without pretending they are verdicts.",
+      "path": "shared/game-reviews/previews-vs-reviews.md",
+      "lastReviewed": "2026-04-11",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the Games news or reviewer workflow changes.",
+      "relatedResearchRun": "games-reviewer-rubric",
+      "references": [
+        {
+          "label": "GameSpot Review Guidelines",
+          "url": "https://www.gamespot.com/review-guidelines/"
+        },
+        {
+          "label": "GamesRadar Review Scores",
+          "url": "https://www.gamesradar.com/review-guidelines-how-we-score/"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Write a preview, not a review",
+          "body": "Ask an agent to stay honest when access is partial or the build is clearly unfinished.",
+          "prompt": "Act as a games journalist writing a hands-on preview. Describe what the build currently proves, what still cannot be judged, the biggest promise, the biggest concern, and why this should not yet be treated as a final review."
+        }
+      ]
+    },
+    {
+      "id": "simulate-studio-feedback-with-a-reviewer",
+      "title": "Simulate Studio Feedback With A Reviewer",
+      "summary": "How small teams can use a standing reviewer session to create useful pressure, track progress, and feed criticism back into development.",
+      "path": "shared/game-reviews/internal-review-loops-for-studios.md",
+      "lastReviewed": "2026-04-11",
+      "reviewOwner": "Games manager",
+      "nextReviewTrigger": "When the studio changes how often it runs review passes or how those reports feed back into production.",
+      "relatedResearchRun": "games-reviewer-rubric",
+      "references": [
+        {
+          "label": "GameSpot Review Guidelines",
+          "url": "https://www.gamespot.com/review-guidelines/"
+        },
+        {
+          "label": "PC Gamer Reviews Policy",
+          "url": "https://www.pcgamer.com/pc-gamer-reviews-policy/"
+        },
+        {
+          "label": "Steamworks Store Page Accolades",
+          "url": "https://partner.steamgames.com/doc/store/page/accolades"
+        }
+      ],
+      "promptCards": [
+        {
+          "title": "Run a studio review pass",
+          "body": "Ask an agent to behave like a critic, not a developer defending the build.",
+          "prompt": "Act as an independent games reviewer. Review this build as if it were being evaluated for a public audience. Return the review mode, score if appropriate, verdict summary, strengths, weaknesses, technical concerns, target audience, and the single highest-leverage improvement before the next review pass."
+        }
+      ]
+    }
+  ]
+}
