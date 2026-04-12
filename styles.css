@@ -844,6 +844,8 @@ h3,
 
 .calendar-policy {
   padding: 22px;
+  display: grid;
+  gap: 16px;
 }
 
 .calendar-weekdays {
@@ -970,6 +972,20 @@ h3,
   display: block;
   margin-bottom: 6px;
   font-size: 1.05rem;
+}
+
+.calendar-release-item--event {
+  border-color: rgba(143, 216, 255, 0.22);
+  background: rgba(143, 216, 255, 0.06);
+}
+
+.calendar-release-item--event span a,
+.calendar-release-item strong a {
+  color: #bfe9ff;
+}
+
+.calendar-events {
+  margin-top: 18px;
 }
 
 .calendar-undated {

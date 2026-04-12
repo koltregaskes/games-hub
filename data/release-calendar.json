@@ -1,16 +1,16 @@
 {
   "title": "Release Calendar by Elusion Works",
-  "updatedAt": "2026-04-11",
-  "status": "seeded-from-tracked-list",
-  "summary": "A calendar view of tracked releases across Windows PC, Xbox, and PlayStation, seeded from the current Wanted List rather than a live release API.",
-  "notice": "This first version is seeded from tracked release dates in the Wanted List. Live IGDB/API syncing and rolling release updates are still pending, so treat it as a curated tracking calendar rather than a complete market-wide schedule.",
+  "updatedAt": "2026-04-12",
+  "status": "seeded-from-tracked-list-plus-official-events",
+  "summary": "A calendar view of tracked releases plus major public-facing game events across Windows PC, Xbox, and PlayStation, seeded from the current Wanted List and official event schedules.",
+  "notice": "Tracked game releases are still seeded from the Wanted List rather than a live release API. Major conferences, showcases, and awards are now layered in from official event pages and should be refreshed weekly, with stream links tightened again in the final two weeks before each event.",
   "source": {
     "label": "Wanted List: Games",
     "kind": "tracked-sheet",
     "url": "https://docs.google.com/spreadsheets/d/1vCDwmRfrvTi9Vx2WoWt_2aq7eJE9NtD4l86jPKCrc9w/edit"
   },
   "defaultView": "month",
-  "defaultFocusMonth": "2022-11",
+  "defaultFocusMonth": "2026-06",
   "weekStartsOn": "monday",
   "densityRules": {
     "busy": 2,
@@ -34,6 +34,222 @@
       "macOS"
     ]
   },
+  "eventPolicy": {
+    "summary": "Event coverage focuses on major game-industry conferences, showcase windows, and awards that matter to Windows PC, Xbox, and PlayStation tracking. Stream links should point to official event pages until a reliable official broadcast destination is confirmed.",
+    "refreshCadence": {
+      "baseline": "Weekly review",
+      "intensifyWithinDays": 14,
+      "intensifiedCadence": "Every Monday, Wednesday, and Friday inside the final two weeks before an event"
+    },
+    "coveredKinds": [
+      "conference",
+      "showcase",
+      "awards"
+    ]
+  },
+  "events": [
+    {
+      "id": "gdc-2026",
+      "title": "Game Developers Conference 2026",
+      "kind": "conference",
+      "status": "confirmed",
+      "date": "2026-03-09",
+      "endDate": "2026-03-13",
+      "timezone": "America/Los_Angeles",
+      "venue": "Moscone Center",
+      "city": "San Francisco",
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "source": "GDC official site",
+      "officialUrl": "https://gdconf.com/",
+      "watchStatus": "onsite-first",
+      "watchLabel": "Conference details",
+      "notes": "Core developer conference. Treat as a research and industry-signals anchor rather than a guaranteed public livestream."
+    },
+    {
+      "id": "state-of-unreal-2026",
+      "title": "State of Unreal",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-03",
+      "startAt": "2026-06-03T13:30:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/",
+      "watchUrl": "https://www.summergamefest.com/",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Epic's Unreal showcase. Official schedule currently lists 6:30 am PT, which is 2:30 pm BST."
+    },
+    {
+      "id": "playstation-state-of-play-june-2026",
+      "title": "PlayStation State of Play",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-04",
+      "startAt": "2026-06-04T21:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "PlayStation 5"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/",
+      "watchUrl": "https://www.summergamefest.com/",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 2:00 pm PT, which is 10:00 pm BST."
+    },
+    {
+      "id": "summer-game-fest-live-2026",
+      "title": "Summer Game Fest Live",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-05",
+      "startAt": "2026-06-05T21:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "venue": "Dolby Theatre",
+      "city": "Los Angeles",
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "source": "Summer Game Fest official site",
+      "officialUrl": "https://www.summergamefest.com/",
+      "watchUrl": "https://www.summergamefest.com/",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 2:00 pm PT, which is 10:00 pm BST."
+    },
+    {
+      "id": "day-of-the-devs-june-2026",
+      "title": "Day of the Devs",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-06",
+      "startAt": "2026-06-06T23:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/coming-soon",
+      "watchUrl": "https://www.summergamefest.com/events/coming-soon",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 4:00 pm PT on June 6, which lands at midnight BST."
+    },
+    {
+      "id": "xbox-games-showcase-2026",
+      "title": "Xbox Games Showcase",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-08",
+      "startAt": "2026-06-08T17:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "Xbox Game Pass"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/",
+      "watchUrl": "https://www.summergamefest.com/",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 10:00 am PT, which is 6:00 pm BST."
+    },
+    {
+      "id": "pc-gaming-show-2026",
+      "title": "PC Gaming Show",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-08",
+      "startAt": "2026-06-08T19:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/",
+      "watchUrl": "https://www.summergamefest.com/",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 12:00 pm PT, which is 8:00 pm BST."
+    },
+    {
+      "id": "gamescom-2026",
+      "title": "gamescom 2026",
+      "kind": "conference",
+      "status": "confirmed",
+      "date": "2026-08-26",
+      "endDate": "2026-08-30",
+      "timezone": "Europe/Berlin",
+      "venue": "Koelnmesse",
+      "city": "Cologne",
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "source": "gamescom official site",
+      "officialUrl": "https://www.gamescom.global/en/",
+      "watchStatus": "official-pages-only",
+      "watchLabel": "Event homepage",
+      "notes": "Treat as the late-summer anchor. Showcase timings and stream pages should be refreshed again inside the final two weeks."
+    },
+    {
+      "id": "gamescom-congress-2026",
+      "title": "gamescom congress 2026",
+      "kind": "conference",
+      "status": "confirmed",
+      "date": "2026-08-27",
+      "timezone": "Europe/Berlin",
+      "venue": "gamescom congress",
+      "city": "Cologne",
+      "platformFocus": [
+        "Windows PC"
+      ],
+      "source": "gamescom congress official site",
+      "officialUrl": "https://congress.gamescom.global/en/",
+      "watchUrl": "https://congress.gamescom.global/en/",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Congress homepage",
+      "notes": "The current official congress page lists August 27, 2026."
+    },
+    {
+      "id": "the-game-awards-2026",
+      "title": "The Game Awards 2026",
+      "kind": "awards",
+      "status": "confirmed-date-time-pending",
+      "date": "2026-12-10",
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "source": "The Game Awards official site",
+      "officialUrl": "https://thegameawards.com/",
+      "watchUrl": "https://thegameawards.com/",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Official site",
+      "notes": "The official site currently carries the December 10, 2026 date, but the live broadcast time still needs a closer refresh."
+    }
+  ],
   "releases": [
     {
       "id": "mmorpg-tycoon-2",

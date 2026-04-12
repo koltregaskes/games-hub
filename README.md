@@ -10,7 +10,7 @@ This repo is set up as a static GitHub Pages site. It intentionally does not inc
 - `Games Reviews`
 - `Games Previews`
 
-`Release Calendar` adds a tracked monthly and weekly view for Windows PC, Xbox, and PlayStation releases, with day-level density rollups and drill-down lists.
+`Release Calendar` adds a tracked monthly and weekly view for Windows PC, Xbox, and PlayStation releases, plus major conferences, showcases, and awards with day-level density rollups and drill-down lists.
 
 That news layer is filtered to `Windows PC`, `Xbox`, and `PlayStation`. Xbox and PlayStation coverage should use specific model or service tags such as `Xbox Series X`, `Xbox Series S`, `PlayStation 5`, `Xbox Game Pass`, or `PlayStation Plus` where the source supports that detail.
 

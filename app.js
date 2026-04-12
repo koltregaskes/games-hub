@@ -329,6 +329,30 @@ function buildReleaseCalendarModel(manifest) {
       return left.date.localeCompare(right.date);
     });
 
+  const events = (manifest.events || [])
+    .filter((item) => item.date)
+    .map((item) => {
+      const eventDate = parseDateKey(item.date);
+      if (!eventDate) {
+        return null;
+      }
+      const startDateTime = item.startAt ? new Date(item.startAt) : null;
+      const endDateTime = item.endAt ? new Date(item.endAt) : null;
+      return { ...item, eventDate, startDateTime, endDateTime };
+    })
+    .filter(Boolean)
+    .sort((left, right) => {
+      if (left.date === right.date) {
+        const leftTime = left.startAt || "";
+        const rightTime = right.startAt || "";
+        if (leftTime === rightTime) {
+          return left.title.localeCompare(right.title);
+        }
+        return leftTime.localeCompare(rightTime);
+      }
+      return left.date.localeCompare(right.date);
+    });
+
   const byDate = new Map();
   dated.forEach((item) => {
     const items = byDate.get(item.date) || [];
@@ -336,11 +360,20 @@ function buildReleaseCalendarModel(manifest) {
     byDate.set(item.date, items);
   });
 
-  const months = Array.from(new Set(dated.map((item) => item.date.slice(0, 7))));
+  const eventsByDate = new Map();
+  events.forEach((item) => {
+    const items = eventsByDate.get(item.date) || [];
+    items.push(item);
+    eventsByDate.set(item.date, items);
+  });
+
+  const months = Array.from(new Set([...dated, ...events].map((item) => item.date.slice(0, 7)))).sort();
   return {
     manifest,
     dated,
     byDate,
+    events,
+    eventsByDate,
     months,
     undated: manifest.undated || [],
   };
@@ -379,9 +412,13 @@ function densityClass(count, densityRules = {}) {
 
 function peakReleaseDay(model) {
   let best = null;
-  model.byDate.forEach((items, dayKey) => {
-    if (!best || items.length > best.count) {
-      best = { dayKey, count: items.length, items };
+  const dayKeys = new Set([...model.byDate.keys(), ...model.eventsByDate.keys()]);
+  dayKeys.forEach((dayKey) => {
+    const releases = model.byDate.get(dayKey) || [];
+    const events = model.eventsByDate.get(dayKey) || [];
+    const count = releases.length + events.length;
+    if (!best || count > best.count) {
+      best = { dayKey, count, items: releases, events };
     }
   });
   return best;
@@ -389,9 +426,12 @@ function peakReleaseDay(model) {
 
 function focusMonthStats(model, focusMonth) {
   const items = model.dated.filter((item) => item.date.startsWith(focusMonth));
+  const events = model.events.filter((item) => item.date.startsWith(focusMonth));
   return {
     month: focusMonth,
-    count: items.length,
+    releaseCount: items.length,
+    eventCount: events.length,
+    count: items.length + events.length,
     platforms: groupedPlatformCounts(items),
   };
 }
@@ -416,6 +456,53 @@ function releaseListMarkup(items = []) {
     .join("");
 }
 
+function formatCalendarEventTime(item) {
+  if (!item.startAt) {
+    return "Time TBA";
+  }
+
+  const start = new Date(item.startAt);
+  const end = item.endAt ? new Date(item.endAt) : null;
+  const formatter = new Intl.DateTimeFormat([], {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+  const startLabel = formatter.format(start);
+  if (!end) {
+    return startLabel;
+  }
+  return `${startLabel} - ${formatter.format(end)}`;
+}
+
+function eventListMarkup(items = []) {
+  return items
+    .map((item) => {
+      const title = item.officialUrl
+        ? `<a href="${item.officialUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.title)}</a>`
+        : escapeHtml(item.title);
+      const watchLink = item.watchUrl
+        ? `<a href="${item.watchUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.watchLabel || "Watch event")}</a>`
+        : escapeHtml(item.watchStatus || "Watch link pending");
+      const focus = (item.platformFocus || []).join(", ");
+      const location = [item.venue, item.city].filter(Boolean).join(", ");
+      return `
+        <li class="calendar-release-item calendar-release-item--event">
+          <div>
+            <strong>${title}</strong>
+            <p>${escapeHtml(formatCalendarEventTime(item))}</p>
+            <p>${escapeHtml(location || focus || "Major industry event")}</p>
+          </div>
+          <span>${watchLink}</span>
+        </li>
+      `;
+    })
+    .join("");
+}
+
 function renderCalendarPreview(manifest) {
   if (!calendarPreview) return;
 
@@ -424,6 +511,8 @@ function renderCalendarPreview(manifest) {
   const focusStats = focusMonth ? focusMonthStats(model, focusMonth) : null;
   const peakDay = peakReleaseDay(model);
   const peakDate = peakDay ? parseDateKey(peakDay.dayKey) : null;
+  const todayKey = dateKey(startOfDay(new Date()));
+  const upcomingEvent = model.events.find((item) => item.date >= todayKey) || model.events[0];
 
   calendarPreview.innerHTML = [
     focusStats
@@ -431,11 +520,13 @@ function renderCalendarPreview(manifest) {
         <article class="preview-card">
           <p class="feature__kicker">Focus month</p>
           <h3>${escapeHtml(formatMonthLabel(parseMonthKey(focusStats.month)))}</h3>
-          <p>${focusStats.count} tracked releases in the default seeded month.</p>
-          <p>${focusStats.platforms
-            .slice(0, 3)
-            .map((item) => `${item.count} ${item.platform}`)
-            .join(", ")}</p>
+          <p>${focusStats.releaseCount} tracked release${focusStats.releaseCount === 1 ? "" : "s"} and ${focusStats.eventCount} major event${focusStats.eventCount === 1 ? "" : "s"} in the default focus month.</p>
+          <p>${focusStats.platforms.length
+            ? focusStats.platforms
+                .slice(0, 3)
+                .map((item) => `${item.count} ${item.platform}`)
+                .join(", ")
+            : `${focusStats.eventCount} event-driven date${focusStats.eventCount === 1 ? "" : "s"} currently anchor this month.`}</p>
           <a class="button button--ghost" href="calendar.html">Open calendar</a>
         </article>
       `
@@ -445,12 +536,25 @@ function renderCalendarPreview(manifest) {
         <article class="preview-card">
           <p class="feature__kicker">Peak day</p>
           <h3>${escapeHtml(formatLongDate(peakDate))}</h3>
-          <p>${peakDay.count} tracked release${peakDay.count === 1 ? "" : "s"} land on this day.</p>
-          <p>${groupedPlatformCounts(peakDay.items)
-            .slice(0, 2)
-            .map((item) => `${item.count} ${item.platform}`)
-            .join(", ")}</p>
+          <p>${peakDay.count} tracked calendar item${peakDay.count === 1 ? "" : "s"} land on this day.</p>
+          <p>${groupedPlatformCounts(peakDay.items).length
+            ? groupedPlatformCounts(peakDay.items)
+                .slice(0, 2)
+                .map((item) => `${item.count} ${item.platform}`)
+                .join(", ")
+            : `${peakDay.events?.length || 0} event${peakDay.events?.length === 1 ? "" : "s"} drive the density on this day.`}</p>
           <a class="button button--ghost" href="calendar.html">Inspect the day</a>
+        </article>
+      `
+      : "",
+    upcomingEvent
+      ? `
+        <article class="preview-card">
+          <p class="feature__kicker">${escapeHtml(upcomingEvent.kind || "event")}</p>
+          <h3>${escapeHtml(upcomingEvent.title)}</h3>
+          <p>${escapeHtml(formatCalendarEventTime(upcomingEvent))}</p>
+          <p>${escapeHtml(upcomingEvent.notes || "Refresh again closer to the event for the final stream destination.")}</p>
+          <a class="button button--ghost" href="calendar.html">Track the event</a>
         </article>
       `
       : "",
@@ -854,14 +958,24 @@ async function initCalendarPage() {
 
   const manifest = await fetchJson("data/release-calendar.json");
   const model = buildReleaseCalendarModel(manifest);
-  const focusMonthDate = parseMonthKey(manifest.defaultFocusMonth) || parseDateKey(model.dated[0]?.date) || new Date();
+  const focusMonthDate =
+    parseMonthKey(manifest.defaultFocusMonth) ||
+    parseDateKey(model.dated[0]?.date) ||
+    parseDateKey(model.events[0]?.date) ||
+    new Date();
   let view = manifest.defaultView || "month";
   let cursorDate = startOfDay(focusMonthDate);
-  let selectedDateKey = model.dated.find((item) => item.date.startsWith(monthKey(focusMonthDate)))?.date || model.dated[0]?.date || null;
+  let selectedDateKey =
+    model.dated.find((item) => item.date.startsWith(monthKey(focusMonthDate)))?.date ||
+    model.events.find((item) => item.date.startsWith(monthKey(focusMonthDate)))?.date ||
+    model.dated[0]?.date ||
+    model.events[0]?.date ||
+    null;
 
   calendarSummary.innerHTML = [
     ["Status", manifest.status || "seeded", "is-yellow"],
     ["Dated releases", model.dated.length, "is-green"],
+    ["Events", model.events.length, "is-green"],
     ["Still TBD", model.undated.length, "is-grey"],
     ["Tracked platforms", (manifest.platformPolicy?.allowed || []).length, "is-grey"],
   ]
@@ -881,6 +995,12 @@ async function initCalendarPage() {
       <p class="feature__kicker">Platform scope</p>
       ${renderPillRow(manifest.platformPolicy?.allowed || [])}
       <p>${escapeHtml(manifest.platformPolicy?.summary || "")}</p>
+    </div>
+    <div class="feed-sources">
+      <p class="feature__kicker">Event coverage</p>
+      ${renderPillRow(manifest.eventPolicy?.coveredKinds || [])}
+      <p>${escapeHtml(manifest.eventPolicy?.summary || "Major showcases and awards live here alongside tracked releases.")}</p>
+      <p>${escapeHtml(manifest.eventPolicy?.refreshCadence?.baseline || "Weekly review")} with a faster refresh inside the final ${escapeHtml(String(manifest.eventPolicy?.refreshCadence?.intensifyWithinDays || 14))} days.</p>
     </div>
   `;
 
@@ -910,14 +1030,20 @@ async function initCalendarPage() {
       return;
     }
 
-    const releaseCell = cells.find((cell) => (model.byDate.get(cell.key) || []).length);
-    selectedDateKey = releaseCell?.key || cells[0]?.key || null;
+    const activeCell = cells.find((cell) => {
+      const releases = model.byDate.get(cell.key) || [];
+      const events = model.eventsByDate.get(cell.key) || [];
+      return releases.length || events.length;
+    });
+    selectedDateKey = activeCell?.key || cells[0]?.key || null;
   }
 
   function renderDetail() {
     const selectedDate = selectedDateKey ? parseDateKey(selectedDateKey) : null;
     const releases = selectedDateKey ? model.byDate.get(selectedDateKey) || [] : [];
+    const events = selectedDateKey ? model.eventsByDate.get(selectedDateKey) || [] : [];
     const platformCounts = groupedPlatformCounts(releases);
+    const totalItems = releases.length + events.length;
 
     calendarDetail.innerHTML = `
       <div class="calendar-detail__head">
@@ -925,13 +1051,25 @@ async function initCalendarPage() {
           <p class="feature__kicker">Selected day</p>
           <h2>${selectedDate ? escapeHtml(formatLongDate(selectedDate)) : "Choose a day"}</h2>
         </div>
-        <p>${releases.length ? `${releases.length} tracked release${releases.length === 1 ? "" : "s"}` : "No tracked releases on this day."}</p>
+        <p>${totalItems ? `${releases.length} release${releases.length === 1 ? "" : "s"} and ${events.length} event${events.length === 1 ? "" : "s"}` : "No tracked activity on this day."}</p>
       </div>
       ${platformCounts.length ? renderPillRow(platformCounts.map((item) => `${item.count} ${item.platform}`)) : ""}
       ${
+        events.length
+          ? `
+            <section class="calendar-events">
+              <p class="feature__kicker">Events</p>
+              <ul class="calendar-release-list">${eventListMarkup(events)}</ul>
+            </section>
+          `
+          : ""
+      }
+      ${
         releases.length
           ? `<ul class="calendar-release-list">${releaseListMarkup(releases)}</ul>`
-          : `<div class="empty-state"><h3>Quiet day</h3><p>No tracked releases are currently recorded for this date.</p></div>`
+          : events.length
+            ? ""
+            : `<div class="empty-state"><h3>Quiet day</h3><p>No tracked releases or events are currently recorded for this date.</p></div>`
       }
       ${
         model.undated.length
@@ -958,11 +1096,13 @@ async function initCalendarPage() {
     calendarGrid.innerHTML = cells
       .map((cell) => {
         const releases = model.byDate.get(cell.key) || [];
-        const density = densityClass(releases.length, manifest.densityRules);
+        const events = model.eventsByDate.get(cell.key) || [];
+        const density = densityClass(releases.length + events.length, manifest.densityRules);
         const platformCounts = groupedPlatformCounts(releases)
           .slice(0, 2)
           .map((item) => `<span>${escapeHtml(`${item.count} ${item.platform}`)}</span>`)
           .join("");
+        const eventLabel = events.length ? `<span>${escapeHtml(`${events.length} event${events.length === 1 ? "" : "s"}`)}</span>` : "";
         return `
           <button
             class="calendar-day ${density} ${cell.outsideMonth ? "is-outside-month" : ""} ${selectedDateKey === cell.key ? "is-selected" : ""}"
@@ -972,8 +1112,8 @@ async function initCalendarPage() {
             <span class="calendar-day__date">${escapeHtml(
               new Intl.DateTimeFormat([], { month: "short", day: "numeric" }).format(cell.date),
             )}</span>
-            <strong class="calendar-day__count">${releases.length ? `${releases.length} release${releases.length === 1 ? "" : "s"}` : "Quiet"}</strong>
-            <span class="calendar-day__platforms">${platformCounts || "&nbsp;"}</span>
+            <strong class="calendar-day__count">${releases.length + events.length ? `${releases.length + events.length} item${releases.length + events.length === 1 ? "" : "s"}` : "Quiet"}</strong>
+            <span class="calendar-day__platforms">${eventLabel}${platformCounts || "&nbsp;"}</span>
           </button>
         `;
       })
