@@ -478,15 +478,38 @@ function formatCalendarEventTime(item) {
   return `${startLabel} - ${formatter.format(end)}`;
 }
 
+function eventWatchLinksMarkup(item) {
+  const links = Array.isArray(item.watchLinks)
+    ? item.watchLinks.filter((link) => link?.url)
+    : [];
+
+  if (links.length) {
+    return `
+      <span class="calendar-release-item__links">
+        ${links
+          .map(
+            (link) =>
+              `<a href="${link.url}" target="_blank" rel="noreferrer">${escapeHtml(link.label || "Watch event")}</a>`,
+          )
+          .join("")}
+      </span>
+    `;
+  }
+
+  if (item.watchUrl) {
+    return `<span class="calendar-release-item__links"><a href="${item.watchUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.watchLabel || "Watch event")}</a></span>`;
+  }
+
+  return `<span class="calendar-release-item__links">${escapeHtml(item.watchStatus || "Watch link pending")}</span>`;
+}
+
 function eventListMarkup(items = []) {
   return items
     .map((item) => {
       const title = item.officialUrl
         ? `<a href="${item.officialUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.title)}</a>`
         : escapeHtml(item.title);
-      const watchLink = item.watchUrl
-        ? `<a href="${item.watchUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.watchLabel || "Watch event")}</a>`
-        : escapeHtml(item.watchStatus || "Watch link pending");
+      const watchLinks = eventWatchLinksMarkup(item);
       const focus = (item.platformFocus || []).join(", ");
       const location = [item.venue, item.city].filter(Boolean).join(", ");
       return `
@@ -496,7 +519,7 @@ function eventListMarkup(items = []) {
             <p>${escapeHtml(formatCalendarEventTime(item))}</p>
             <p>${escapeHtml(location || focus || "Major industry event")}</p>
           </div>
-          <span>${watchLink}</span>
+          ${watchLinks}
         </li>
       `;
     })

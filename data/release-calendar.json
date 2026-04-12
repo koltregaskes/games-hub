@@ -161,8 +161,7 @@
       "platformFocus": [
         "Windows PC",
         "Xbox Series X",
-        "Xbox Series S",
-        "Xbox Game Pass"
+        "Xbox Series S"
       ],
       "source": "Summer Game Fest official schedule",
       "officialUrl": "https://www.summergamefest.com/",
@@ -188,6 +187,159 @@
       "watchStatus": "official-event-page",
       "watchLabel": "Watch event",
       "notes": "Official schedule lists 12:00 pm PT, which is 8:00 pm BST."
+    },
+    {
+      "id": "wholesome-direct-2026",
+      "title": "Wholesome Direct",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-07",
+      "startAt": "2026-06-07T16:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/wholesome-direct",
+      "watchUrl": "https://www.summergamefest.com/events/wholesome-direct",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 9:00 am PT, which is 5:00 pm BST."
+    },
+    {
+      "id": "women-led-games-2026",
+      "title": "Women-Led Games",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-07",
+      "startAt": "2026-06-07T17:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/women-led-games",
+      "watchUrl": "https://www.summergamefest.com/events/women-led-games",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 10:00 am PT, which is 6:00 pm BST."
+    },
+    {
+      "id": "latin-american-games-showcase-2026",
+      "title": "Latin American Games Showcase",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-07",
+      "startAt": "2026-06-07T18:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/coming-soon-5",
+      "watchUrl": "https://www.summergamefest.com/events/coming-soon-5",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 11:00 am PT, which is 7:00 pm BST."
+    },
+    {
+      "id": "south-east-asian-games-showcase-2026",
+      "title": "Southeast Asian Games Showcase",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-07",
+      "startAt": "2026-06-07T19:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/coming-soon-4",
+      "watchUrl": "https://www.summergamefest.com/events/coming-soon-4",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 12:00 pm PT, which is 8:00 pm BST."
+    },
+    {
+      "id": "green-games-2026",
+      "title": "Green Games",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-07",
+      "startAt": "2026-06-07T20:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/green-games",
+      "watchUrl": "https://www.summergamefest.com/events/green-games",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 1:00 pm PT, which is 9:00 pm BST."
+    },
+    {
+      "id": "frosty-games-fest-2026",
+      "title": "Frosty Games Fest",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-08",
+      "startAt": "2026-06-07T23:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/frosty-games-fest",
+      "watchUrl": "https://www.summergamefest.com/events/frosty-games-fest",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 4:00 pm PT on June 7, which lands at midnight BST on June 8."
+    },
+    {
+      "id": "ball-x-pit-2026",
+      "title": "BALL x PIT: The Kenny Sun Story",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-07",
+      "startAt": "2026-06-07T00:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/devolver-digital-presents-a-captivating-showcase-dedicated-to-one-developer-and-one-game-kenny-suns-upcoming-ball-x-pit",
+      "watchUrl": "https://www.summergamefest.com/events/devolver-digital-presents-a-captivating-showcase-dedicated-to-one-developer-and-one-game-kenny-suns-upcoming-ball-x-pit",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 5:00 pm PT on June 6, which lands at 1:00 am BST on June 7."
+    },
+    {
+      "id": "ioi-showcase-2026",
+      "title": "IOI Showcase",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-07",
+      "startAt": "2026-06-07T01:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC",
+        "PlayStation 5",
+        "Xbox Series X",
+        "Xbox Series S"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/ioi-showcase",
+      "watchUrl": "https://www.summergamefest.com/events/ioi-showcase",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 6:00 pm PT on June 6, which lands at 2:00 am BST on June 7."
     },
     {
       "id": "gamescom-2026",
@@ -229,6 +381,76 @@
       "watchStatus": "official-event-page",
       "watchLabel": "Congress homepage",
       "notes": "The current official congress page lists August 27, 2026."
+    },
+    {
+      "id": "death-stranding-2-premiere-2026",
+      "title": "Death Stranding 2 Game Premiere",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-09",
+      "startAt": "2026-06-09T02:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "PlayStation 5"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/death-stranding-2-game-premiere",
+      "watchUrl": "https://www.summergamefest.com/events/death-stranding-2-game-premiere",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 7:00 pm PT on June 8, which lands at 3:00 am BST on June 9."
+    },
+    {
+      "id": "black-voices-in-gaming-2026",
+      "title": "Black Voices in Gaming",
+      "kind": "showcase",
+      "status": "confirmed",
+      "date": "2026-06-09",
+      "startAt": "2026-06-09T16:00:00Z",
+      "timezone": "America/Los_Angeles",
+      "platformFocus": [
+        "Windows PC"
+      ],
+      "source": "Summer Game Fest official schedule",
+      "officialUrl": "https://www.summergamefest.com/events/black-voices-in-gaming",
+      "watchUrl": "https://www.summergamefest.com/events/black-voices-in-gaming",
+      "watchStatus": "official-event-page",
+      "watchLabel": "Watch event",
+      "notes": "Official schedule lists 9:00 am PT, which is 5:00 pm BST."
+    },
+    {
+      "id": "bafta-games-awards-2026",
+      "title": "BAFTA Games Awards 2026",
+      "kind": "awards",
+      "status": "confirmed-date-time-pending",
+      "date": "2026-04-17",
+      "timezone": "Europe/London",
+      "platformFocus": [
+        "Windows PC",
+        "Xbox Series X",
+        "Xbox Series S",
+        "PlayStation 5"
+      ],
+      "source": "BAFTA official site",
+      "officialUrl": "https://www.bafta.org/awards/games/",
+      "watchUrl": "https://www.bafta.org/awards/games/",
+      "watchLinks": [
+        {
+          "label": "Awards page",
+          "url": "https://www.bafta.org/awards/games/"
+        },
+        {
+          "label": "BAFTA YouTube",
+          "url": "https://www.youtube.com/@BAFTA"
+        },
+        {
+          "label": "BAFTA Twitch",
+          "url": "https://www.twitch.tv/bafta"
+        }
+      ],
+      "watchStatus": "official-event-page",
+      "watchLabel": "Awards page",
+      "notes": "BAFTA's official 2026 awards coverage confirms Friday 17 April 2026. Final livestream timing should be refreshed closer to the ceremony."
     },
     {
       "id": "the-game-awards-2026",

@@ -984,6 +984,14 @@ h3,
   color: #bfe9ff;
 }
 
+.calendar-release-item__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .calendar-events {
   margin-top: 18px;
 }
@@ -1112,6 +1120,10 @@ body.has-motion [data-reveal].is-visible {
   .calendar-release-item {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .calendar-release-item__links {
+    justify-content: flex-start;
   }
 
   .calendar-day {
