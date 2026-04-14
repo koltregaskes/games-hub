@@ -1,9 +1,9 @@
 {
-  "title": "Games Hub // Games News",
+  "title": "GameTrackDaily // Games News",
   "updatedAt": "2026-04-11",
   "status": "pipeline-ready",
-  "summary": "Public-safe game development, gaming, review, and preview news surfaces powered by a separate scheduled pipeline.",
-  "notice": "The page is wired for generated feed outputs. The first scheduled games runs still need to publish their initial items into this manifest.",
+  "summary": "Curated game development, gaming, review, and preview coverage powered by a separate scheduled pipeline.",
+  "notice": "The page is wired for generated feed outputs. The first scheduled games runs still need to publish their initial curated items into this manifest.",
   "platformPolicy": {
     "summary": "Games coverage on this hub is filtered to Windows, Xbox, and PlayStation only. Xbox and PlayStation stories must carry the specific hardware or service model where known.",
     "allowed": [

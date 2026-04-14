@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Games Hub // Games Reviews</title>
+    <title>GameTrackDaily // Review Coverage</title>
     <meta
       name="description"
-      content="Public-safe guidance from the Games Hub on writing game reviews, scoring games honestly, and running an internal reviewer loop."
+      content="Curated review and preview coverage from the wider games press, organized into cleaner tracks for final verdicts and early impressions."
     />
-    <meta property="og:title" content="Games Hub // Games Reviews" />
+    <meta property="og:title" content="GameTrackDaily // Review Coverage" />
     <meta
       property="og:description"
-      content="How to review games, how to score them, and how a small studio can simulate serious public criticism."
+      content="A curated coverage rail for review verdicts and preview impressions from the wider games press."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://koltregaskes.github.io/games-hub/reviews.html" />
@@ -27,7 +27,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body data-page="reviews">
+  <body data-page="reviews-overview">
     <div class="atmosphere" aria-hidden="true">
       <div class="atmosphere__orb atmosphere__orb--cyan"></div>
       <div class="atmosphere__orb atmosphere__orb--crimson"></div>
@@ -36,11 +36,11 @@
     </div>
 
     <header class="site-header">
-      <a class="site-brand" href="index.html">Games Hub</a>
+      <a class="site-brand" href="index.html">GameTrackDaily</a>
       <nav class="site-nav" aria-label="Primary">
-        <a href="index.html">Games Hub</a>
+        <a href="index.html">GameTrackDaily</a>
         <a href="game-development.html">Game Development</a>
-        <a href="reviews.html" aria-current="page">Reviews</a>
+        <a href="reviews.html" aria-current="page">Review Coverage</a>
         <a href="news.html">Games News</a>
         <a href="calendar.html">Release Calendar</a>
         <a href="https://github.com/koltregaskes/games-hub">Repo</a>
@@ -50,47 +50,83 @@
     <main class="docs-main">
       <section class="docs-hero">
         <div class="docs-hero__copy" data-reveal>
-          <p class="eyebrow">Games Reviews</p>
-          <h1>Learn how to review games properly before the public does it for you.</h1>
+          <p class="eyebrow">Review Coverage</p>
+          <h1>Follow the critics without pretending this site is the critic.</h1>
           <p class="hero__lede">
-            This page turns game reviewing into a repeatable discipline: how to write a review, how to score a game,
-            when not to score it, and how a small studio can use an internal critic to keep demos honest.
+            GameTrackDaily is not being positioned as a personal reviews outlet. This surface is for curated coverage:
+            final review verdicts from major publications, preview impressions ahead of launch, and cleaner ways to
+            browse that reporting without mixing everything together.
           </p>
         </div>
-        <div class="docs-hero__facts" data-reveal id="reviewsSummary"></div>
+        <div class="docs-hero__facts" data-reveal>
+          <article class="summary-chip">
+            <span class="summary-chip__label">Model</span>
+            <strong class="summary-chip__value is-green">Curated</strong>
+          </article>
+          <article class="summary-chip">
+            <span class="summary-chip__label">Scope</span>
+            <strong class="summary-chip__value is-yellow">Reviews + previews</strong>
+          </article>
+          <article class="summary-chip">
+            <span class="summary-chip__label">Sources</span>
+            <strong class="summary-chip__value is-grey">Wider games press</strong>
+          </article>
+        </div>
       </section>
 
       <section class="docs-layout">
-        <aside class="docs-nav" id="reviewsPageNav" data-reveal></aside>
         <article class="docs-viewer" data-reveal>
           <div class="docs-viewer__meta">
-            <p class="eyebrow" id="reviewsPageMeta">Games Reviews</p>
-            <h2 id="reviewsPageTitle">Loading reviewer reference...</h2>
-            <p class="section-copy" id="reviewsPageDescription"></p>
+            <p class="eyebrow">Coverage split</p>
+            <h2>Keep verdicts and first impressions separate.</h2>
+            <p class="section-copy">
+              Reviews should stay as final verdict coverage. Previews should stay as first-look coverage. Keeping that
+              split clean will make the site easier to trust and easier to scan once the feeds are populated.
+            </p>
           </div>
-          <div class="docs-viewer__content" id="reviewsPageContent"></div>
+          <div class="docs-viewer__content">
+            <div class="markdown-body">
+              <h3>Games Reviews</h3>
+              <p>Use the reviews rail for final verdicts, scored criticism, and notable consensus from established outlets.</p>
+              <h3>Games Previews</h3>
+              <p>Use the previews rail for early access impressions, showcase reactions, and hands-on first looks that are not final verdicts.</p>
+              <h3>Editorial stance</h3>
+              <p>GameTrackDaily should aggregate and curate intelligently. It should not pretend to be a personal scored-review publication unless you later decide to build that as a separate editorial lane.</p>
+            </div>
+          </div>
         </article>
       </section>
 
       <section class="news-preview">
         <div class="section-head" data-reveal>
-          <p class="eyebrow">Feed Focus</p>
-          <h2>Reviews and previews belong in the Games News pipeline too.</h2>
+          <p class="eyebrow">Coverage rails</p>
+          <h2>Jump straight into the two coverage tracks.</h2>
           <p>
-            The reviewer discipline is not just for our own games. The public Games News surface now tracks dedicated
-            `Games Reviews` and `Games Previews` rails alongside development and industry reporting.
+            The wider Games News surface already tracks dedicated `Games Reviews` and `Games Previews` rails alongside
+            development and industry reporting.
           </p>
         </div>
-        <div class="news-preview__grid" id="reviewsFeedFocus" data-reveal></div>
+        <div class="news-preview__grid" data-reveal>
+          <article class="preview-card">
+            <p class="feature__kicker">Reviews</p>
+            <h3>Final verdict coverage</h3>
+            <p>Track final review scores, critical takes, and notable consensus from the wider games press.</p>
+            <a class="button button--ghost" href="news.html#reviews">Open Games Reviews</a>
+          </article>
+          <article class="preview-card">
+            <p class="feature__kicker">Previews</p>
+            <h3>First-look coverage</h3>
+            <p>Track preview impressions, showcase reactions, and hands-on reporting before final review.</p>
+            <a class="button button--ghost" href="news.html#previews">Open Games Previews</a>
+          </article>
+        </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p>Games Hub</p>
-      <p>Games Reviews is the public-safe criticism and feedback layer inside the wider Games Hub.</p>
+      <p>GameTrackDaily</p>
+      <p>Review Coverage is the curated criticism and preview rail inside the wider GameTrackDaily site.</p>
       <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
     </footer>
-
-    <script src="app.js"></script>
   </body>
 </html>

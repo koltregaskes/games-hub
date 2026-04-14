@@ -1,0 +1,168 @@
+{
+  "title": "GameTrackDaily // Game Lineup",
+  "summary": "The public-safe lineup for the current studio slate, covering browser demos, desktop builds, and the strongest public-facing proof slices.",
+  "updatedAt": "2026-04-14",
+  "filters": {
+    "platforms": [
+      "Browser",
+      "Windows Desktop"
+    ],
+    "stages": [
+      "Flagship",
+      "Emerging",
+      "Desktop"
+    ]
+  },
+  "featuredIds": [
+    "mandate-2029",
+    "swarmbreaker",
+    "turbo-vector"
+  ],
+  "games": [
+    {
+      "id": "mandate-2029",
+      "title": "Mandate 2029",
+      "tagline": "Governing under pressure",
+      "category": "Political strategy",
+      "stage": "Flagship",
+      "platforms": [
+        "Browser"
+      ],
+      "status": "Playable prototype",
+      "summary": "A governing sim about momentum, compromise, cabinet pressure, media storms, and the brutal arithmetic of staying electable while trying to change a country.",
+      "art": "assets/mandate-2029.svg",
+      "playUrl": "https://koltregaskes.github.io/mandate-2029/",
+      "repoUrl": "https://github.com/koltregaskes/mandate-2029",
+      "publicStatus": "Demo-ready slot prepared",
+      "highlights": [
+        "Polling pressure and election pacing",
+        "Reactive crisis deck and political capital tradeoffs",
+        "Regional swingboard and legacy-score framing"
+      ]
+    },
+    {
+      "id": "civicrise",
+      "title": "Civicrise",
+      "tagline": "Living city builder",
+      "category": "City builder",
+      "stage": "Flagship",
+      "platforms": [
+        "Browser"
+      ],
+      "status": "Verified playable build",
+      "summary": "A living isometric city builder about shaping dense urban systems, balancing civic needs, and watching a place emerge block by block into a believable metropolis.",
+      "art": "assets/civicrise.svg",
+      "repoUrl": "https://github.com/koltregaskes/civicrise",
+      "publicStatus": "Ready for screenshots and web-demo iteration",
+      "highlights": [
+        "Readable isometric city drama",
+        "Citizen services, transport, and layered planning",
+        "Onboarding and help flows built for repeat sessions"
+      ]
+    },
+    {
+      "id": "swarmbreaker",
+      "title": "Swarmbreaker",
+      "tagline": "Retro arcade defence",
+      "category": "Arcade action",
+      "stage": "Desktop",
+      "platforms": [
+        "Windows Desktop"
+      ],
+      "status": "Playable desktop build",
+      "summary": "Fast, vivid arcade defence with segmented swarms, poisoned mushrooms, wave pressure, and late-night score-chasing tension.",
+      "art": "assets/swarmbreaker.svg",
+      "repoUrl": "https://github.com/koltregaskes/swarmbreaker",
+      "publicStatus": "Download and trailer slot prepared",
+      "highlights": [
+        "Classic arcade loop with modern quality-of-life polish",
+        "Wave scaling, audio controls, and extra-life thresholds",
+        "Purpose-built for immediate, readable action"
+      ]
+    },
+    {
+      "id": "neon-district",
+      "title": "Neon District",
+      "tagline": "Cyberpunk combat run",
+      "category": "Action",
+      "stage": "Emerging",
+      "platforms": [
+        "Browser"
+      ],
+      "status": "Environment-first demo",
+      "summary": "An environment-first district slice with walkable space, layered buildings, and optional combat activation.",
+      "art": "assets/neon-district.svg",
+      "playUrl": "https://koltregaskes.github.io/neon-district/",
+      "repoUrl": "https://github.com/koltregaskes/neon-district",
+      "publicStatus": "Playable proof slice",
+      "highlights": [
+        "Dense cyberpunk district layout",
+        "Traversal and optional combat pressure",
+        "Mission-shaped demo track in progress"
+      ]
+    },
+    {
+      "id": "starfall-protocol",
+      "title": "Starfall Protocol",
+      "tagline": "Third-person sci-fi concept demo",
+      "category": "Sci-fi action",
+      "stage": "Emerging",
+      "platforms": [
+        "Browser"
+      ],
+      "status": "Concept proof slice",
+      "summary": "An orbital dock environment demo focused on mood, navigation, and hotspot-based world reads before the deeper production path.",
+      "art": "assets/starfall-protocol.svg",
+      "playUrl": "https://koltregaskes.github.io/starfall-protocol/",
+      "repoUrl": "https://github.com/koltregaskes/starfall-protocol",
+      "publicStatus": "Playable concept mirror",
+      "highlights": [
+        "Orbital dock mood and navigation",
+        "Third-person world read and traversal framing",
+        "Mission authorship track still in progress"
+      ]
+    },
+    {
+      "id": "turbo-vector",
+      "title": "Turbo Vector",
+      "tagline": "Top-down racer concept demo",
+      "category": "Racing",
+      "stage": "Emerging",
+      "platforms": [
+        "Browser"
+      ],
+      "status": "Championship demo track",
+      "summary": "A marina-circuit racer growing from a single proof track into a championship loop with garage decisions, money, and upgrades.",
+      "art": "assets/turbo-vector.svg",
+      "playUrl": "https://koltregaskes.github.io/turbo-vector/",
+      "repoUrl": "https://github.com/koltregaskes/turbo-vector",
+      "publicStatus": "High-priority public demo candidate",
+      "highlights": [
+        "Clean top-down handling and track readability",
+        "Garage and progression structure in active development",
+        "Mini-season demo route now part of the core track"
+      ]
+    },
+    {
+      "id": "redline-horizon",
+      "title": "Redline Horizon",
+      "tagline": "Retro road-racer concept demo",
+      "category": "Racing",
+      "stage": "Emerging",
+      "platforms": [
+        "Browser"
+      ],
+      "status": "Scenic road-trip demo",
+      "summary": "An Azure Coast road slice chasing the speed, scenery, and holiday-road fantasy of classic arcade racers.",
+      "art": "assets/redline-horizon.svg",
+      "playUrl": "https://koltregaskes.github.io/redline-horizon/",
+      "repoUrl": "https://github.com/koltregaskes/redline-horizon",
+      "publicStatus": "Manager-signed-off browser demo candidate",
+      "highlights": [
+        "Strong horizon-speed fantasy",
+        "Curated scenic run identity",
+        "Checkpoint and payoff structure now under active polish"
+      ]
+    }
+  ]
+}

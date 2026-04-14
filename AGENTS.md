@@ -23,7 +23,7 @@ It is not the private studio console.
 
 ## Working Rules
 
-- Keep visible naming aligned with `Games Hub`.
+- Keep visible naming aligned with `GameTrackDaily`.
 - Preserve the public/private split.
 - Prefer small, reviewable changes.
 - Update public docs when you change public-facing behavior.

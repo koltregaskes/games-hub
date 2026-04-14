@@ -1,0 +1,304 @@
+{
+  "title": "GameTrackDaily Registry",
+  "updatedAt": "2026-04-14",
+  "pages": [
+    {
+      "id": "home",
+      "title": "GameTrackDaily",
+      "publicRoute": "index.html",
+      "privateRoute": "local-hub/index.html",
+      "sharedDataSources": [
+        "data/page-registry.json",
+        "data/games-manifest.json",
+        "data/games-news.json",
+        "data/release-calendar.json"
+      ],
+      "privateOverlaySources": [],
+      "pageType": "landing",
+      "primaryContentRegion": "showcase",
+      "allowedRailWidgets": [
+        "featured-games",
+        "latest-highlights",
+        "section-links"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "games",
+      "title": "Games",
+      "publicRoute": "games.html",
+      "privateRoute": "local-hub/games.html",
+      "sharedDataSources": [
+        "data/games-manifest.json"
+      ],
+      "privateOverlaySources": [
+        "data/private-overlays.json",
+        "games.json"
+      ],
+      "pageType": "catalog",
+      "primaryContentRegion": "games-grid",
+      "allowedRailWidgets": [
+        "featured-candidates",
+        "platform-filters",
+        "manager-notes"
+      ],
+      "visibility": "private-mirror"
+    },
+    {
+      "id": "game-development",
+      "title": "Game Development",
+      "publicRoute": "game-development.html",
+      "privateRoute": "local-hub/game-development.html",
+      "sharedDataSources": [
+        "data/knowledge-manifest.json"
+      ],
+      "privateOverlaySources": [
+        "data/private-overlays.json",
+        "data/knowledge-index.json"
+      ],
+      "pageType": "documentation",
+      "primaryContentRegion": "guide-content",
+      "allowedRailWidgets": [
+        "related-sections",
+        "references",
+        "prompt-cards",
+        "ops-overlays"
+      ],
+      "visibility": "private-mirror"
+    },
+    {
+      "id": "news",
+      "title": "Games News",
+      "publicRoute": "news.html",
+      "privateRoute": "local-hub/news.html",
+      "sharedDataSources": [
+        "data/games-news.json"
+      ],
+      "privateOverlaySources": [
+        "data/private-overlays.json",
+        "data/news-index.json"
+      ],
+      "pageType": "landing",
+      "primaryContentRegion": "news-landing",
+      "allowedRailWidgets": [
+        "feed-health",
+        "source-groups",
+        "related-pages"
+      ],
+      "visibility": "private-mirror"
+    },
+    {
+      "id": "news-development",
+      "title": "Game Dev News",
+      "publicRoute": "news-development.html",
+      "privateRoute": "local-hub/news.html#game-dev",
+      "sharedDataSources": [
+        "data/games-news.json"
+      ],
+      "privateOverlaySources": [
+        "data/private-overlays.json",
+        "data/news-index.json"
+      ],
+      "pageType": "feed",
+      "primaryContentRegion": "news-feed",
+      "allowedRailWidgets": [
+        "feed-health",
+        "sources",
+        "related-pages"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "news-gaming",
+      "title": "Gaming News",
+      "publicRoute": "news-gaming.html",
+      "privateRoute": "local-hub/news.html#gaming",
+      "sharedDataSources": [
+        "data/games-news.json"
+      ],
+      "privateOverlaySources": [
+        "data/private-overlays.json",
+        "data/news-index.json"
+      ],
+      "pageType": "feed",
+      "primaryContentRegion": "news-feed",
+      "allowedRailWidgets": [
+        "feed-health",
+        "sources",
+        "related-pages"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "news-reviews",
+      "title": "Reviews",
+      "publicRoute": "news-reviews.html",
+      "privateRoute": "local-hub/news.html#reviews",
+      "sharedDataSources": [
+        "data/games-news.json"
+      ],
+      "privateOverlaySources": [
+        "data/private-overlays.json",
+        "data/news-index.json"
+      ],
+      "pageType": "feed",
+      "primaryContentRegion": "news-feed",
+      "allowedRailWidgets": [
+        "feed-health",
+        "sources",
+        "related-pages"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "news-previews",
+      "title": "Previews",
+      "publicRoute": "news-previews.html",
+      "privateRoute": "local-hub/news.html#previews",
+      "sharedDataSources": [
+        "data/games-news.json"
+      ],
+      "privateOverlaySources": [
+        "data/private-overlays.json",
+        "data/news-index.json"
+      ],
+      "pageType": "feed",
+      "primaryContentRegion": "news-feed",
+      "allowedRailWidgets": [
+        "feed-health",
+        "sources",
+        "related-pages"
+      ],
+      "visibility": "public"
+    },
+    {
+      "id": "calendar",
+      "title": "Release Calendar",
+      "publicRoute": "calendar.html",
+      "privateRoute": "local-hub/calendar.html",
+      "sharedDataSources": [
+        "data/release-calendar.json"
+      ],
+      "privateOverlaySources": [
+        "data/calendar-index.json"
+      ],
+      "pageType": "calendar",
+      "primaryContentRegion": "calendar-grid",
+      "allowedRailWidgets": [
+        "filters",
+        "next-release-window",
+        "calendar-health"
+      ],
+      "visibility": "private-mirror"
+    },
+    {
+      "id": "events",
+      "title": "Events",
+      "publicRoute": "events.html",
+      "privateRoute": "local-hub/events.html",
+      "sharedDataSources": [
+        "data/release-calendar.json"
+      ],
+      "privateOverlaySources": [
+        "data/calendar-index.json",
+        "data/events-index.json"
+      ],
+      "pageType": "events",
+      "primaryContentRegion": "event-agenda",
+      "allowedRailWidgets": [
+        "next-event",
+        "watch-links",
+        "refresh-status"
+      ],
+      "visibility": "private-mirror"
+    },
+    {
+      "id": "verification",
+      "title": "Verification",
+      "publicRoute": null,
+      "privateRoute": "local-hub/verification.html",
+      "sharedDataSources": [],
+      "privateOverlaySources": [
+        "data/verification.json",
+        "data/private-overlays.json"
+      ],
+      "pageType": "manager",
+      "primaryContentRegion": "verification-health",
+      "allowedRailWidgets": [
+        "browser-ladder",
+        "priority-queue"
+      ],
+      "visibility": "private-only"
+    },
+    {
+      "id": "research",
+      "title": "Research",
+      "publicRoute": null,
+      "privateRoute": "local-hub/research.html",
+      "sharedDataSources": [],
+      "privateOverlaySources": [
+        "data/research-index.json"
+      ],
+      "pageType": "manager",
+      "primaryContentRegion": "research-loop",
+      "allowedRailWidgets": [
+        "research-health",
+        "priority-queue"
+      ],
+      "visibility": "private-only"
+    },
+    {
+      "id": "reviews-manager",
+      "title": "Internal Reviews",
+      "publicRoute": null,
+      "privateRoute": "local-hub/reviews.html",
+      "sharedDataSources": [
+        "data/knowledge-manifest.json"
+      ],
+      "privateOverlaySources": [
+        "data/reviewer-index.json"
+      ],
+      "pageType": "manager",
+      "primaryContentRegion": "review-ops",
+      "allowedRailWidgets": [
+        "review-cadence",
+        "active-lanes"
+      ],
+      "visibility": "private-only"
+    },
+    {
+      "id": "tracking",
+      "title": "Tracking",
+      "publicRoute": null,
+      "privateRoute": "local-hub/tracking.html",
+      "sharedDataSources": [],
+      "privateOverlaySources": [
+        "data/tracking-index.json"
+      ],
+      "pageType": "manager",
+      "primaryContentRegion": "tracked-games",
+      "allowedRailWidgets": [
+        "source-health",
+        "missing-pieces"
+      ],
+      "visibility": "private-only"
+    },
+    {
+      "id": "sessions",
+      "title": "Sessions",
+      "publicRoute": null,
+      "privateRoute": "local-hub/sessions.html",
+      "sharedDataSources": [],
+      "privateOverlaySources": [
+        "data/session-index.json"
+      ],
+      "pageType": "manager",
+      "primaryContentRegion": "session-inbox",
+      "allowedRailWidgets": [
+        "priority-queue",
+        "manager-rules"
+      ],
+      "visibility": "private-only"
+    }
+  ]
+}

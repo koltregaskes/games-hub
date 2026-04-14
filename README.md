@@ -1,14 +1,16 @@
-# Games Hub
+# GameTrackDaily
 
-Public-facing hub for the current game lineup, plus public-safe `Game Development`, `Reviews`, `Games News`, and `Release Calendar` surfaces.
+Public-facing games site for the current lineup, plus public-safe `Game Development`, curated `Review Coverage`, `Games News`, and `Release Calendar` surfaces.
 
-This repo is set up as a static GitHub Pages site. It intentionally does not include the private local-launch controls from the desktop hub. Instead, it acts as the public layer where game pages, screenshots, demos, store links, shared craft guidance, and generated news feeds can grow over time.
+This repo is set up as a static GitHub Pages site. It intentionally does not include the private local-launch controls from the desktop hub. Instead, it acts as the public layer where game pages, screenshots, demos, store links, shared craft guidance, aggregated news, and curated games data can grow over time.
 
 `Games News` is split into four public rails:
 - `Game Dev News`
 - `Gaming News`
 - `Games Reviews`
 - `Games Previews`
+
+Those `Reviews` and `Previews` rails are curated coverage from the wider games press. They are not intended to become a personal house-review publication.
 
 `Release Calendar` adds a tracked monthly and weekly view for Windows PC, Xbox, and PlayStation releases, plus major conferences, showcases, and awards with day-level density rollups and drill-down lists.
 
@@ -38,6 +40,6 @@ Once GitHub Pages is enabled for the repository, pushes to `main` will publish t
 
 ## Contributor Notes
 
-- Keep visible naming aligned with `Games Hub`.
+- Keep visible naming aligned with `GameTrackDaily`.
 - Treat this as a public showcase and reference surface, not an operations dashboard.
 - If a change only helps local management, it belongs in the private console, not this repo.

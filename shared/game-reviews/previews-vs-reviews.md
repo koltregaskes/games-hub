@@ -56,7 +56,7 @@ Use:
 
 ## Why this matters for the Games News pipeline
 
-If the Games Hub covers wider industry coverage too, `Games Reviews` and `Games Previews` should stay separate for the same reason:
+If GameTrackDaily covers wider industry coverage too, `Games Reviews` and `Games Previews` should stay separate for the same reason:
 
 - reviews are verdicts
 - previews are expectation-setting
