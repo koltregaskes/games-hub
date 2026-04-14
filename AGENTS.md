@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`games-hub` is the public-facing showcase repo for the game slate under Elusion Works.
+`games-hub` is the public-facing showcase repo for the current game slate.
 
 It is not the private studio console.
 
@@ -23,7 +23,7 @@ It is not the private studio console.
 
 ## Working Rules
 
-- Keep branding aligned with `Elusion Works`.
+- Keep visible naming aligned with `Games Hub`.
 - Preserve the public/private split.
 - Prefer small, reviewable changes.
 - Update public docs when you change public-facing behavior.

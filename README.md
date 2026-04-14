@@ -1,6 +1,6 @@
-# Games Hub by Elusion Works
+# Games Hub
 
-Public-facing studio hub for the current Elusion Works game lineup, plus public-safe `Game Development`, `Reviews`, `Games News`, and `Release Calendar` surfaces.
+Public-facing hub for the current game lineup, plus public-safe `Game Development`, `Reviews`, `Games News`, and `Release Calendar` surfaces.
 
 This repo is set up as a static GitHub Pages site. It intentionally does not include the private local-launch controls from the desktop hub. Instead, it acts as the public layer where game pages, screenshots, demos, store links, shared craft guidance, and generated news feeds can grow over time.
 
@@ -38,6 +38,6 @@ Once GitHub Pages is enabled for the repository, pushes to `main` will publish t
 
 ## Contributor Notes
 
-- Keep branding aligned with `Elusion Works`.
+- Keep visible naming aligned with `Games Hub`.
 - Treat this as a public showcase and reference surface, not an operations dashboard.
 - If a change only helps local management, it belongs in the private console, not this repo.
