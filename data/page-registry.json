@@ -88,6 +88,23 @@
       "visibility": "private-mirror"
     },
     {
+      "id": "review-coverage",
+      "title": "Review Coverage",
+      "publicRoute": "reviews.html",
+      "privateRoute": null,
+      "sharedDataSources": [
+        "data/games-news.json"
+      ],
+      "privateOverlaySources": [],
+      "pageType": "landing",
+      "primaryContentRegion": "review-coverage",
+      "allowedRailWidgets": [
+        "related-pages",
+        "source-groups"
+      ],
+      "visibility": "public"
+    },
+    {
       "id": "news-development",
       "title": "Game Dev News",
       "publicRoute": "news-development.html",

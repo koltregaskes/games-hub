@@ -2,6 +2,7 @@
 Thumbs.db
 .serve.log
 .serve.err.log
+.playwright-cli/
 .env
 .env.*
 local-hub/

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameTrackDaily // Games Previews</title>
+    <meta name="description" content="Curated preview coverage from the wider games press." />
+    <meta property="og:title" content="GameTrackDaily // Games Previews" />
+    <meta property="og:description" content="Hands-on impressions, first looks, and preview coverage before final review." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/news-previews.html" />
+    <meta name="theme-color" content="#08101d" />
+    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/news-previews.html" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="news-feed" data-section="news" data-feed="previews">
+    <div class="atmosphere" aria-hidden="true">
+      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
+      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
+      <div class="atmosphere__orb atmosphere__orb--gold"></div>
+      <div class="atmosphere__grid"></div>
+    </div>
+    <header class="site-header">
+      <a class="site-brand" href="index.html">GameTrackDaily</a>
+      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
+    </header>
+    <main class="docs-main">
+      <section class="docs-hero">
+        <div class="docs-hero__copy" data-reveal>
+          <p class="eyebrow">Review Coverage</p>
+          <h1 id="newsFeedTitle">Games Previews</h1>
+          <p class="hero__lede" id="newsFeedCopy">Loading feed...</p>
+        </div>
+        <div class="docs-hero__facts" id="newsFeedSummary" data-reveal></div>
+      </section>
+      <section class="docs-layout">
+        <article class="docs-viewer" data-reveal>
+          <div class="news-tabs" id="newsFeedFilters"></div>
+          <div id="newsFeedBody"></div>
+        </article>
+        <aside class="docs-nav" id="newsFeedRail" data-reveal></aside>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <p>GameTrackDaily</p>
+      <p>Games Previews is the curated first-look feed inside the wider GameTrackDaily site.</p>
+      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
+    </footer>
+    <script src="app.js"></script>
+  </body>
+</html>

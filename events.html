@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameTrackDaily // Events</title>
+    <meta
+      name="description"
+      content="Track major games events, conferences, showcases, and awards with local times and official watch links."
+    />
+    <meta property="og:title" content="GameTrackDaily // Events" />
+    <meta
+      property="og:description"
+      content="A dedicated events page for showcases, conferences, awards, stream links, and local times."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/events.html" />
+    <meta name="theme-color" content="#08101d" />
+    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/events.html" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="events" data-section="events">
+    <div class="atmosphere" aria-hidden="true">
+      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
+      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
+      <div class="atmosphere__orb atmosphere__orb--gold"></div>
+      <div class="atmosphere__grid"></div>
+    </div>
+
+    <header class="site-header">
+      <a class="site-brand" href="index.html">GameTrackDaily</a>
+      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
+    </header>
+
+    <main class="docs-main">
+      <section class="docs-hero">
+        <div class="docs-hero__copy" data-reveal>
+          <p class="eyebrow">Events</p>
+          <h1>Showcases, conferences, awards, and the links to watch them.</h1>
+          <p class="hero__lede">
+            This page is the event agenda for the season: developer conferences, summer showcases, and awards
+            ceremonies with local times and official destinations where available.
+          </p>
+        </div>
+        <div class="docs-hero__facts" id="eventsSummary" data-reveal></div>
+      </section>
+
+      <section class="docs-layout">
+        <article class="docs-viewer" data-reveal>
+          <div class="docs-viewer__meta">
+            <p class="eyebrow">Event agenda</p>
+            <h2>Filter by event kind or platform lens.</h2>
+            <p class="section-copy">
+              The events page carries the schedule, the local times, and the official watch links so the release
+              calendar does not have to carry that extra density too.
+            </p>
+          </div>
+          <div id="eventsControls"></div>
+          <div id="eventsTimeline"></div>
+        </article>
+        <aside class="docs-nav" id="eventsRail" data-reveal></aside>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>GameTrackDaily</p>
+      <p>Events is the showcase, conference, and awards schedule inside the wider GameTrackDaily site.</p>
+      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

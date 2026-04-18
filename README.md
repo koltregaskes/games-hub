@@ -12,7 +12,16 @@ This repo is set up as a static GitHub Pages site. It intentionally does not inc
 
 Those `Reviews` and `Previews` rails are curated coverage from the wider games press. They are not intended to become a personal house-review publication.
 
-`Release Calendar` adds a tracked monthly and weekly view for Windows PC, Xbox, and PlayStation releases, plus major conferences, showcases, and awards with day-level density rollups and drill-down lists.
+The public shell now uses focused pages instead of cramming everything into one surface:
+- `games.html` for the full lineup
+- `game-development.html` for public-safe craft/reference
+- `news.html` as the news landing page
+- `news-development.html`, `news-gaming.html`, `news-reviews.html`, and `news-previews.html` for the four feed rails
+- `reviews.html` for review/previews coverage navigation
+- `calendar.html` for releases only
+- `events.html` for conferences, showcases, awards, local times, and official watch links
+
+`Release Calendar` now stays focused on Windows PC, Xbox, and PlayStation release tracking, while `Events` handles conferences, showcases, and awards with local-time drill-downs and official watch destinations.
 
 That news layer is filtered to `Windows PC`, `Xbox`, and `PlayStation`. Xbox and PlayStation coverage should use specific model or service tags such as `Xbox Series X`, `Xbox Series S`, `PlayStation 5`, `Xbox Game Pass`, or `PlayStation Plus` where the source supports that detail.
 

@@ -6,12 +6,12 @@
     <title>GameTrackDaily</title>
     <meta
       name="description"
-      content="A curated games site tracking active projects, release dates, events, reviews, previews, and practical game-development reference material."
+      content="A curated games destination for tracked projects, release dates, major events, review coverage, preview coverage, and practical game-development reference."
     />
     <meta property="og:title" content="GameTrackDaily" />
     <meta
       property="og:description"
-      content="A curated games site for lineup tracking, release calendars, events, review coverage, preview coverage, and practical game-development reference material."
+      content="Track the lineup, follow the release slate, watch the event season, and browse review, preview, and game-development coverage in one place."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://koltregaskes.github.io/games-hub/" />
@@ -27,7 +27,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body data-page="home">
+  <body data-page="home" data-section="home">
     <div class="atmosphere" aria-hidden="true">
       <div class="atmosphere__orb atmosphere__orb--cyan"></div>
       <div class="atmosphere__orb atmosphere__orb--crimson"></div>
@@ -36,351 +36,105 @@
     </div>
 
     <header class="site-header">
-      <a class="site-brand" href="#top">GameTrackDaily</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="#lineup">Lineup</a>
-        <a href="#emerging">Emerging Demos</a>
-        <a href="game-development.html">Game Development</a>
-        <a href="reviews.html">Review Coverage</a>
-        <a href="news.html">Games News</a>
-        <a href="calendar.html">Release Calendar</a>
-        <a href="#approach">Approach</a>
-        <a href="#future">Future Releases</a>
-      </nav>
+      <a class="site-brand" href="index.html">GameTrackDaily</a>
+      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
     </header>
 
     <main id="top">
       <section class="hero">
         <div class="hero__copy" data-reveal>
           <p class="eyebrow">GameTrackDaily</p>
-          <h1>Games worth tracking, launches worth watching, signals worth keeping.</h1>
+          <h1>Track the games. Watch the calendar. Follow the signal.</h1>
           <p class="hero__lede">
-            This is a curated games destination built to track projects, follow release calendars, watch the event
-            season, surface review and preview coverage, and grow into a sharper long-term games-data site.
+            A curated games destination for the active lineup, the release slate, the event season, and the review and
+            preview coverage that helps you keep up without the clutter.
           </p>
           <div class="hero__actions">
-            <a class="button button--primary" href="#lineup">Browse The Lineup</a>
-            <a class="button button--ghost" href="game-development.html">Open Game Development</a>
-            <a class="button button--ghost" href="reviews.html">Open Review Coverage</a>
-            <a class="button button--ghost" href="news.html">Open Games News</a>
-            <a class="button button--ghost" href="calendar.html">Open Release Calendar</a>
-            <a class="button button--ghost" href="https://github.com/koltregaskes/games-hub">View Repository</a>
+            <a class="button button--primary" href="games.html">Browse games</a>
+            <a class="button button--ghost" href="news.html">Open games news</a>
+            <a class="button button--ghost" href="calendar.html">Open release calendar</a>
+            <a class="button button--ghost" href="events.html">Open events</a>
           </div>
-          <ul class="hero__facts" aria-label="Studio facts">
-            <li>7 active projects</li>
-            <li>Curated releases, events, reviews, and previews</li>
-            <li>Built to grow into a richer games-data destination</li>
+          <ul class="hero__facts" aria-label="Site facts">
+            <li>Tracked projects and playable demos</li>
+            <li>Curated reviews and previews from the wider press</li>
+            <li>Release dates, showcases, awards, and practical dev reference</li>
           </ul>
         </div>
 
         <div class="hero__visual" data-reveal>
           <div class="hero-stack">
             <article class="hero-stack__card hero-stack__card--front">
-              <img src="assets/mandate-2029.svg" alt="Mandate 2029 preview art" />
+              <img src="assets/mandate-2029.svg" alt="Mandate 2029 artwork" />
               <div class="hero-stack__meta">
-                <span>Political strategy</span>
-                <strong>Mandate 2029</strong>
+                <span>Featured lineup</span>
+                <strong>GameTrackDaily</strong>
               </div>
             </article>
             <article class="hero-stack__card hero-stack__card--left">
-              <img src="assets/swarmbreaker.svg" alt="Swarmbreaker preview art" />
+              <img src="assets/swarmbreaker.svg" alt="Swarmbreaker artwork" />
             </article>
             <article class="hero-stack__card hero-stack__card--right">
-              <img src="assets/civicrise.svg" alt="Civicrise preview art" />
+              <img src="assets/turbo-vector.svg" alt="Turbo Vector artwork" />
             </article>
           </div>
         </div>
       </section>
 
-      <section class="studio-strip" aria-label="Studio status" data-reveal>
+      <section class="studio-strip" aria-label="Site status" data-reveal>
         <div>
-          <span class="studio-strip__label">Status</span>
-          <strong>Seven active projects</strong>
-        </div>
-        <div>
-          <span class="studio-strip__label">Public layer</span>
-          <strong>Playable demos and repo links</strong>
+          <span class="studio-strip__label">Editorial mode</span>
+          <strong>Curated, not personal-review led</strong>
         </div>
         <div>
-          <span class="studio-strip__label">Next unlock</span>
-          <strong>Deeper demos, trailers, Steam links</strong>
+          <span class="studio-strip__label">Platforms</span>
+          <strong>Windows PC, Xbox, PlayStation</strong>
+        </div>
+        <div>
+          <span class="studio-strip__label">Coverage</span>
+          <strong>Games, news, calendar, events, development</strong>
         </div>
       </section>
 
-      <section class="lineup" id="lineup">
+      <section class="lineup">
         <div class="section-head" data-reveal>
-          <p class="eyebrow">Current Lineup</p>
-          <h2>Flagship games already in motion.</h2>
+          <p class="eyebrow">Section map</p>
+          <h2>Everything important gets its own page now.</h2>
           <p>
-            The site is designed to hold public releases over time. Right now it introduces the core playable projects
-            and gives each one enough room to feel distinct.
+            The landing page stays lightweight. The real work happens in focused pages for the lineup, the calendar,
+            events, review coverage, and practical game-development reference.
           </p>
         </div>
-
-        <article class="feature feature--split" id="mandate-2029" data-reveal>
-          <div class="feature__art">
-            <img src="assets/mandate-2029.svg" alt="Mandate 2029 poster art" />
-          </div>
-          <div class="feature__copy">
-            <p class="feature__kicker">Browser Strategy</p>
-            <h3>Mandate 2029</h3>
-            <p class="feature__summary">
-              A governing sim about momentum, compromise, cabinet pressure, media storms, and the brutal arithmetic of
-              staying electable while trying to change a country.
-            </p>
-            <ul class="feature__list">
-              <li>Polling pressure and election pacing</li>
-              <li>Reactive crisis deck and political capital tradeoffs</li>
-              <li>Regional swingboard and legacy-score framing</li>
-            </ul>
-            <dl class="feature__meta">
-              <div>
-                <dt>Status</dt>
-                <dd>Playable prototype</dd>
-              </div>
-              <div>
-                <dt>Platform</dt>
-                <dd>Browser</dd>
-              </div>
-              <div>
-                <dt>Public rollout</dt>
-                <dd>Demo-ready site slot prepared</dd>
-              </div>
-            </dl>
-            <div class="feature__actions">
-              <a class="button button--primary" href="https://github.com/koltregaskes/mandate-2029">View Repo</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="feature feature--reverse" id="civicrise" data-reveal>
-          <div class="feature__art">
-            <img src="assets/civicrise.svg" alt="Civicrise poster art" />
-          </div>
-          <div class="feature__copy">
-            <p class="feature__kicker">Browser City Builder</p>
-            <h3>Civicrise</h3>
-            <p class="feature__summary">
-              A living isometric city builder about shaping dense urban systems, balancing civic needs, and watching a
-              place emerge block by block into a believable metropolis.
-            </p>
-            <ul class="feature__list">
-              <li>Readable isometric city drama</li>
-              <li>Citizen services, transport, and layered planning</li>
-              <li>Onboarding and help flows built for repeat sessions</li>
-            </ul>
-            <dl class="feature__meta">
-              <div>
-                <dt>Status</dt>
-                <dd>Verified playable build</dd>
-              </div>
-              <div>
-                <dt>Platform</dt>
-                <dd>Browser</dd>
-              </div>
-              <div>
-                <dt>Public rollout</dt>
-                <dd>Ready for screenshots and web demo slot</dd>
-              </div>
-            </dl>
-            <div class="feature__actions">
-              <a class="button button--primary" href="https://github.com/koltregaskes/civicrise">View Repo</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="feature feature--split" id="swarmbreaker" data-reveal>
-          <div class="feature__art">
-            <img src="assets/swarmbreaker.svg" alt="Swarmbreaker poster art" />
-          </div>
-          <div class="feature__copy">
-            <p class="feature__kicker">Desktop Arcade</p>
-            <h3>Swarmbreaker</h3>
-            <p class="feature__summary">
-              Fast, vivid arcade defence with segmented swarms, poisoned mushrooms, wave pressure, and the kind of
-              score-chasing tension that feels right at home in a late-night "one more run" session.
-            </p>
-            <ul class="feature__list">
-              <li>Classic arcade loop with modern quality-of-life polish</li>
-              <li>Wave scaling, audio controls, and extra-life thresholds</li>
-              <li>Purpose-built for immediate, readable action</li>
-            </ul>
-            <dl class="feature__meta">
-              <div>
-                <dt>Status</dt>
-                <dd>Playable desktop build</dd>
-              </div>
-              <div>
-                <dt>Platform</dt>
-                <dd>Windows desktop</dd>
-              </div>
-              <div>
-                <dt>Public rollout</dt>
-                <dd>Download and trailer slot prepared</dd>
-              </div>
-            </dl>
-            <div class="feature__actions">
-              <a class="button button--primary" href="https://github.com/koltregaskes/swarmbreaker">View Repo</a>
-            </div>
-          </div>
-        </article>
+        <div class="news-preview__grid" id="homeSectionLinks"></div>
       </section>
 
-      <section class="emerging" id="emerging">
+      <section class="emerging" id="featured-games">
         <div class="section-head" data-reveal>
-          <p class="eyebrow">Emerging Demos</p>
-          <h2>Environment slices and new prototype lanes.</h2>
+          <p class="eyebrow">Featured games</p>
+          <h2>The strongest public-facing candidates right now.</h2>
           <p>
-            These projects are earlier, but they now have real concept spaces you can review: one orbital dock, one
-            cyberpunk district, one marina circuit, and one coast-road run.
+            Start here for the most promising demo and release candidates before drilling into the full lineup page.
           </p>
         </div>
-
-        <div class="emerging-grid">
-          <article class="emerging-card" data-reveal>
-            <img src="assets/neon-district.svg" alt="Neon District poster art" />
-            <div class="emerging-card__body">
-              <p class="feature__kicker">Cyberpunk Action</p>
-              <h3>Neon District</h3>
-              <p>An environment-first district slice with walkable space, layered buildings, and optional combat activation.</p>
-              <div class="feature__actions">
-                <a class="button button--primary" href="https://koltregaskes.github.io/neon-district/">Play Demo</a>
-                <a class="button button--ghost" href="https://github.com/koltregaskes/neon-district">View Repo</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="emerging-card" data-reveal>
-            <img src="assets/starfall-protocol.svg" alt="Starfall Protocol poster art" />
-            <div class="emerging-card__body">
-              <p class="feature__kicker">Third-Person Sci-Fi</p>
-              <h3>Starfall Protocol</h3>
-              <p>An orbital dock environment demo focused on mood, navigation, and hotspot-based world reads.</p>
-              <div class="feature__actions">
-                <a class="button button--primary" href="https://koltregaskes.github.io/starfall-protocol/">Play Demo</a>
-                <a class="button button--ghost" href="https://github.com/koltregaskes/starfall-protocol">View Repo</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="emerging-card" data-reveal>
-            <img src="assets/turbo-vector.svg" alt="Turbo Vector poster art" />
-            <div class="emerging-card__body">
-              <p class="feature__kicker">Top-Down Racer</p>
-              <h3>Turbo Vector</h3>
-              <p>A single Southport Marina circuit demo built to test handling, place identity, and track readability.</p>
-              <div class="feature__actions">
-                <a class="button button--primary" href="https://koltregaskes.github.io/turbo-vector/">Play Demo</a>
-                <a class="button button--ghost" href="https://github.com/koltregaskes/turbo-vector">View Repo</a>
-              </div>
-            </div>
-          </article>
-
-          <article class="emerging-card" data-reveal>
-            <img src="assets/redline-horizon.svg" alt="Redline Horizon poster art" />
-            <div class="emerging-card__body">
-              <p class="feature__kicker">Retro Road Racer</p>
-              <h3>Redline Horizon</h3>
-              <p>An Azure Coast road slice chasing the speed, scenery, and holiday-road fantasy of classic arcade racers.</p>
-              <div class="feature__actions">
-                <a class="button button--primary" href="https://koltregaskes.github.io/redline-horizon/">Play Demo</a>
-                <a class="button button--ghost" href="https://github.com/koltregaskes/redline-horizon">View Repo</a>
-              </div>
-            </div>
-          </article>
-        </div>
+        <div class="emerging-grid" id="featuredGamesGrid"></div>
       </section>
 
-      <section class="knowledge-preview" id="game-development">
+      <section class="news-preview">
         <div class="section-head" data-reveal>
-          <p class="eyebrow">Game Development</p>
-          <h2>Build games like a solo studio, not like a mystery cult.</h2>
+          <p class="eyebrow">Highlights</p>
+          <h2>The rest of the public shell, at a glance.</h2>
           <p>
-            Public-safe guidance for vibe coders, small teams, and agent-assisted builders who need clear structure,
-            prompts, references, and practical studio standards.
+            Release tracking, event watch links, wider press coverage, and the practical craft layer all live here now
+            as first-class surfaces.
           </p>
         </div>
-        <div class="knowledge-preview__grid" id="knowledgePreview" data-reveal></div>
-        <div class="future__actions" data-reveal>
-          <a class="button button--primary" href="game-development.html">Open The Reference</a>
-        </div>
-      </section>
-
-      <section class="news-preview" id="news">
-        <div class="section-head" data-reveal>
-          <p class="eyebrow">Games News</p>
-          <h2>Four public rails: development, industry, reviews, and previews.</h2>
-          <p>
-            GameTrackDaily now has a dedicated news surface for `Game Dev News`, `Gaming News`, `Games Reviews`, and
-            `Games Previews`, powered by a separate scheduled pipeline and framed as curated coverage rather than
-            in-house verdicts.
-          </p>
-        </div>
-        <div class="news-preview__grid" id="newsPreview" data-reveal></div>
-        <div class="future__actions" data-reveal>
-          <a class="button button--primary" href="news.html">Open Games News</a>
-          <a class="button button--ghost" href="reviews.html">Open Review Coverage</a>
-        </div>
-      </section>
-
-      <section class="news-preview" id="calendar">
-        <div class="section-head" data-reveal>
-          <p class="eyebrow">Release Calendar</p>
-          <h2>Switch between month and week, then drill into dense release days.</h2>
-          <p>
-            GameTrackDaily now has a tracked release calendar for Windows PC, Xbox, and PlayStation. Busy days roll up
-            platform counts, and clicking a day takes you straight to the full release list for that date.
-          </p>
-        </div>
-        <div class="news-preview__grid" id="calendarPreview" data-reveal></div>
-        <div class="future__actions" data-reveal>
-          <a class="button button--primary" href="calendar.html">Open Release Calendar</a>
-          <a class="button button--ghost" href="news.html">Open Games News</a>
-        </div>
-      </section>
-
-      <section class="approach" id="approach">
-        <div class="section-head" data-reveal>
-          <p class="eyebrow">Approach</p>
-          <h2>A public shell built to expand with every release.</h2>
-        </div>
-        <div class="approach__grid">
-          <article data-reveal>
-            <span class="approach__index">01</span>
-            <h3>Showcase first</h3>
-            <p>The site is already structured for richer pages, media drops, and clearer public identity as the lineup grows.</p>
-          </article>
-          <article data-reveal>
-            <span class="approach__index">02</span>
-            <h3>Static by default</h3>
-            <p>It runs cleanly on GitHub Pages today, with no framework lock-in and no build complexity needed for the first release.</p>
-          </article>
-          <article data-reveal>
-            <span class="approach__index">03</span>
-            <h3>Ready for upgrades</h3>
-            <p>Store buttons, public demos, mailing-list links, devlogs, and per-game detail pages can slot in without rebuilding the whole thing.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="future" id="future" data-reveal>
-        <p class="eyebrow">Future Releases</p>
-        <h2>This page becomes the release rail for every next step.</h2>
-        <p>
-          As projects open up, this site can carry browser demos, screenshots, downloadable builds, patch notes, Steam
-          links, structured release data, events coverage, and the news surfaces that support them.
-        </p>
-        <div class="future__actions">
-          <a class="button button--ghost" href="calendar.html">Open Release Calendar</a>
-          <a class="button button--primary" href="https://github.com/koltregaskes/games-hub">Open The Repo</a>
-          <a class="button button--ghost" href="#top">Back To Top</a>
-        </div>
+        <div class="news-preview__grid" id="homeHighlightsGrid"></div>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>GameTrackDaily</p>
-      <p>GameTrackDaily is a public-facing games site for tracked releases, event coverage, demos, and curated games reporting.</p>
+      <p>Curated games tracking, release coverage, event watch links, and practical game-development reference.</p>
       <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
     </footer>
 

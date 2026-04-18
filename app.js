@@ -1,48 +1,41 @@
 document.body.classList.add("has-motion");
 
-const revealItems = document.querySelectorAll("[data-reveal]");
 const page = document.body.dataset.page || "home";
-const reviewsSummary = document.getElementById("reviewsSummary");
-const reviewsPageNav = document.getElementById("reviewsPageNav");
-const reviewsPageMeta = document.getElementById("reviewsPageMeta");
-const reviewsPageTitle = document.getElementById("reviewsPageTitle");
-const reviewsPageDescription = document.getElementById("reviewsPageDescription");
-const reviewsPageContent = document.getElementById("reviewsPageContent");
-const reviewsFeedFocus = document.getElementById("reviewsFeedFocus");
-const calendarPreview = document.getElementById("calendarPreview");
-const calendarSummary = document.getElementById("calendarSummary");
-const calendarNotice = document.getElementById("calendarNotice");
-const calendarPolicy = document.getElementById("calendarPolicy");
-const calendarViewToggle = document.getElementById("calendarViewToggle");
-const calendarWeekdays = document.getElementById("calendarWeekdays");
-const calendarGrid = document.getElementById("calendarGrid");
-const calendarDetail = document.getElementById("calendarDetail");
-const calendarRangeLabel = document.getElementById("calendarRangeLabel");
-const calendarPrevButton = document.getElementById("calendarPrevButton");
-const calendarNextButton = document.getElementById("calendarNextButton");
+const pageSection = document.body.dataset.section || page;
+const pageFeed = document.body.dataset.feed || null;
+const siteNav = document.getElementById("siteNav");
 
-function initReveal() {
+let revealObserver = null;
+
+function observeRevealItems() {
+  const revealItems = document.querySelectorAll("[data-reveal]");
   if (!("IntersectionObserver" in window)) {
     revealItems.forEach((item) => item.classList.add("is-visible"));
     return;
   }
 
-  const revealObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    },
-    {
-      threshold: 0.16,
-      rootMargin: "0px 0px -8% 0px",
-    },
-  );
+  if (!revealObserver) {
+    revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.16,
+        rootMargin: "0px 0px -8% 0px",
+      },
+    );
+  }
 
   revealItems.forEach((item, index) => {
+    if (item.dataset.revealObserved === "true") {
+      return;
+    }
+    item.dataset.revealObserved = "true";
     item.style.transitionDelay = `${Math.min(index * 40, 180)}ms`;
     revealObserver.observe(item);
   });
@@ -179,14 +172,15 @@ async function fetchMarkdown(url) {
   return response.text();
 }
 
-function createPromptCard(card) {
+function renderPillRow(labels = [], pillClass = "source-pill") {
+  if (!labels.length) {
+    return "";
+  }
+
   return `
-    <article class="prompt-card">
-      <p class="feature__kicker">Agent Prompt</p>
-      <h3>${escapeHtml(card.title)}</h3>
-      <p>${escapeHtml(card.body)}</p>
-      <pre><code>${escapeHtml(card.prompt)}</code></pre>
-    </article>
+    <div class="source-pill-row">
+      ${labels.map((label) => `<span class="${pillClass}">${escapeHtml(label)}</span>`).join("")}
+    </div>
   `;
 }
 
@@ -221,22 +215,36 @@ function createPromptSection(cards = []) {
     <section class="docs-extras">
       <div class="docs-extras__section">
         <p class="feature__kicker">Prompt Cards</p>
-        <div class="prompt-card-grid">${cards.map(createPromptCard).join("")}</div>
+        <div class="prompt-card-grid">
+          ${cards
+            .map(
+              (card) => `
+                <article class="prompt-card">
+                  <p class="feature__kicker">Agent Prompt</p>
+                  <h3>${escapeHtml(card.title)}</h3>
+                  <p>${escapeHtml(card.body)}</p>
+                  <pre><code>${escapeHtml(card.prompt)}</code></pre>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>
       </div>
     </section>
   `;
 }
 
-function renderPillRow(labels = [], pillClass = "source-pill") {
-  if (!labels.length) {
-    return "";
-  }
-
+function createSummaryChip(label, value, tone = "is-grey") {
   return `
-    <div class="source-pill-row">
-      ${labels.map((label) => `<span class="${pillClass}">${escapeHtml(label)}</span>`).join("")}
-    </div>
+    <article class="summary-chip">
+      <span class="summary-chip__label">${escapeHtml(label)}</span>
+      <strong class="summary-chip__value ${tone}">${escapeHtml(String(value))}</strong>
+    </article>
   `;
+}
+
+function createLinkButton(label, href, className = "button button--ghost") {
+  return `<a class="${className}" href="${href}">${escapeHtml(label)}</a>`;
 }
 
 function parseDateKey(value) {
@@ -247,16 +255,6 @@ function parseDateKey(value) {
     return null;
   }
   return new Date(year, month - 1, day);
-}
-
-function parseMonthKey(value) {
-  const [year, month] = String(value || "")
-    .split("-")
-    .map((item) => Number.parseInt(item, 10));
-  if (!year || !month) {
-    return null;
-  }
-  return new Date(year, month - 1, 1);
 }
 
 function startOfDay(date) {
@@ -286,13 +284,6 @@ function startOfWeek(date) {
   return addDays(normalized, -dayIndex);
 }
 
-function formatShortDate(date) {
-  return new Intl.DateTimeFormat([], {
-    month: "short",
-    day: "numeric",
-  }).format(date);
-}
-
 function formatLongDate(date) {
   return new Intl.DateTimeFormat([], {
     weekday: "long",
@@ -311,72 +302,34 @@ function formatMonthLabel(date) {
 
 function formatWeekLabel(startDate) {
   const endDate = addDays(startDate, 6);
-  return `${formatShortDate(startDate)} - ${formatShortDate(endDate)}, ${endDate.getFullYear()}`;
+  const formatter = new Intl.DateTimeFormat([], {
+    month: "short",
+    day: "numeric",
+  });
+  return `${formatter.format(startDate)} - ${formatter.format(endDate)}, ${endDate.getFullYear()}`;
 }
 
-function buildReleaseCalendarModel(manifest) {
-  const dated = (manifest.releases || [])
-    .filter((item) => item.date)
-    .map((item) => {
-      const releaseDate = parseDateKey(item.date);
-      return releaseDate ? { ...item, releaseDate } : null;
-    })
-    .filter(Boolean)
-    .sort((left, right) => {
-      if (left.date === right.date) {
-        return left.title.localeCompare(right.title);
-      }
-      return left.date.localeCompare(right.date);
-    });
+function formatEventTime(item) {
+  if (!item.startAt) {
+    return "Time TBA";
+  }
 
-  const events = (manifest.events || [])
-    .filter((item) => item.date)
-    .map((item) => {
-      const eventDate = parseDateKey(item.date);
-      if (!eventDate) {
-        return null;
-      }
-      const startDateTime = item.startAt ? new Date(item.startAt) : null;
-      const endDateTime = item.endAt ? new Date(item.endAt) : null;
-      return { ...item, eventDate, startDateTime, endDateTime };
-    })
-    .filter(Boolean)
-    .sort((left, right) => {
-      if (left.date === right.date) {
-        const leftTime = left.startAt || "";
-        const rightTime = right.startAt || "";
-        if (leftTime === rightTime) {
-          return left.title.localeCompare(right.title);
-        }
-        return leftTime.localeCompare(rightTime);
-      }
-      return left.date.localeCompare(right.date);
-    });
-
-  const byDate = new Map();
-  dated.forEach((item) => {
-    const items = byDate.get(item.date) || [];
-    items.push(item);
-    byDate.set(item.date, items);
+  const start = new Date(item.startAt);
+  const end = item.endAt ? new Date(item.endAt) : null;
+  const formatter = new Intl.DateTimeFormat([], {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
   });
 
-  const eventsByDate = new Map();
-  events.forEach((item) => {
-    const items = eventsByDate.get(item.date) || [];
-    items.push(item);
-    eventsByDate.set(item.date, items);
-  });
+  if (!end) {
+    return formatter.format(start);
+  }
 
-  const months = Array.from(new Set([...dated, ...events].map((item) => item.date.slice(0, 7)))).sort();
-  return {
-    manifest,
-    dated,
-    byDate,
-    events,
-    eventsByDate,
-    months,
-    undated: manifest.undated || [],
-  };
+  return `${formatter.format(start)} - ${formatter.format(end)}`;
 }
 
 function groupedPlatformCounts(items = []) {
@@ -397,254 +350,324 @@ function groupedPlatformCounts(items = []) {
     .map(([platform, count]) => ({ platform, count }));
 }
 
-function densityClass(count, densityRules = {}) {
-  if (count >= (densityRules.heavy || 4)) {
-    return "is-heavy";
-  }
-  if (count >= (densityRules.busy || 2)) {
-    return "is-busy";
-  }
-  if (count > 0) {
-    return "is-active";
-  }
-  return "is-empty";
+function getPlatformFamily(tag = "") {
+  const lower = tag.toLowerCase();
+  if (lower.includes("xbox")) return "xbox";
+  if (lower.includes("playstation") || lower.includes("ps ")) return "playstation";
+  if (lower.includes("windows") || lower.includes("pc") || lower.includes("steam") || lower.includes("gog")) return "windows";
+  return "other";
 }
 
-function peakReleaseDay(model) {
-  let best = null;
-  const dayKeys = new Set([...model.byDate.keys(), ...model.eventsByDate.keys()]);
-  dayKeys.forEach((dayKey) => {
-    const releases = model.byDate.get(dayKey) || [];
-    const events = model.eventsByDate.get(dayKey) || [];
-    const count = releases.length + events.length;
-    if (!best || count > best.count) {
-      best = { dayKey, count, items: releases, events };
-    }
-  });
-  return best;
+function matchesPlatformFamily(tags = [], family = "all") {
+  if (family === "all") return true;
+  return tags.some((tag) => getPlatformFamily(tag) === family);
 }
 
-function focusMonthStats(model, focusMonth) {
-  const items = model.dated.filter((item) => item.date.startsWith(focusMonth));
-  const events = model.events.filter((item) => item.date.startsWith(focusMonth));
-  return {
-    month: focusMonth,
-    releaseCount: items.length,
-    eventCount: events.length,
-    count: items.length + events.length,
-    platforms: groupedPlatformCounts(items),
-  };
+function platformFamilyLabel(family) {
+  if (family === "windows") return "Windows";
+  if (family === "xbox") return "Xbox";
+  if (family === "playstation") return "PlayStation";
+  return "All";
 }
 
-function releaseListMarkup(items = []) {
-  return items
-    .map((item) => {
-      const platforms = (item.platforms || []).join(", ");
-      const title = item.igdbUrl
-        ? `<a href="${item.igdbUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.title)}</a>`
-        : escapeHtml(item.title);
-      return `
-        <li class="calendar-release-item">
-          <div>
-            <strong>${title}</strong>
-            <p>${escapeHtml(platforms || "Platform not recorded")}</p>
-          </div>
-          <span>${escapeHtml(item.source || "Tracked list")}</span>
-        </li>
-      `;
+function setSearchParam(name, value) {
+  const url = new URL(window.location.href);
+  if (value) {
+    url.searchParams.set(name, value);
+  } else {
+    url.searchParams.delete(name);
+  }
+  history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+}
+
+async function loadRegistry() {
+  const data = await fetchJson("data/page-registry.json");
+  return data.pages || [];
+}
+
+function registryEntryMap(entries) {
+  return new Map(entries.map((entry) => [entry.id, entry]));
+}
+
+function buildSiteNav(entries) {
+  if (!siteNav) {
+    return;
+  }
+
+  const order = ["home", "games", "game-development", "news", "review-coverage", "calendar", "events"];
+  const entryMap = registryEntryMap(entries);
+  siteNav.innerHTML = order
+    .map((id) => entryMap.get(id))
+    .filter(Boolean)
+    .map((entry) => {
+      const active =
+        pageSection === entry.id ||
+        (entry.id === "news" && pageSection === "news") ||
+        (entry.id === "review-coverage" && pageSection === "review-coverage");
+      return `<a href="${entry.publicRoute}"${active ? ' aria-current="page"' : ""}>${escapeHtml(entry.title)}</a>`;
     })
     .join("");
 }
 
-function formatCalendarEventTime(item) {
-  if (!item.startAt) {
-    return "Time TBA";
-  }
-
-  const start = new Date(item.startAt);
-  const end = item.endAt ? new Date(item.endAt) : null;
-  const formatter = new Intl.DateTimeFormat([], {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
-  const startLabel = formatter.format(start);
-  if (!end) {
-    return startLabel;
-  }
-  return `${startLabel} - ${formatter.format(end)}`;
-}
-
-function eventWatchLinksMarkup(item) {
-  const links = Array.isArray(item.watchLinks)
-    ? item.watchLinks.filter((link) => link?.url)
-    : [];
-
-  if (links.length) {
-    return `
-      <span class="calendar-release-item__links">
-        ${links
-          .map(
-            (link) =>
-              `<a href="${link.url}" target="_blank" rel="noreferrer">${escapeHtml(link.label || "Watch event")}</a>`,
-          )
-          .join("")}
-      </span>
-    `;
-  }
-
-  if (item.watchUrl) {
-    return `<span class="calendar-release-item__links"><a href="${item.watchUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.watchLabel || "Watch event")}</a></span>`;
-  }
-
-  return `<span class="calendar-release-item__links">${escapeHtml(item.watchStatus || "Watch link pending")}</span>`;
-}
-
-function eventListMarkup(items = []) {
-  return items
-    .map((item) => {
-      const title = item.officialUrl
-        ? `<a href="${item.officialUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.title)}</a>`
-        : escapeHtml(item.title);
-      const watchLinks = eventWatchLinksMarkup(item);
-      const focus = (item.platformFocus || []).join(", ");
-      const location = [item.venue, item.city].filter(Boolean).join(", ");
-      return `
-        <li class="calendar-release-item calendar-release-item--event">
-          <div>
-            <strong>${title}</strong>
-            <p>${escapeHtml(formatCalendarEventTime(item))}</p>
-            <p>${escapeHtml(location || focus || "Major industry event")}</p>
-          </div>
-          ${watchLinks}
-        </li>
-      `;
-    })
+function sectionLinksMarkup(entries) {
+  const interesting = ["games", "game-development", "news", "review-coverage", "calendar", "events"];
+  const entryMap = registryEntryMap(entries);
+  return interesting
+    .map((id) => entryMap.get(id))
+    .filter(Boolean)
+    .map(
+      (entry) => `
+        <article class="preview-card" data-reveal>
+          <p class="feature__kicker">${escapeHtml(entry.pageType)}</p>
+          <h3>${escapeHtml(entry.title)}</h3>
+          <p>${escapeHtml(entry.primaryContentRegion.replaceAll("-", " "))}</p>
+          <a class="button button--ghost" href="${entry.publicRoute}">Open page</a>
+        </article>
+      `,
+    )
     .join("");
 }
 
-function renderCalendarPreview(manifest) {
-  if (!calendarPreview) return;
+function gameCardMarkup(game) {
+  const actions = [
+    game.playUrl ? createLinkButton("Play demo", game.playUrl, "button button--primary") : "",
+    game.repoUrl ? createLinkButton("View repo", game.repoUrl, "button button--ghost") : "",
+  ]
+    .filter(Boolean)
+    .join("");
 
-  const model = buildReleaseCalendarModel(manifest);
-  const focusMonth = manifest.defaultFocusMonth || model.months[0];
-  const focusStats = focusMonth ? focusMonthStats(model, focusMonth) : null;
-  const peakDay = peakReleaseDay(model);
-  const peakDate = peakDay ? parseDateKey(peakDay.dayKey) : null;
-  const todayKey = dateKey(startOfDay(new Date()));
-  const upcomingEvent = model.events.find((item) => item.date >= todayKey) || model.events[0];
+  return `
+    <article class="emerging-card" data-reveal>
+      <img src="${game.art}" alt="${escapeHtml(game.title)} artwork" />
+      <div class="emerging-card__body">
+        <p class="feature__kicker">${escapeHtml(game.category)}</p>
+        <h3>${escapeHtml(game.title)}</h3>
+        <p>${escapeHtml(game.summary)}</p>
+        ${renderPillRow(game.platforms || [])}
+        <ul class="feature__list">
+          ${(game.highlights || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+        </ul>
+        <p><strong>Status:</strong> ${escapeHtml(game.publicStatus || game.status || "Tracked")}</p>
+        <div class="feature__actions">${actions}</div>
+      </div>
+    </article>
+  `;
+}
 
-  calendarPreview.innerHTML = [
-    focusStats
+function newsItemCard(item, fallbackSection) {
+  return `
+    <article class="news-card" data-reveal>
+      <p class="feature__kicker">${escapeHtml(item.section || fallbackSection)}</p>
+      <h3><a href="${item.url}" target="_blank" rel="noreferrer">${escapeHtml(item.headline)}</a></h3>
+      <p>${escapeHtml(item.summary)}</p>
+      ${(item.platforms || []).length || (item.tags || []).length
+        ? `<div class="news-card__pills">
+            ${renderPillRow(item.platforms || [])}
+            ${renderPillRow(item.tags || [])}
+          </div>`
+        : ""}
+      <div class="news-card__meta">
+        <span>${escapeHtml(item.source || "Source")}</span>
+        <span>${escapeHtml(item.publishedDate || "Date TBA")}</span>
+      </div>
+    </article>
+  `;
+}
+
+function eventCardMarkup(item) {
+  const links = (item.watchLinks || [])
+    .filter((link) => link?.url)
+    .map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${escapeHtml(link.label || "Watch")}</a>`)
+    .join(" · ");
+  const official = item.officialUrl
+    ? `<a href="${item.officialUrl}" target="_blank" rel="noreferrer">Official page</a>`
+    : "";
+
+  return `
+    <article class="news-card" data-reveal>
+      <p class="feature__kicker">${escapeHtml(item.kind || "Event")}</p>
+      <h3>${official ? `<a href="${item.officialUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.title)}</a>` : escapeHtml(item.title)}</h3>
+      <p>${escapeHtml(formatEventTime(item))}</p>
+      <p>${escapeHtml(item.notes || item.summary || "Major games-industry event.")}</p>
+      ${renderPillRow(item.platformFocus || [])}
+      <div class="news-card__meta">
+        <span>${escapeHtml([item.venue, item.city].filter(Boolean).join(", ") || "Watch online")}</span>
+        <span>${links || official || escapeHtml(item.watchStatus || "Watch links pending")}</span>
+      </div>
+    </article>
+  `;
+}
+
+async function renderHome(registry) {
+  const featuredGamesGrid = document.getElementById("featuredGamesGrid");
+  const homeSectionLinks = document.getElementById("homeSectionLinks");
+  const homeHighlightsGrid = document.getElementById("homeHighlightsGrid");
+  if (!featuredGamesGrid || !homeSectionLinks || !homeHighlightsGrid) {
+    return;
+  }
+
+  const [gamesManifest, newsManifest, calendarManifest, knowledgeManifest] = await Promise.all([
+    fetchJson("data/games-manifest.json"),
+    fetchJson("data/games-news.json"),
+    fetchJson("data/release-calendar.json"),
+    fetchJson("data/knowledge-manifest.json"),
+  ]);
+
+  const featured = (gamesManifest.games || []).filter((game) => (gamesManifest.featuredIds || []).includes(game.id));
+  featuredGamesGrid.innerHTML = featured.map(gameCardMarkup).join("");
+  homeSectionLinks.innerHTML = sectionLinksMarkup(registry);
+
+  const upcomingEvent = (calendarManifest.events || [])
+    .filter((item) => item.date)
+    .sort((left, right) => String(left.date).localeCompare(String(right.date)))[0];
+
+  const reviewFeed = (newsManifest.feeds || []).find((feed) => feed.id === "reviews");
+  const previewFeed = (newsManifest.feeds || []).find((feed) => feed.id === "previews");
+
+  homeHighlightsGrid.innerHTML = [
+    `
+      <article class="preview-card" data-reveal>
+        <p class="feature__kicker">Game Development</p>
+        <h3>${escapeHtml(knowledgeManifest.landing?.title || "Build games like a solo studio")}</h3>
+        <p>${escapeHtml(knowledgeManifest.summary || "Public-safe craft guidance for builders and small teams.")}</p>
+        <a class="button button--ghost" href="game-development.html">Open reference</a>
+      </article>
+    `,
+    `
+      <article class="preview-card" data-reveal>
+        <p class="feature__kicker">Release Calendar</p>
+        <h3>${escapeHtml(calendarManifest.defaultFocusMonth || "Tracked release slate")}</h3>
+        <p>${(calendarManifest.releases || []).length} dated releases and ${(calendarManifest.undated || []).length} still-TBD games are tracked on the public calendar.</p>
+        <a class="button button--ghost" href="calendar.html">Open calendar</a>
+      </article>
+    `,
+    reviewFeed
       ? `
-        <article class="preview-card">
-          <p class="feature__kicker">Focus month</p>
-          <h3>${escapeHtml(formatMonthLabel(parseMonthKey(focusStats.month)))}</h3>
-          <p>${focusStats.releaseCount} tracked release${focusStats.releaseCount === 1 ? "" : "s"} and ${focusStats.eventCount} major event${focusStats.eventCount === 1 ? "" : "s"} in the default focus month.</p>
-          <p>${focusStats.platforms.length
-            ? focusStats.platforms
-                .slice(0, 3)
-                .map((item) => `${item.count} ${item.platform}`)
-                .join(", ")
-            : `${focusStats.eventCount} event-driven date${focusStats.eventCount === 1 ? "" : "s"} currently anchor this month.`}</p>
-          <a class="button button--ghost" href="calendar.html">Open calendar</a>
+        <article class="preview-card" data-reveal>
+          <p class="feature__kicker">Review Coverage</p>
+          <h3>${escapeHtml(reviewFeed.title)}</h3>
+          <p>${escapeHtml(reviewFeed.summary)}</p>
+          <a class="button button--ghost" href="news-reviews.html">Open reviews</a>
         </article>
       `
       : "",
-    peakDay && peakDate
+    previewFeed
       ? `
-        <article class="preview-card">
-          <p class="feature__kicker">Peak day</p>
-          <h3>${escapeHtml(formatLongDate(peakDate))}</h3>
-          <p>${peakDay.count} tracked calendar item${peakDay.count === 1 ? "" : "s"} land on this day.</p>
-          <p>${groupedPlatformCounts(peakDay.items).length
-            ? groupedPlatformCounts(peakDay.items)
-                .slice(0, 2)
-                .map((item) => `${item.count} ${item.platform}`)
-                .join(", ")
-            : `${peakDay.events?.length || 0} event${peakDay.events?.length === 1 ? "" : "s"} drive the density on this day.`}</p>
-          <a class="button button--ghost" href="calendar.html">Inspect the day</a>
+        <article class="preview-card" data-reveal>
+          <p class="feature__kicker">Preview Coverage</p>
+          <h3>${escapeHtml(previewFeed.title)}</h3>
+          <p>${escapeHtml(previewFeed.summary)}</p>
+          <a class="button button--ghost" href="news-previews.html">Open previews</a>
         </article>
       `
       : "",
     upcomingEvent
       ? `
-        <article class="preview-card">
-          <p class="feature__kicker">${escapeHtml(upcomingEvent.kind || "event")}</p>
+        <article class="preview-card" data-reveal>
+          <p class="feature__kicker">Next event</p>
           <h3>${escapeHtml(upcomingEvent.title)}</h3>
-          <p>${escapeHtml(formatCalendarEventTime(upcomingEvent))}</p>
-          <p>${escapeHtml(upcomingEvent.notes || "Refresh again closer to the event for the final stream destination.")}</p>
-          <a class="button button--ghost" href="calendar.html">Track the event</a>
+          <p>${escapeHtml(formatEventTime(upcomingEvent))}</p>
+          <a class="button button--ghost" href="events.html">Open events</a>
         </article>
       `
       : "",
-    `
-      <article class="preview-card">
-        <p class="feature__kicker">Still TBD</p>
-        <h3>${manifest.undated?.length || 0} tracked titles</h3>
-        <p>Undated or wide-window releases stay visible so the calendar does not pretend uncertainty has been solved.</p>
-        <p>${escapeHtml(manifest.notice || "Tracked release data is still being tightened.")}</p>
-        <a class="button button--ghost" href="calendar.html">See undated games</a>
-      </article>
-    `,
+  ]
+    .filter(Boolean)
+    .join("");
+
+  observeRevealItems();
+}
+
+async function renderGamesPage() {
+  const summary = document.getElementById("gamesSummary");
+  const filters = document.getElementById("gamesFilters");
+  const catalog = document.getElementById("gamesCatalogGrid");
+  const rail = document.getElementById("gamesRail");
+  if (!summary || !filters || !catalog || !rail) {
+    return;
+  }
+
+  const manifest = await fetchJson("data/games-manifest.json");
+  const games = manifest.games || [];
+  const allFilters = [
+    { id: "all", label: "All" },
+    ...(manifest.filters?.platforms || []).map((value) => ({ id: `platform:${value}`, label: value })),
+    ...(manifest.filters?.stages || []).map((value) => ({ id: `stage:${value}`, label: value })),
+  ];
+  let activeFilter = new URL(window.location.href).searchParams.get("filter") || "all";
+
+  summary.innerHTML = [
+    createSummaryChip("Tracked games", games.length, "is-green"),
+    createSummaryChip("Featured", (manifest.featuredIds || []).length, "is-yellow"),
+    createSummaryChip("Platforms", (manifest.filters?.platforms || []).length, "is-grey"),
   ].join("");
+
+  function filteredGames() {
+    if (activeFilter === "all") {
+      return games;
+    }
+    if (activeFilter.startsWith("platform:")) {
+      const value = activeFilter.slice("platform:".length);
+      return games.filter((game) => (game.platforms || []).includes(value));
+    }
+    if (activeFilter.startsWith("stage:")) {
+      const value = activeFilter.slice("stage:".length);
+      return games.filter((game) => game.stage === value);
+    }
+    return games;
+  }
+
+  function render() {
+    filters.innerHTML = allFilters
+      .map(
+        (item) => `
+          <button class="news-tab ${item.id === activeFilter ? "is-active" : ""}" type="button" data-filter="${item.id}">
+            ${escapeHtml(item.label)}
+          </button>
+        `,
+      )
+      .join("");
+
+    Array.from(filters.querySelectorAll("[data-filter]")).forEach((button) => {
+      button.addEventListener("click", () => {
+        activeFilter = button.dataset.filter || "all";
+        setSearchParam("filter", activeFilter === "all" ? "" : activeFilter);
+        render();
+      });
+    });
+
+    const visibleGames = filteredGames();
+    catalog.innerHTML = visibleGames.map(gameCardMarkup).join("");
+
+    const featuredGames = games.filter((game) => (manifest.featuredIds || []).includes(game.id));
+    rail.innerHTML = `
+      <section class="rail-panel" data-reveal>
+        <p class="eyebrow">Featured</p>
+        <h2>Strong public candidates</h2>
+        <p>${featuredGames.map((game) => escapeHtml(game.title)).join(", ")}</p>
+      </section>
+      <section class="rail-panel" data-reveal>
+        <p class="eyebrow">Current filter</p>
+        <h2>${escapeHtml(allFilters.find((item) => item.id === activeFilter)?.label || "All")}</h2>
+        <p>${visibleGames.length} game${visibleGames.length === 1 ? "" : "s"} currently visible.</p>
+      </section>
+    `;
+
+    observeRevealItems();
+  }
+
+  render();
 }
 
-async function initHome() {
-  const knowledgePreview = document.getElementById("knowledgePreview");
-  const newsPreview = document.getElementById("newsPreview");
-  if (!knowledgePreview || !newsPreview) return;
-
-  const [knowledge, news, calendar] = await Promise.all([
-    fetchJson("data/knowledge-manifest.json"),
-    fetchJson("data/games-news.json"),
-    fetchJson("data/release-calendar.json"),
-  ]);
-
-  knowledgePreview.innerHTML = knowledge.sections
-    .slice(0, 6)
-    .map(
-      (section) => `
-        <article class="preview-card">
-          <p class="feature__kicker">${escapeHtml(section.title)}</p>
-          <h3>${escapeHtml(section.title)}</h3>
-          <p>${escapeHtml(section.summary)}</p>
-          <p>Last reviewed ${escapeHtml(section.lastReviewed)}. Next trigger: ${escapeHtml(section.nextReviewTrigger)}</p>
-          <a class="button button--ghost" href="game-development.html#${encodeURIComponent(section.id)}">Open section</a>
-        </article>
-      `,
-    )
-    .join("");
-
-  newsPreview.innerHTML = news.feeds
-    .map(
-      (feed) => `
-        <article class="preview-card">
-          <p class="feature__kicker">${escapeHtml(feed.title)}</p>
-          <h3>${escapeHtml(feed.title)}</h3>
-          <p>${escapeHtml(feed.summary)}</p>
-          <p>${feed.generatedAt ? `Latest output ${escapeHtml(feed.generatedAt)}.` : "Pipeline-ready. Waiting for the first generated export."}</p>
-          <p>Tracked sources: ${feed.sources.map((source) => escapeHtml(source)).join(", ")}</p>
-          <p>Platform focus: ${(feed.platformFocus || []).map((platform) => escapeHtml(platform)).join(", ")}</p>
-          <a class="button button--ghost" href="news.html#${encodeURIComponent(feed.id)}">Open feed</a>
-        </article>
-      `,
-    )
-    .join("");
-
-  renderCalendarPreview(calendar);
-}
-
-async function initKnowledgePage() {
+async function renderKnowledgePage() {
   const nav = document.getElementById("knowledgePageNav");
   const meta = document.getElementById("knowledgePageMeta");
   const title = document.getElementById("knowledgePageTitle");
   const description = document.getElementById("knowledgePageDescription");
   const content = document.getElementById("knowledgePageContent");
-  if (!nav || !meta || !title || !description || !content) return;
+  if (!nav || !meta || !title || !description || !content) {
+    return;
+  }
 
   const manifest = await fetchJson("data/knowledge-manifest.json");
   const landing = manifest.landing;
@@ -665,6 +688,15 @@ async function initKnowledgePage() {
       description: section.summary,
       group: "Categories",
     })),
+    {
+      id: "research-prompt-packs",
+      title: "Research Prompt Packs",
+      description: "Reusable prompts for category refreshes and news-source curation.",
+      path: manifest.promptPacks.path,
+      promptCards: [],
+      references: [],
+      group: "Categories",
+    },
   ];
 
   async function openDocument(document) {
@@ -682,356 +714,306 @@ async function initKnowledgePage() {
       button.classList.toggle("is-active", button.dataset.docId === document.id);
     });
 
-    const hash = encodeURIComponent(document.id);
-    if (window.location.hash !== `#${hash}`) {
-      history.replaceState(null, "", `#${hash}`);
-    }
+    history.replaceState(null, "", `#${encodeURIComponent(document.id)}`);
   }
 
-  const startGroup = document.createElement("section");
-  startGroup.className = "docs-nav__group";
-  startGroup.innerHTML = `<h2>Start here</h2>`;
+  nav.innerHTML = `
+    <section class="docs-nav__group">
+      <h2>Start here</h2>
+      <button class="docs-nav__button" type="button" data-doc-id="${landing.id}">
+        <strong>${escapeHtml(landing.title)}</strong>
+        <span>${escapeHtml(landing.summary)}</span>
+      </button>
+    </section>
+    <section class="docs-nav__group">
+      <h2>Categories</h2>
+      ${documents
+        .filter((document) => document.group === "Categories")
+        .map(
+          (document) => `
+            <button class="docs-nav__button" type="button" data-doc-id="${document.id}">
+              <strong>${escapeHtml(document.title)}</strong>
+              <span>${escapeHtml(document.summary || document.description || "")}</span>
+            </button>
+          `,
+        )
+        .join("")}
+    </section>
+  `;
 
-  const startButton = document.createElement("button");
-  startButton.type = "button";
-  startButton.className = "docs-nav__button";
-  startButton.dataset.docId = landing.id;
-  startButton.innerHTML = `<strong>${landing.title}</strong><span>${landing.summary}</span>`;
-  startButton.addEventListener("click", () => openDocument(documents[0]));
-  startGroup.appendChild(startButton);
-  nav.appendChild(startGroup);
-
-  const categoriesGroup = document.createElement("section");
-  categoriesGroup.className = "docs-nav__group";
-  categoriesGroup.innerHTML = `<h2>Categories</h2>`;
-
-  sections.forEach((section) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "docs-nav__button";
-    button.dataset.docId = section.id;
-    button.innerHTML = `<strong>${section.title}</strong><span>${section.summary}</span>`;
-    button.addEventListener("click", () => openDocument(documents.find((document) => document.id === section.id)));
-    categoriesGroup.appendChild(button);
+  Array.from(nav.querySelectorAll("[data-doc-id]")).forEach((button) => {
+    button.addEventListener("click", () => {
+      const document = documents.find((item) => item.id === button.dataset.docId);
+      if (document) {
+        openDocument(document);
+      }
+    });
   });
 
-  const promptButton = document.createElement("button");
-  promptButton.type = "button";
-  promptButton.className = "docs-nav__button";
-  promptButton.dataset.docId = "research-prompt-packs";
-  promptButton.innerHTML = `<strong>Research Prompt Packs</strong><span>Reusable prompts for deeper category refreshes and source curation.</span>`;
-  promptButton.addEventListener("click", () =>
-    openDocument({
-      id: "research-prompt-packs",
-      title: "Research Prompt Packs",
-      description: "Reusable prompts for category refreshes and news-source curation.",
-      path: manifest.promptPacks.path,
-      promptCards: [],
-      references: [],
-      group: "Categories",
-    }),
-  );
-  categoriesGroup.appendChild(promptButton);
-  nav.appendChild(categoriesGroup);
-
   const requestedId = decodeURIComponent(window.location.hash.replace(/^#/, "")) || landing.id;
-  const activeDocument =
-    documents.find((document) => document.id === requestedId) ||
-    (requestedId === "research-prompt-packs"
-      ? {
-          id: "research-prompt-packs",
-          title: "Research Prompt Packs",
-          description: "Reusable prompts for category refreshes and news-source curation.",
-          path: manifest.promptPacks.path,
-          promptCards: [],
-          references: [],
-          group: "Categories",
-        }
-      : documents[0]);
-
-  await openDocument(activeDocument);
+  await openDocument(documents.find((document) => document.id === requestedId) || documents[0]);
 }
 
-async function initReviewsPage() {
-  if (!reviewsPageNav || !reviewsPageTitle || !reviewsPageDescription || !reviewsPageContent || !reviewsSummary || !reviewsFeedFocus) {
+async function renderNewsLanding() {
+  const grid = document.getElementById("newsLandingGrid");
+  const rail = document.getElementById("newsLandingRail");
+  if (!grid || !rail) {
     return;
   }
 
-  const [manifest, news] = await Promise.all([fetchJson("data/reviews-manifest.json"), fetchJson("data/games-news.json")]);
-  const landing = manifest.landing;
-  const sections = manifest.sections || [];
-  const documents = [
-    {
-      id: landing.id,
-      title: landing.title,
-      summary: manifest.summary,
-      description: landing.summary,
-      path: landing.path,
-      promptCards: [],
-      references: [],
-      group: "Start here",
-    },
-    ...sections.map((section) => ({
-      ...section,
-      description: section.summary,
-      group: "Categories",
-    })),
-  ];
+  const [manifest, registry] = await Promise.all([fetchJson("data/games-news.json"), loadRegistry()]);
+  const registryMap = registryEntryMap(registry);
 
-  reviewsSummary.innerHTML = [
-    `<article class="summary-chip"><span class="summary-chip__label">Scoring</span><strong class="summary-chip__value is-green">10-point</strong></article>`,
-    `<article class="summary-chip"><span class="summary-chip__label">Formats</span><strong class="summary-chip__value is-yellow">${sections.length + 1}</strong></article>`,
-    `<article class="summary-chip"><span class="summary-chip__label">Feed rails</span><strong class="summary-chip__value is-grey">${manifest.feedFocus?.length || 0}</strong></article>`,
-  ].join("");
-
-  async function openDocument(document) {
-    const markdown = await fetchMarkdown(document.path);
-    reviewsPageMeta.textContent = document.group;
-    reviewsPageTitle.textContent = document.title;
-    reviewsPageDescription.textContent = document.description || "";
-    reviewsPageContent.innerHTML = `
-      ${createReferenceList(document.references)}
-      ${createPromptSection(document.promptCards)}
-      <div class="markdown-body">${markdownToHtml(markdown)}</div>
-    `;
-
-    Array.from(reviewsPageNav.querySelectorAll(".docs-nav__button")).forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.docId === document.id);
-    });
-
-    const hash = encodeURIComponent(document.id);
-    if (window.location.hash !== `#${hash}`) {
-      history.replaceState(null, "", `#${hash}`);
-    }
-  }
-
-  const startGroup = document.createElement("section");
-  startGroup.className = "docs-nav__group";
-  startGroup.innerHTML = `<h2>Start here</h2>`;
-
-  const startButton = document.createElement("button");
-  startButton.type = "button";
-  startButton.className = "docs-nav__button";
-  startButton.dataset.docId = landing.id;
-  startButton.innerHTML = `<strong>${landing.title}</strong><span>${landing.summary}</span>`;
-  startButton.addEventListener("click", () => openDocument(documents[0]));
-  startGroup.appendChild(startButton);
-  reviewsPageNav.appendChild(startGroup);
-
-  const categoriesGroup = document.createElement("section");
-  categoriesGroup.className = "docs-nav__group";
-  categoriesGroup.innerHTML = `<h2>Categories</h2>`;
-
-  sections.forEach((section) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "docs-nav__button";
-    button.dataset.docId = section.id;
-    button.innerHTML = `<strong>${section.title}</strong><span>${section.summary}</span>`;
-    button.addEventListener("click", () => openDocument(documents.find((document) => document.id === section.id)));
-    categoriesGroup.appendChild(button);
-  });
-
-  reviewsPageNav.appendChild(categoriesGroup);
-
-  const requestedId = decodeURIComponent(window.location.hash.replace(/^#/, "")) || landing.id;
-  const activeDocument = documents.find((document) => document.id === requestedId) || documents[0];
-  await openDocument(activeDocument);
-
-  const feedFocusIds = new Set((manifest.feedFocus || []).map((item) => item.id));
-  const feedCards = (news.feeds || []).filter((feed) => feedFocusIds.has(feed.id));
-  reviewsFeedFocus.innerHTML = feedCards
-    .map(
-      (feed) => `
-        <article class="preview-card">
+  grid.innerHTML = (manifest.feeds || [])
+    .map((feed) => {
+      const routeById = {
+        "game-dev": registryMap.get("news-development")?.publicRoute || "news-development.html",
+        gaming: registryMap.get("news-gaming")?.publicRoute || "news-gaming.html",
+        reviews: registryMap.get("news-reviews")?.publicRoute || "news-reviews.html",
+        previews: registryMap.get("news-previews")?.publicRoute || "news-previews.html",
+      };
+      return `
+        <article class="preview-card" data-reveal>
           <p class="feature__kicker">${escapeHtml(feed.title)}</p>
           <h3>${escapeHtml(feed.title)}</h3>
           <p>${escapeHtml(feed.summary)}</p>
-          <p>${feed.generatedAt ? `Latest output ${escapeHtml(feed.generatedAt)}.` : escapeHtml(news.notice)}</p>
-          <p>Tracked sources: ${feed.sources.map((source) => escapeHtml(source)).join(", ")}</p>
-          <p>Platform focus: ${(feed.platformFocus || []).map((platform) => escapeHtml(platform)).join(", ")}</p>
-          <a class="button button--ghost" href="news.html#${encodeURIComponent(feed.id)}">Open feed</a>
+          <p>${feed.generatedAt ? `Latest output ${escapeHtml(feed.generatedAt)}.` : escapeHtml(manifest.notice)}</p>
+          ${renderPillRow(feed.platformFocus || [])}
+          <a class="button button--ghost" href="${routeById[feed.id] || "news.html"}">Open feed</a>
         </article>
-      `,
-    )
+      `;
+    })
     .join("");
+
+  rail.innerHTML = `
+    <section class="rail-panel" data-reveal>
+      <p class="eyebrow">Platform scope</p>
+      <h2>Tracked platforms</h2>
+      ${renderPillRow(manifest.platformPolicy?.allowed || [])}
+      <p>${escapeHtml(manifest.platformPolicy?.summary || "")}</p>
+    </section>
+    <section class="rail-panel" data-reveal>
+      <p class="eyebrow">Editorial mode</p>
+      <h2>Curated, not scraped live</h2>
+      <p>${escapeHtml(manifest.notice)}</p>
+    </section>
+  `;
+
+  observeRevealItems();
 }
 
-async function initNewsPage() {
-  const summary = document.getElementById("newsSummary");
-  const tabs = document.getElementById("newsTabs");
-  const feed = document.getElementById("newsFeed");
-  if (!summary || !tabs || !feed) return;
-
-  const manifest = await fetchJson("data/games-news.json");
-  const feeds = manifest.feeds || [];
-  let activeFeedId = decodeURIComponent(window.location.hash.replace(/^#/, "")) || feeds[0]?.id;
-
-  summary.innerHTML = [
-    `<article class="summary-chip"><span class="summary-chip__label">Status</span><strong class="summary-chip__value is-green">${escapeHtml(
-      manifest.status || "pipeline-ready",
-    )}</strong></article>`,
-    `<article class="summary-chip"><span class="summary-chip__label">Feeds</span><strong class="summary-chip__value is-grey">${feeds.length}</strong></article>`,
-    `<article class="summary-chip"><span class="summary-chip__label">Tracked Platforms</span><strong class="summary-chip__value is-grey">${(manifest.platformPolicy?.allowed || []).length}</strong></article>`,
-    `<article class="summary-chip"><span class="summary-chip__label">Updated</span><strong class="summary-chip__value is-yellow">${escapeHtml(
-      manifest.updatedAt,
-    )}</strong></article>`,
-  ].join("");
-
-  function renderFeed(feedData) {
-    const supportedPlatforms = feedData.platformFocus || manifest.platformPolicy?.allowed || [];
-    const taggingRules = feedData.taggingRules || [];
-    feed.innerHTML = `
-      <article class="feed-hero">
-        <p class="feature__kicker">${escapeHtml(feedData.title)}</p>
-        <h2>${escapeHtml(feedData.summary)}</h2>
-        <p>${feedData.generatedAt ? `Latest generated output: ${escapeHtml(feedData.generatedAt)}.` : escapeHtml(manifest.notice)}</p>
-      </article>
-      <section class="feed-sources">
-        <p class="feature__kicker">Tracked sources</p>
-        ${renderPillRow(feedData.sources || [])}
-      </section>
-      <section class="feed-platforms">
-        <p class="feature__kicker">Platform focus</p>
-        ${renderPillRow(supportedPlatforms)}
-        <p>${escapeHtml(manifest.platformPolicy?.summary || "Platform tags should stay explicit and honest.")}</p>
-        ${
-          taggingRules.length
-            ? `<ul class="docs-link-list">${taggingRules
-                .map((rule) => `<li>${escapeHtml(rule)}</li>`)
-                .join("")}</ul>`
-            : ""
-        }
-      </section>
-      ${
-        feedData.items.length
-          ? `<section class="news-card-grid">
-              ${feedData.items
-                .map(
-                  (item) => `
-                  <article class="news-card">
-                    <p class="feature__kicker">${escapeHtml(item.section || feedData.title)}</p>
-                    <h3><a href="${item.url}" target="_blank" rel="noreferrer">${escapeHtml(item.headline)}</a></h3>
-                    <p>${escapeHtml(item.summary)}</p>
-                    ${
-                      (item.platforms || []).length || (item.tags || []).length
-                        ? `<div class="news-card__pills">
-                            ${renderPillRow(item.platforms || [])}
-                            ${renderPillRow(item.tags || [])}
-                          </div>`
-                        : ""
-                    }
-                    <div class="news-card__meta">
-                      <span>${escapeHtml(item.source)}</span>
-                      <span>${escapeHtml(item.publishedDate)}</span>
-                    </div>
-                  </article>
-                `,
-                )
-                .join("")}
-            </section>`
-          : `<section class="empty-state">
-              <h3>Pipeline ready, first feed export still pending</h3>
-              <p>${escapeHtml(manifest.notice)}</p>
-            </section>`
-      }
-    `;
+async function renderReviewCoveragePage() {
+  const grid = document.getElementById("reviewCoverageGrid");
+  const rail = document.getElementById("reviewCoverageRail");
+  if (!grid || !rail) {
+    return;
   }
 
-  tabs.innerHTML = "";
-  feeds.forEach((feedData) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "news-tab";
-    button.textContent = feedData.title;
-    button.dataset.feedId = feedData.id;
-    button.addEventListener("click", () => {
-      activeFeedId = feedData.id;
-      history.replaceState(null, "", `#${encodeURIComponent(feedData.id)}`);
-      Array.from(tabs.querySelectorAll(".news-tab")).forEach((tab) => {
-        tab.classList.toggle("is-active", tab.dataset.feedId === activeFeedId);
-      });
-      renderFeed(feedData);
-    });
-    tabs.appendChild(button);
-  });
+  const manifest = await fetchJson("data/games-news.json");
+  const reviewsFeed = (manifest.feeds || []).find((feed) => feed.id === "reviews");
+  const previewsFeed = (manifest.feeds || []).find((feed) => feed.id === "previews");
 
-  const activeFeed = feeds.find((feedData) => feedData.id === activeFeedId) || feeds[0];
-  Array.from(tabs.querySelectorAll(".news-tab")).forEach((tab) => {
-    tab.classList.toggle("is-active", tab.dataset.feedId === activeFeed.id);
-  });
-  renderFeed(activeFeed);
+  grid.innerHTML = [
+    reviewsFeed
+      ? `
+        <article class="preview-card" data-reveal>
+          <p class="feature__kicker">Reviews</p>
+          <h3>${escapeHtml(reviewsFeed.title)}</h3>
+          <p>${escapeHtml(reviewsFeed.summary)}</p>
+          <a class="button button--ghost" href="news-reviews.html">Open review coverage</a>
+        </article>
+      `
+      : "",
+    previewsFeed
+      ? `
+        <article class="preview-card" data-reveal>
+          <p class="feature__kicker">Previews</p>
+          <h3>${escapeHtml(previewsFeed.title)}</h3>
+          <p>${escapeHtml(previewsFeed.summary)}</p>
+          <a class="button button--ghost" href="news-previews.html">Open preview coverage</a>
+        </article>
+      `
+      : "",
+  ]
+    .filter(Boolean)
+    .join("");
+
+  rail.innerHTML = `
+    <section class="rail-panel" data-reveal>
+      <p class="eyebrow">Editorial stance</p>
+      <h2>No house-review pretense</h2>
+      <p>GameTrackDaily should curate intelligently, keep verdicts and first impressions separate, and let the wider games press do the actual scoring work unless you later add a true editorial review desk.</p>
+    </section>
+    <section class="rail-panel" data-reveal>
+      <p class="eyebrow">Source families</p>
+      <h2>Wider games press</h2>
+      ${renderPillRow(
+        Array.from(new Set([...(reviewsFeed?.sources || []), ...(previewsFeed?.sources || [])])).slice(0, 8),
+      )}
+    </section>
+  `;
+
+  observeRevealItems();
 }
 
-async function initCalendarPage() {
-  if (
-    !calendarSummary ||
-    !calendarNotice ||
-    !calendarPolicy ||
-    !calendarViewToggle ||
-    !calendarWeekdays ||
-    !calendarGrid ||
-    !calendarDetail ||
-    !calendarRangeLabel ||
-    !calendarPrevButton ||
-    !calendarNextButton
-  ) {
+async function renderNewsFeedPage(feedId) {
+  const summary = document.getElementById("newsFeedSummary");
+  const filters = document.getElementById("newsFeedFilters");
+  const body = document.getElementById("newsFeedBody");
+  const rail = document.getElementById("newsFeedRail");
+  const heroTitle = document.getElementById("newsFeedTitle");
+  const heroCopy = document.getElementById("newsFeedCopy");
+  if (!summary || !filters || !body || !rail || !heroTitle || !heroCopy) {
+    return;
+  }
+
+  const manifest = await fetchJson("data/games-news.json");
+  const feed = (manifest.feeds || []).find((item) => item.id === feedId) || manifest.feeds?.[0];
+  if (!feed) {
+    body.innerHTML = `<section class="empty-state"><h3>No feed configured</h3><p>The selected feed could not be loaded.</p></section>`;
+    return;
+  }
+
+  let activeFamily = new URL(window.location.href).searchParams.get("platform") || "all";
+  const families = ["all", "windows", "xbox", "playstation"];
+
+  heroTitle.textContent = feed.title;
+  heroCopy.textContent = feed.summary;
+
+  function filteredItems() {
+    return (feed.items || []).filter((item) => matchesPlatformFamily(item.platforms || [], activeFamily));
+  }
+
+  function render() {
+    const items = filteredItems();
+    summary.innerHTML = [
+      createSummaryChip("Items", items.length, "is-green"),
+      createSummaryChip("Sources", (feed.sources || []).length, "is-grey"),
+      createSummaryChip("Updated", feed.generatedAt || "Pending", "is-yellow"),
+    ].join("");
+
+    filters.innerHTML = families
+      .map(
+        (family) => `
+          <button class="news-tab ${family === activeFamily ? "is-active" : ""}" type="button" data-family="${family}">
+            ${escapeHtml(platformFamilyLabel(family))}
+          </button>
+        `,
+      )
+      .join("");
+
+    Array.from(filters.querySelectorAll("[data-family]")).forEach((button) => {
+      button.addEventListener("click", () => {
+        activeFamily = button.dataset.family || "all";
+        setSearchParam("platform", activeFamily === "all" ? "" : activeFamily);
+        render();
+      });
+    });
+
+    body.innerHTML = items.length
+      ? `<section class="news-card-grid">${items.map((item) => newsItemCard(item, feed.title)).join("")}</section>`
+      : `<section class="empty-state"><h3>Feed ready, first export still pending</h3><p>${escapeHtml(manifest.notice)}</p></section>`;
+
+    rail.innerHTML = `
+      <section class="rail-panel" data-reveal>
+        <p class="eyebrow">Tracked sources</p>
+        <h2>${escapeHtml(feed.title)}</h2>
+        ${renderPillRow(feed.sources || [])}
+      </section>
+      <section class="rail-panel" data-reveal>
+        <p class="eyebrow">Platform focus</p>
+        <h2>${escapeHtml(platformFamilyLabel(activeFamily))}</h2>
+        ${renderPillRow(feed.platformFocus || [])}
+      </section>
+      <section class="rail-panel" data-reveal>
+        <p class="eyebrow">Related feeds</p>
+        <h2>Stay in context</h2>
+        <p>
+          <a href="news-development.html">Game Dev</a><br />
+          <a href="news-gaming.html">Gaming</a><br />
+          <a href="news-reviews.html">Reviews</a><br />
+          <a href="news-previews.html">Previews</a>
+        </p>
+      </section>
+    `;
+
+    observeRevealItems();
+  }
+
+  render();
+}
+
+function buildReleaseModel(manifest) {
+  const dated = (manifest.releases || [])
+    .filter((item) => item.date)
+    .map((item) => {
+      const releaseDate = parseDateKey(item.date);
+      return releaseDate ? { ...item, releaseDate } : null;
+    })
+    .filter(Boolean)
+    .sort((left, right) => {
+      if (left.date === right.date) {
+        return left.title.localeCompare(right.title);
+      }
+      return left.date.localeCompare(right.date);
+    });
+
+  const byDate = new Map();
+  dated.forEach((item) => {
+    const items = byDate.get(item.date) || [];
+    items.push(item);
+    byDate.set(item.date, items);
+  });
+
+  return {
+    dated,
+    byDate,
+    undated: manifest.undated || [],
+  };
+}
+
+async function renderCalendarPage() {
+  const summary = document.getElementById("calendarSummary");
+  const filters = document.getElementById("calendarFilters");
+  const notice = document.getElementById("calendarNotice");
+  const weekdays = document.getElementById("calendarWeekdays");
+  const grid = document.getElementById("calendarGrid");
+  const detail = document.getElementById("calendarDetail");
+  const rangeLabel = document.getElementById("calendarRangeLabel");
+  const prevButton = document.getElementById("calendarPrevButton");
+  const nextButton = document.getElementById("calendarNextButton");
+  const viewToggle = document.getElementById("calendarViewToggle");
+  const rail = document.getElementById("calendarRail");
+  if (!summary || !filters || !notice || !weekdays || !grid || !detail || !rangeLabel || !prevButton || !nextButton || !viewToggle || !rail) {
     return;
   }
 
   const manifest = await fetchJson("data/release-calendar.json");
-  const model = buildReleaseCalendarModel(manifest);
-  const focusMonthDate =
-    parseMonthKey(manifest.defaultFocusMonth) ||
-    parseDateKey(model.dated[0]?.date) ||
-    parseDateKey(model.events[0]?.date) ||
-    new Date();
-  let view = manifest.defaultView || "month";
-  let cursorDate = startOfDay(focusMonthDate);
-  let selectedDateKey =
-    model.dated.find((item) => item.date.startsWith(monthKey(focusMonthDate)))?.date ||
-    model.events.find((item) => item.date.startsWith(monthKey(focusMonthDate)))?.date ||
-    model.dated[0]?.date ||
-    model.events[0]?.date ||
-    null;
+  const model = buildReleaseModel(manifest);
+  const firstDate = parseDateKey(model.dated[0]?.date) || new Date();
+  let view = new URL(window.location.href).searchParams.get("view") || "month";
+  let family = new URL(window.location.href).searchParams.get("platform") || "all";
+  let cursorDate = startOfDay(firstDate);
+  let selectedDateKey = new URL(window.location.href).searchParams.get("date") || model.dated[0]?.date || null;
 
-  calendarSummary.innerHTML = [
-    ["Status", manifest.status || "seeded", "is-yellow"],
-    ["Dated releases", model.dated.length, "is-green"],
-    ["Events", model.events.length, "is-green"],
-    ["Still TBD", model.undated.length, "is-grey"],
-    ["Tracked platforms", (manifest.platformPolicy?.allowed || []).length, "is-grey"],
-  ]
-    .map(
-      ([label, value, tone]) => `
-        <article class="summary-chip">
-          <span class="summary-chip__label">${label}</span>
-          <strong class="summary-chip__value ${tone}">${escapeHtml(String(value))}</strong>
-        </article>
-      `,
-    )
-    .join("");
+  weekdays.innerHTML = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((label) => `<span>${label}</span>`).join("");
+  notice.textContent = `${manifest.notice} Major showcases and awards now live on the separate Events page.`;
 
-  calendarNotice.textContent = manifest.notice || "";
-  calendarPolicy.innerHTML = `
-    <div class="feed-sources">
-      <p class="feature__kicker">Platform scope</p>
-      ${renderPillRow(manifest.platformPolicy?.allowed || [])}
-      <p>${escapeHtml(manifest.platformPolicy?.summary || "")}</p>
-    </div>
-    <div class="feed-sources">
-      <p class="feature__kicker">Event coverage</p>
-      ${renderPillRow(manifest.eventPolicy?.coveredKinds || [])}
-      <p>${escapeHtml(manifest.eventPolicy?.summary || "Major showcases and awards live here alongside tracked releases.")}</p>
-      <p>${escapeHtml(manifest.eventPolicy?.refreshCadence?.baseline || "Weekly review")} with a faster refresh inside the final ${escapeHtml(String(manifest.eventPolicy?.refreshCadence?.intensifyWithinDays || 14))} days.</p>
-    </div>
-  `;
+  function filteredReleases() {
+    return model.dated.filter((item) => matchesPlatformFamily(item.platforms || [], family));
+  }
 
-  calendarWeekdays.innerHTML = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-    .map((label) => `<span>${label}</span>`)
-    .join("");
+  function groupedByDate(items) {
+    const map = new Map();
+    items.forEach((item) => {
+      const entries = map.get(item.date) || [];
+      entries.push(item);
+      map.set(item.date, entries);
+    });
+    return map;
+  }
 
-  function currentCells() {
+  function cellsForCurrentView() {
     if (view === "week") {
       const start = startOfWeek(cursorDate);
       return Array.from({ length: 7 }, (_, index) => {
@@ -1048,158 +1030,279 @@ async function initCalendarPage() {
     });
   }
 
-  function ensureSelectedDate(cells) {
-    if (selectedDateKey && cells.some((cell) => cell.key === selectedDateKey)) {
-      return;
-    }
+  function render() {
+    const visibleReleases = filteredReleases();
+    const visibleByDate = groupedByDate(visibleReleases);
+    const cells = cellsForCurrentView();
 
-    const activeCell = cells.find((cell) => {
-      const releases = model.byDate.get(cell.key) || [];
-      const events = model.eventsByDate.get(cell.key) || [];
-      return releases.length || events.length;
+    summary.innerHTML = [
+      createSummaryChip("Dated releases", visibleReleases.length, "is-green"),
+      createSummaryChip("Still TBD", (manifest.undated || []).filter((item) => matchesPlatformFamily(item.platforms || [], family)).length, "is-grey"),
+      createSummaryChip("View", view === "week" ? "Week" : "Month", "is-yellow"),
+    ].join("");
+
+    filters.innerHTML = ["all", "windows", "xbox", "playstation"]
+      .map(
+        (item) => `
+          <button class="news-tab ${item === family ? "is-active" : ""}" type="button" data-family="${item}">
+            ${escapeHtml(platformFamilyLabel(item))}
+          </button>
+        `,
+      )
+      .join("");
+
+    Array.from(filters.querySelectorAll("[data-family]")).forEach((button) => {
+      button.addEventListener("click", () => {
+        family = button.dataset.family || "all";
+        setSearchParam("platform", family === "all" ? "" : family);
+        render();
+      });
     });
-    selectedDateKey = activeCell?.key || cells[0]?.key || null;
-  }
 
-  function renderDetail() {
-    const selectedDate = selectedDateKey ? parseDateKey(selectedDateKey) : null;
-    const releases = selectedDateKey ? model.byDate.get(selectedDateKey) || [] : [];
-    const events = selectedDateKey ? model.eventsByDate.get(selectedDateKey) || [] : [];
-    const platformCounts = groupedPlatformCounts(releases);
-    const totalItems = releases.length + events.length;
-
-    calendarDetail.innerHTML = `
-      <div class="calendar-detail__head">
-        <div>
-          <p class="feature__kicker">Selected day</p>
-          <h2>${selectedDate ? escapeHtml(formatLongDate(selectedDate)) : "Choose a day"}</h2>
-        </div>
-        <p>${totalItems ? `${releases.length} release${releases.length === 1 ? "" : "s"} and ${events.length} event${events.length === 1 ? "" : "s"}` : "No tracked activity on this day."}</p>
-      </div>
-      ${platformCounts.length ? renderPillRow(platformCounts.map((item) => `${item.count} ${item.platform}`)) : ""}
-      ${
-        events.length
-          ? `
-            <section class="calendar-events">
-              <p class="feature__kicker">Events</p>
-              <ul class="calendar-release-list">${eventListMarkup(events)}</ul>
-            </section>
-          `
-          : ""
-      }
-      ${
-        releases.length
-          ? `<ul class="calendar-release-list">${releaseListMarkup(releases)}</ul>`
-          : events.length
-            ? ""
-            : `<div class="empty-state"><h3>Quiet day</h3><p>No tracked releases or events are currently recorded for this date.</p></div>`
-      }
-      ${
-        model.undated.length
-          ? `
-            <section class="calendar-undated">
-              <p class="feature__kicker">Still TBD</p>
-              <ul class="calendar-release-list">${releaseListMarkup(model.undated)}</ul>
-            </section>
-          `
-          : ""
-      }
-    `;
-  }
-
-  function renderCalendar() {
-    const cells = currentCells();
-    ensureSelectedDate(cells);
-    Array.from(calendarViewToggle.querySelectorAll(".calendar-toggle__button")).forEach((button) => {
+    Array.from(viewToggle.querySelectorAll(".calendar-toggle__button")).forEach((button) => {
       button.classList.toggle("is-active", button.dataset.view === view);
     });
 
-    calendarRangeLabel.textContent = view === "week" ? formatWeekLabel(startOfWeek(cursorDate)) : formatMonthLabel(cursorDate);
-    calendarGrid.classList.toggle("is-week", view === "week");
-    calendarGrid.innerHTML = cells
+    rangeLabel.textContent = view === "week" ? formatWeekLabel(startOfWeek(cursorDate)) : formatMonthLabel(cursorDate);
+    grid.classList.toggle("is-week", view === "week");
+    grid.innerHTML = cells
       .map((cell) => {
-        const releases = model.byDate.get(cell.key) || [];
-        const events = model.eventsByDate.get(cell.key) || [];
-        const density = densityClass(releases.length + events.length, manifest.densityRules);
+        const releases = visibleByDate.get(cell.key) || [];
         const platformCounts = groupedPlatformCounts(releases)
           .slice(0, 2)
           .map((item) => `<span>${escapeHtml(`${item.count} ${item.platform}`)}</span>`)
           .join("");
-        const eventLabel = events.length ? `<span>${escapeHtml(`${events.length} event${events.length === 1 ? "" : "s"}`)}</span>` : "";
         return `
           <button
-            class="calendar-day ${density} ${cell.outsideMonth ? "is-outside-month" : ""} ${selectedDateKey === cell.key ? "is-selected" : ""}"
-            data-date-key="${cell.key}"
+            class="calendar-day ${releases.length ? "is-active" : "is-empty"} ${cell.outsideMonth ? "is-outside-month" : ""} ${selectedDateKey === cell.key ? "is-selected" : ""}"
             type="button"
+            data-date-key="${cell.key}"
           >
             <span class="calendar-day__date">${escapeHtml(
               new Intl.DateTimeFormat([], { month: "short", day: "numeric" }).format(cell.date),
             )}</span>
-            <strong class="calendar-day__count">${releases.length + events.length ? `${releases.length + events.length} item${releases.length + events.length === 1 ? "" : "s"}` : "Quiet"}</strong>
-            <span class="calendar-day__platforms">${eventLabel}${platformCounts || "&nbsp;"}</span>
+            <strong class="calendar-day__count">${releases.length ? `${releases.length} release${releases.length === 1 ? "" : "s"}` : "Quiet"}</strong>
+            <span class="calendar-day__platforms">${platformCounts || "&nbsp;"}</span>
           </button>
         `;
       })
       .join("");
 
-    Array.from(calendarGrid.querySelectorAll(".calendar-day")).forEach((button) => {
+    Array.from(grid.querySelectorAll("[data-date-key]")).forEach((button) => {
       button.addEventListener("click", () => {
         selectedDateKey = button.dataset.dateKey;
-        renderCalendar();
+        setSearchParam("date", selectedDateKey);
+        render();
       });
     });
 
-    renderDetail();
+    const selectedReleases = selectedDateKey ? visibleByDate.get(selectedDateKey) || [] : [];
+    const selectedDate = selectedDateKey ? parseDateKey(selectedDateKey) : null;
+    detail.innerHTML = `
+      <div class="calendar-detail__head">
+        <div>
+          <p class="feature__kicker">Selected day</p>
+          <h2>${selectedDate ? escapeHtml(formatLongDate(selectedDate)) : "Choose a day"}</h2>
+        </div>
+        <p>${selectedReleases.length ? `${selectedReleases.length} tracked release${selectedReleases.length === 1 ? "" : "s"}` : "No tracked releases on this day."}</p>
+      </div>
+      ${
+        selectedReleases.length
+          ? `<ul class="calendar-release-list">
+              ${selectedReleases
+                .map(
+                  (item) => `
+                    <li class="calendar-release-item">
+                      <div>
+                        <strong>${item.igdbUrl ? `<a href="${item.igdbUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.title)}</a>` : escapeHtml(item.title)}</strong>
+                        <p>${escapeHtml((item.platforms || []).join(", ") || "Platform not recorded")}</p>
+                      </div>
+                      <span>${escapeHtml(item.source || "Tracked list")}</span>
+                    </li>
+                  `,
+                )
+                .join("")}
+            </ul>`
+          : `<div class="empty-state"><h3>Quiet day</h3><p>No tracked releases match the active filter on this date.</p></div>`
+      }
+    `;
+
+    const nextRelease = visibleReleases.find((item) => item.date >= dateKey(startOfDay(new Date()))) || visibleReleases[0];
+    rail.innerHTML = `
+      <section class="rail-panel" data-reveal>
+        <p class="eyebrow">Next release</p>
+        <h2>${escapeHtml(nextRelease?.title || "No dated release")}</h2>
+        <p>${escapeHtml(nextRelease?.date || "TBA")}</p>
+        ${nextRelease ? renderPillRow(nextRelease.platforms || []) : "<p>Keep following the tracked list for date changes.</p>"}
+      </section>
+      <section class="rail-panel" data-reveal>
+        <p class="eyebrow">Events</p>
+        <h2>Separate events page</h2>
+        <p>Showcases, awards, stream links, and local times now live on their own dedicated page so the release calendar can stay focused.</p>
+        <a class="button button--ghost" href="events.html">Open events</a>
+      </section>
+    `;
+
+    observeRevealItems();
   }
 
-  Array.from(calendarViewToggle.querySelectorAll(".calendar-toggle__button")).forEach((button) => {
+  Array.from(viewToggle.querySelectorAll(".calendar-toggle__button")).forEach((button) => {
     button.addEventListener("click", () => {
       view = button.dataset.view || "month";
-      renderCalendar();
+      setSearchParam("view", view === "month" ? "" : view);
+      render();
     });
   });
 
-  calendarPrevButton.addEventListener("click", () => {
-    cursorDate =
-      view === "week"
-        ? addDays(cursorDate, -7)
-        : new Date(cursorDate.getFullYear(), cursorDate.getMonth() - 1, 1);
-    renderCalendar();
+  prevButton.addEventListener("click", () => {
+    cursorDate = view === "week" ? addDays(cursorDate, -7) : new Date(cursorDate.getFullYear(), cursorDate.getMonth() - 1, 1);
+    render();
   });
 
-  calendarNextButton.addEventListener("click", () => {
-    cursorDate =
-      view === "week"
-        ? addDays(cursorDate, 7)
-        : new Date(cursorDate.getFullYear(), cursorDate.getMonth() + 1, 1);
-    renderCalendar();
+  nextButton.addEventListener("click", () => {
+    cursorDate = view === "week" ? addDays(cursorDate, 7) : new Date(cursorDate.getFullYear(), cursorDate.getMonth() + 1, 1);
+    render();
   });
 
-  renderCalendar();
+  render();
+}
+
+async function renderEventsPage() {
+  const summary = document.getElementById("eventsSummary");
+  const controls = document.getElementById("eventsControls");
+  const timeline = document.getElementById("eventsTimeline");
+  const rail = document.getElementById("eventsRail");
+  if (!summary || !controls || !timeline || !rail) {
+    return;
+  }
+
+  const manifest = await fetchJson("data/release-calendar.json");
+  const events = (manifest.events || [])
+    .filter((item) => item.date)
+    .sort((left, right) => String(left.date).localeCompare(String(right.date)));
+
+  let activeKind = new URL(window.location.href).searchParams.get("kind") || "all";
+  let activeFamily = new URL(window.location.href).searchParams.get("platform") || "all";
+
+  const kinds = ["all", ...Array.from(new Set(events.map((item) => item.kind).filter(Boolean))).sort()];
+
+  function filteredEvents() {
+    return events.filter((item) => {
+      const kindMatch = activeKind === "all" || item.kind === activeKind;
+      const familyMatch = matchesPlatformFamily(item.platformFocus || [], activeFamily);
+      return kindMatch && familyMatch;
+    });
+  }
+
+  function render() {
+    const visible = filteredEvents();
+    const nextEvent = visible.find((item) => item.date >= dateKey(startOfDay(new Date()))) || visible[0];
+
+    summary.innerHTML = [
+      createSummaryChip("Tracked events", visible.length, "is-green"),
+      createSummaryChip("Kinds", kinds.length - 1, "is-grey"),
+      createSummaryChip("Platform lens", platformFamilyLabel(activeFamily), "is-yellow"),
+    ].join("");
+
+    controls.innerHTML = `
+      <div class="news-tabs">
+        ${kinds
+          .map(
+            (kind) => `
+              <button class="news-tab ${kind === activeKind ? "is-active" : ""}" type="button" data-kind="${escapeHtml(kind)}">
+                ${escapeHtml(kind === "all" ? "All events" : kind)}
+              </button>
+            `,
+          )
+          .join("")}
+      </div>
+      <div class="news-tabs">
+        ${["all", "windows", "xbox", "playstation"]
+          .map(
+            (family) => `
+              <button class="news-tab ${family === activeFamily ? "is-active" : ""}" type="button" data-family="${family}">
+                ${escapeHtml(platformFamilyLabel(family))}
+              </button>
+            `,
+          )
+          .join("")}
+      </div>
+    `;
+
+    Array.from(controls.querySelectorAll("[data-kind]")).forEach((button) => {
+      button.addEventListener("click", () => {
+        activeKind = button.dataset.kind || "all";
+        setSearchParam("kind", activeKind === "all" ? "" : activeKind);
+        render();
+      });
+    });
+
+    Array.from(controls.querySelectorAll("[data-family]")).forEach((button) => {
+      button.addEventListener("click", () => {
+        activeFamily = button.dataset.family || "all";
+        setSearchParam("platform", activeFamily === "all" ? "" : activeFamily);
+        render();
+      });
+    });
+
+    timeline.innerHTML = visible.length
+      ? `<section class="news-card-grid">${visible.map(eventCardMarkup).join("")}</section>`
+      : `<section class="empty-state"><h3>No events match the current filters</h3><p>Try widening the platform or event-kind filters.</p></section>`;
+
+    rail.innerHTML = `
+      <section class="rail-panel" data-reveal>
+        <p class="eyebrow">Next event</p>
+        <h2>${escapeHtml(nextEvent?.title || "No upcoming event")}</h2>
+        <p>${escapeHtml(nextEvent ? formatEventTime(nextEvent) : "TBA")}</p>
+        ${
+          nextEvent?.watchLinks?.length
+            ? `<p>${nextEvent.watchLinks
+                .map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${escapeHtml(link.label || "Watch")}</a>`)
+                .join("<br />")}</p>`
+            : `<p>${escapeHtml(nextEvent?.watchStatus || "Watch links pending")}</p>`
+        }
+      </section>
+      <section class="rail-panel" data-reveal>
+        <p class="eyebrow">Refresh rhythm</p>
+        <h2>Weekly by default</h2>
+        <p>${escapeHtml(manifest.eventPolicy?.refreshCadence?.baseline || "Review tracked events weekly.")}</p>
+        <p>${escapeHtml(
+          manifest.eventPolicy?.refreshCadence?.intensifyWithinDays
+            ? `Tighten the check cadence inside ${manifest.eventPolicy.refreshCadence.intensifyWithinDays} days of the event.`
+            : "Tighten the check cadence as event dates get closer.",
+        )}</p>
+      </section>
+    `;
+
+    observeRevealItems();
+  }
+
+  render();
 }
 
 async function init() {
-  initReveal();
+  const registry = await loadRegistry();
+  buildSiteNav(registry);
 
   if (page === "home") {
-    await initHome();
-    return;
+    await renderHome(registry);
+  } else if (page === "games") {
+    await renderGamesPage();
+  } else if (page === "game-development") {
+    await renderKnowledgePage();
+  } else if (page === "news-landing") {
+    await renderNewsLanding();
+  } else if (page === "review-coverage") {
+    await renderReviewCoveragePage();
+  } else if (page === "news-feed") {
+    await renderNewsFeedPage(pageFeed);
+  } else if (page === "calendar") {
+    await renderCalendarPage();
+  } else if (page === "events") {
+    await renderEventsPage();
   }
-  if (page === "game-development") {
-    await initKnowledgePage();
-    return;
-  }
-  if (page === "reviews") {
-    await initReviewsPage();
-    return;
-  }
-  if (page === "news") {
-    await initNewsPage();
-    return;
-  }
-  if (page === "calendar") {
-    await initCalendarPage();
-  }
+
+  observeRevealItems();
 }
 
 init().catch((error) => {

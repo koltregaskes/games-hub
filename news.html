@@ -6,12 +6,12 @@
     <title>GameTrackDaily // Games News</title>
     <meta
       name="description"
-      content="Curated games news surfaces from GameTrackDaily covering game development, gaming, reviews, and previews."
+      content="Curated games news from GameTrackDaily covering game development, gaming, review coverage, and preview coverage."
     />
     <meta property="og:title" content="GameTrackDaily // Games News" />
     <meta
       property="og:description"
-      content="Four public news rails: game development, gaming, reviews, and previews, designed to plug into a scheduled pipeline."
+      content="A cleaner landing page for the four public news rails: development, gaming, reviews, and previews."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://koltregaskes.github.io/games-hub/news.html" />
@@ -27,7 +27,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body data-page="news">
+  <body data-page="news-landing" data-section="news">
     <div class="atmosphere" aria-hidden="true">
       <div class="atmosphere__orb atmosphere__orb--cyan"></div>
       <div class="atmosphere__orb atmosphere__orb--crimson"></div>
@@ -37,42 +37,54 @@
 
     <header class="site-header">
       <a class="site-brand" href="index.html">GameTrackDaily</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="index.html">GameTrackDaily</a>
-        <a href="game-development.html">Game Development</a>
-        <a href="reviews.html">Review Coverage</a>
-        <a href="news.html" aria-current="page">Games News</a>
-        <a href="calendar.html">Release Calendar</a>
-        <a href="https://github.com/koltregaskes/games-hub">Repo</a>
-      </nav>
+      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
     </header>
 
     <main class="docs-main">
       <section class="docs-hero">
         <div class="docs-hero__copy" data-reveal>
           <p class="eyebrow">Games News</p>
-          <h1>Four rails: making games, shipping games, reviewing games, and previewing what is next.</h1>
+          <h1>Four rails, four different jobs.</h1>
           <p class="hero__lede">
-            GameTrackDaily uses generated feeds rather than browser-side scraping. `Game Dev News` covers engines,
-            tooling, store policy, and production craft. `Gaming News` covers releases and major industry stories.
-            `Games Reviews` tracks final verdicts from the wider press, and `Games Previews` tracks hands-on first
-            looks and impressions. This surface is curated, not written as an in-house review desk, and it stays
-            filtered to `Windows`, `Xbox`, and `PlayStation`, with Xbox and PlayStation items tagged to the specific
-            model where the source makes that clear.
+            Keep development news, wider gaming news, final review coverage, and preview coverage separate so the site
+            stays readable and the reader always knows what kind of signal they are looking at.
           </p>
         </div>
-        <div class="docs-hero__facts" data-reveal id="newsSummary"></div>
+        <div class="docs-hero__facts" data-reveal>
+          <article class="summary-chip">
+            <span class="summary-chip__label">Rails</span>
+            <strong class="summary-chip__value is-green">4</strong>
+          </article>
+          <article class="summary-chip">
+            <span class="summary-chip__label">Mode</span>
+            <strong class="summary-chip__value is-yellow">Curated</strong>
+          </article>
+          <article class="summary-chip">
+            <span class="summary-chip__label">Platforms</span>
+            <strong class="summary-chip__value is-grey">Windows, Xbox, PlayStation</strong>
+          </article>
+        </div>
       </section>
 
-      <section class="news-shell">
-        <div class="news-tabs" id="newsTabs" data-reveal></div>
-        <div class="news-feed" id="newsFeed" data-reveal></div>
+      <section class="docs-layout">
+        <article class="docs-viewer" data-reveal>
+          <div class="docs-viewer__meta">
+            <p class="eyebrow">Coverage map</p>
+            <h2>Choose the rail that matches the question you are asking.</h2>
+            <p class="section-copy">
+              The landing page is just the switchboard. Each feed gets its own page so the main body can stay focused
+              on that one slice of coverage.
+            </p>
+          </div>
+          <div class="news-preview__grid" id="newsLandingGrid"></div>
+        </article>
+        <aside class="docs-nav" id="newsLandingRail" data-reveal></aside>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>GameTrackDaily</p>
-      <p>Games News is the public-facing publishing layer for scheduled games reporting and curated source coverage.</p>
+      <p>Games News is the curated publishing layer for development, industry, review, and preview coverage.</p>
       <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
     </footer>
 

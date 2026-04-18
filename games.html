@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameTrackDaily // Games</title>
+    <meta
+      name="description"
+      content="Browse the current GameTrackDaily lineup, including browser demos, desktop builds, and the strongest public-facing game candidates."
+    />
+    <meta property="og:title" content="GameTrackDaily // Games" />
+    <meta
+      property="og:description"
+      content="A dedicated lineup page for the current game slate, with filters for stage and platform."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/games.html" />
+    <meta name="theme-color" content="#08101d" />
+    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/games.html" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="games" data-section="games">
+    <div class="atmosphere" aria-hidden="true">
+      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
+      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
+      <div class="atmosphere__orb atmosphere__orb--gold"></div>
+      <div class="atmosphere__grid"></div>
+    </div>
+
+    <header class="site-header">
+      <a class="site-brand" href="index.html">GameTrackDaily</a>
+      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
+    </header>
+
+    <main class="docs-main">
+      <section class="docs-hero">
+        <div class="docs-hero__copy" data-reveal>
+          <p class="eyebrow">Games</p>
+          <h1>The full tracked lineup, in one place.</h1>
+          <p class="hero__lede">
+            This page is the cleaner browseable index for the current slate: browser demos, desktop builds, and the
+            strongest public candidates with enough room for each project to breathe.
+          </p>
+        </div>
+        <div class="docs-hero__facts" id="gamesSummary" data-reveal></div>
+      </section>
+
+      <section class="docs-layout">
+        <article class="docs-viewer" data-reveal>
+          <div class="docs-viewer__meta">
+            <p class="eyebrow">Browse the slate</p>
+            <h2>Filter by stage or platform.</h2>
+            <p class="section-copy">
+              The landing page now stays light. This is the full catalog view for readers who want the whole current
+              slate without the homepage noise.
+            </p>
+          </div>
+          <div class="news-tabs" id="gamesFilters"></div>
+          <div class="emerging-grid" id="gamesCatalogGrid"></div>
+        </article>
+        <aside class="docs-nav" id="gamesRail" data-reveal></aside>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>GameTrackDaily</p>
+      <p>Games is the browseable lineup layer inside the wider GameTrackDaily site.</p>
+      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

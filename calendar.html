@@ -6,12 +6,12 @@
     <title>GameTrackDaily // Release Calendar</title>
     <meta
       name="description"
-      content="A monthly and weekly calendar for tracked Windows PC, Xbox, and PlayStation releases plus major showcases, conferences, and awards on GameTrackDaily."
+      content="A focused month and week release calendar for tracked Windows PC, Xbox, and PlayStation launches."
     />
     <meta property="og:title" content="GameTrackDaily // Release Calendar" />
     <meta
       property="og:description"
-      content="Track releases, showcases, conferences, and awards across Windows PC, Xbox, and PlayStation with day-level density and drill-down details."
+      content="Track the release slate by month or week, filter by platform family, and open the full release list for the selected day."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://koltregaskes.github.io/games-hub/calendar.html" />
@@ -27,7 +27,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body data-page="calendar">
+  <body data-page="calendar" data-section="calendar">
     <div class="atmosphere" aria-hidden="true">
       <div class="atmosphere__orb atmosphere__orb--cyan"></div>
       <div class="atmosphere__orb atmosphere__orb--crimson"></div>
@@ -37,29 +37,21 @@
 
     <header class="site-header">
       <a class="site-brand" href="index.html">GameTrackDaily</a>
-      <nav class="site-nav" aria-label="Primary">
-        <a href="index.html">GameTrackDaily</a>
-        <a href="game-development.html">Game Development</a>
-        <a href="reviews.html">Review Coverage</a>
-        <a href="news.html">Games News</a>
-        <a href="calendar.html" aria-current="page">Release Calendar</a>
-        <a href="https://github.com/koltregaskes/games-hub">Repo</a>
-      </nav>
+      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
     </header>
 
     <main class="docs-main">
       <section class="docs-hero">
         <div class="docs-hero__copy" data-reveal>
           <p class="eyebrow">Release Calendar</p>
-          <h1>See the shape of the release slate and the event season, then drill into the days that matter.</h1>
+          <h1>Keep the calendar about releases, not everything at once.</h1>
           <p class="hero__lede">
-            This calendar view is built for tracked Windows PC, Xbox, and PlayStation releases plus the big developer
-            conferences, showcase streams, and awards nights around them. It highlights dense days, rolls up platform
-            counts like `2 Xbox releases` or `3 PlayStation releases`, and lets you jump from the calendar straight
-            into the full release and event list for that day.
+            This page is now focused on the release slate itself. Switch between month and week, filter by platform
+            family, and open the selected day to see the tracked launches. Major showcases and awards now live on the
+            separate Events page.
           </p>
         </div>
-        <div class="docs-hero__facts" data-reveal id="calendarSummary"></div>
+        <div class="docs-hero__facts" id="calendarSummary" data-reveal></div>
       </section>
 
       <section class="calendar-page" data-reveal>
@@ -69,7 +61,7 @@
               <button class="calendar-toggle__button" data-view="month" type="button">Month</button>
               <button class="calendar-toggle__button" data-view="week" type="button">Week</button>
             </div>
-            <p class="calendar-toolbar__note" id="calendarNotice"></p>
+            <div class="news-tabs" id="calendarFilters"></div>
           </div>
           <div class="calendar-toolbar__right">
             <button class="calendar-nav__button" id="calendarPrevButton" type="button">Previous</button>
@@ -77,17 +69,22 @@
             <button class="calendar-nav__button" id="calendarNextButton" type="button">Next</button>
           </div>
         </div>
+        <p class="calendar-toolbar__note" id="calendarNotice"></p>
 
-        <div class="calendar-policy" id="calendarPolicy"></div>
-        <div class="calendar-weekdays" id="calendarWeekdays" aria-hidden="true"></div>
-        <div class="calendar-grid" id="calendarGrid"></div>
-        <div class="calendar-detail" id="calendarDetail"></div>
+        <div class="docs-layout">
+          <article class="docs-viewer">
+            <div class="calendar-weekdays" id="calendarWeekdays" aria-hidden="true"></div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="calendar-detail" id="calendarDetail"></div>
+          </article>
+          <aside class="docs-nav" id="calendarRail"></aside>
+        </div>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>GameTrackDaily</p>
-      <p>Release Calendar is the tracked-release layer inside the wider GameTrackDaily site.</p>
+      <p>Release Calendar is the focused launch-tracking layer inside the wider GameTrackDaily site.</p>
       <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
     </footer>
 
