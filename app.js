@@ -1,5 +1,3 @@
-document.body.classList.add("has-motion");
-
 const page = document.body.dataset.page || "home";
 const pageSection = document.body.dataset.section || page;
 const pageFeed = document.body.dataset.feed || null;
@@ -244,7 +242,8 @@ function createSummaryChip(label, value, tone = "is-grey") {
 }
 
 function createLinkButton(label, href, className = "button button--ghost") {
-  return `<a class="${className}" href="${href}">${escapeHtml(label)}</a>`;
+  const external = /^https?:\/\//.test(href);
+  return `<a class="${className}" href="${href}"${external ? ' target="_blank" rel="noreferrer"' : ""}>${escapeHtml(label)}</a>`;
 }
 
 function parseDateKey(value) {
@@ -396,7 +395,7 @@ function buildSiteNav(entries) {
 
   const order = ["home", "games", "game-development", "news", "review-coverage", "calendar", "events"];
   const entryMap = registryEntryMap(entries);
-  siteNav.innerHTML = order
+  const links = order
     .map((id) => entryMap.get(id))
     .filter(Boolean)
     .map((entry) => {
@@ -407,11 +406,21 @@ function buildSiteNav(entries) {
       return `<a href="${entry.publicRoute}"${active ? ' aria-current="page"' : ""}>${escapeHtml(entry.title)}</a>`;
     })
     .join("");
+
+  siteNav.innerHTML = `${links}<a class="site-nav__cta" href="calendar.html">Launch radar</a>`;
 }
 
 function sectionLinksMarkup(entries) {
   const interesting = ["games", "game-development", "news", "review-coverage", "calendar", "events"];
   const entryMap = registryEntryMap(entries);
+  const summaries = {
+    games: "Playable projects, tracked candidates, and the public lineup.",
+    "game-development": "Public-safe craft notes, workflows, and reference.",
+    news: "Curated games coverage split into clean editorial rails.",
+    "review-coverage": "Review and preview coverage from the wider games press.",
+    calendar: "The release slate by month, week, and platform family.",
+    events: "Showcases, conferences, awards, local times, and watch links.",
+  };
   return interesting
     .map((id) => entryMap.get(id))
     .filter(Boolean)
@@ -420,7 +429,8 @@ function sectionLinksMarkup(entries) {
         <article class="preview-card" data-reveal>
           <p class="feature__kicker">${escapeHtml(entry.pageType)}</p>
           <h3>${escapeHtml(entry.title)}</h3>
-          <p>${escapeHtml(entry.primaryContentRegion.replaceAll("-", " "))}</p>
+          <p>${escapeHtml(summaries[entry.id] || entry.primaryContentRegion.replaceAll("-", " "))}</p>
+          <p class="preview-card__meta">${escapeHtml(entry.primaryContentRegion.replaceAll("-", " "))}</p>
           <a class="button button--ghost" href="${entry.publicRoute}">Open page</a>
         </article>
       `,
@@ -438,20 +448,36 @@ function gameCardMarkup(game) {
 
   return `
     <article class="emerging-card" data-reveal>
-      <img src="${game.art}" alt="${escapeHtml(game.title)} artwork" />
+      <div class="emerging-card__media">
+        <img src="${game.art}" alt="${escapeHtml(game.title)} artwork" />
+        <span class="card-stage">${escapeHtml(game.stage || "Tracked")}</span>
+      </div>
       <div class="emerging-card__body">
-        <p class="feature__kicker">${escapeHtml(game.category)}</p>
+        <div class="emerging-card__topline">
+          <p class="feature__kicker">${escapeHtml(game.category)}</p>
+          <span class="card-status">${escapeHtml(game.publicStatus || game.status || "Tracked")}</span>
+        </div>
         <h3>${escapeHtml(game.title)}</h3>
         <p>${escapeHtml(game.summary)}</p>
         ${renderPillRow(game.platforms || [])}
         <ul class="feature__list">
           ${(game.highlights || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
         </ul>
-        <p><strong>Status:</strong> ${escapeHtml(game.publicStatus || game.status || "Tracked")}</p>
         <div class="feature__actions">${actions}</div>
       </div>
     </article>
   `;
+}
+
+function signalCardMarkup(label, value, detail, href, tone = "") {
+  const className = ["signal-card", tone].filter(Boolean).join(" ");
+  const wrapperStart = href ? `<a class="${className}" href="${href}">` : `<article class="${className}">`;
+  const wrapperEnd = href ? "</a>" : "</article>";
+  return `${wrapperStart}
+      <span class="signal-card__label">${escapeHtml(label)}</span>
+      <strong class="signal-card__value">${escapeHtml(value)}</strong>
+      <p class="signal-card__detail">${escapeHtml(detail)}</p>
+    ${wrapperEnd}`;
 }
 
 function newsItemCard(item, fallbackSection) {
@@ -502,7 +528,10 @@ async function renderHome(registry) {
   const featuredGamesGrid = document.getElementById("featuredGamesGrid");
   const homeSectionLinks = document.getElementById("homeSectionLinks");
   const homeHighlightsGrid = document.getElementById("homeHighlightsGrid");
-  if (!featuredGamesGrid || !homeSectionLinks || !homeHighlightsGrid) {
+  const homeSignalGrid = document.getElementById("homeSignalGrid");
+  const homeTicker = document.getElementById("homeTicker");
+  const homeRadarGrid = document.getElementById("homeRadarGrid");
+  if (!featuredGamesGrid || !homeSectionLinks || !homeHighlightsGrid || !homeSignalGrid || !homeTicker || !homeRadarGrid) {
     return;
   }
 
@@ -517,12 +546,64 @@ async function renderHome(registry) {
   featuredGamesGrid.innerHTML = featured.map(gameCardMarkup).join("");
   homeSectionLinks.innerHTML = sectionLinksMarkup(registry);
 
+  const todayKey = dateKey(startOfDay(new Date()));
+  const datedReleases = (calendarManifest.releases || [])
+    .filter((item) => item.date)
+    .sort((left, right) => String(left.date).localeCompare(String(right.date)));
+  const nextRelease = datedReleases.find((item) => item.date >= todayKey) || null;
   const upcomingEvent = (calendarManifest.events || [])
     .filter((item) => item.date)
     .sort((left, right) => String(left.date).localeCompare(String(right.date)))[0];
 
   const reviewFeed = (newsManifest.feeds || []).find((feed) => feed.id === "reviews");
   const previewFeed = (newsManifest.feeds || []).find((feed) => feed.id === "previews");
+  const gamingFeed = (newsManifest.feeds || []).find((feed) => feed.id === "gaming");
+  const devFeed = (newsManifest.feeds || []).find((feed) => feed.id === "game-dev");
+  const totalTrackedCoverage = (newsManifest.feeds || []).reduce(
+    (sum, feed) => sum + ((feed.items || []).length || 0),
+    0,
+  );
+
+  homeSignalGrid.innerHTML = [
+    signalCardMarkup(
+      "Tracked lineup",
+      `${(gamesManifest.games || []).length} games`,
+      `${(gamesManifest.featuredIds || []).length} featured public candidates`,
+      "games.html",
+      "signal-card--lime",
+    ),
+    signalCardMarkup(
+      "Next release",
+      nextRelease?.title || `${datedReleases.length} dated releases`,
+      nextRelease?.date || "Release slate live",
+      "calendar.html",
+      "signal-card--gold",
+    ),
+    signalCardMarkup(
+      "Event season",
+      upcomingEvent?.title || "No event queued",
+      upcomingEvent ? formatEventTime(upcomingEvent) : "Watch links and timings update here",
+      "events.html",
+      "signal-card--crimson",
+    ),
+    signalCardMarkup(
+      "Coverage rails",
+      `${(newsManifest.feeds || []).length} desks`,
+      `${totalTrackedCoverage} linked items across news, reviews, and previews`,
+      "news.html",
+      "signal-card--ice",
+    ),
+  ].join("");
+
+  homeTicker.innerHTML = [
+    nextRelease ? `Next release: ${nextRelease.title} (${nextRelease.date})` : `Release slate live: ${datedReleases.length} dated releases tracked`,
+    upcomingEvent ? `Next event: ${upcomingEvent.title}` : "Next event: calendar live",
+    reviewFeed ? `${reviewFeed.title}: ${(reviewFeed.items || []).length} tracked items` : "Reviews rail ready",
+    previewFeed ? `${previewFeed.title}: ${(previewFeed.items || []).length} tracked items` : "Previews rail ready",
+    devFeed ? `${devFeed.title}: ${(devFeed.items || []).length} tracked items` : "Game dev rail ready",
+  ]
+    .map((item) => `<span class="ticker__item">${escapeHtml(item)}</span>`)
+    .join("");
 
   homeHighlightsGrid.innerHTML = [
     `
@@ -574,6 +655,21 @@ async function renderHome(registry) {
   ]
     .filter(Boolean)
     .join("");
+
+  const radarItems = [gamingFeed, devFeed, reviewFeed, previewFeed]
+    .filter(Boolean)
+    .map((feed) => {
+      const firstItem = (feed.items || [])[0];
+      if (!firstItem) {
+        return null;
+      }
+      return newsItemCard({ ...firstItem, section: feed.title }, feed.title);
+    })
+    .filter(Boolean);
+
+  homeRadarGrid.innerHTML = radarItems.length
+    ? radarItems.join("")
+    : `<section class="empty-state"><h3>Coverage rails are ready</h3><p>${escapeHtml(newsManifest.notice || "The homepage radar will populate as new coverage is exported.")}</p></section>`;
 
   observeRevealItems();
 }
@@ -990,11 +1086,15 @@ async function renderCalendarPage() {
 
   const manifest = await fetchJson("data/release-calendar.json");
   const model = buildReleaseModel(manifest);
-  const firstDate = parseDateKey(model.dated[0]?.date) || new Date();
+  const defaultFocusMonth = String(manifest.defaultFocusMonth || "");
+  const focusMonthMatch = defaultFocusMonth.match(/^(\d{4})-(\d{2})$/);
+  const firstDate = focusMonthMatch
+    ? new Date(Number.parseInt(focusMonthMatch[1], 10), Number.parseInt(focusMonthMatch[2], 10) - 1, 1)
+    : parseDateKey(model.dated[0]?.date) || new Date();
   let view = new URL(window.location.href).searchParams.get("view") || "month";
   let family = new URL(window.location.href).searchParams.get("platform") || "all";
   let cursorDate = startOfDay(firstDate);
-  let selectedDateKey = new URL(window.location.href).searchParams.get("date") || model.dated[0]?.date || null;
+  let selectedDateKey = new URL(window.location.href).searchParams.get("date") || manifest.defaultSelectedDate || null;
 
   weekdays.innerHTML = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((label) => `<span>${label}</span>`).join("");
   notice.textContent = `${manifest.notice} Major showcases and awards now live on the separate Events page.`;
@@ -1127,13 +1227,13 @@ async function renderCalendarPage() {
       }
     `;
 
-    const nextRelease = visibleReleases.find((item) => item.date >= dateKey(startOfDay(new Date()))) || visibleReleases[0];
+    const nextRelease = visibleReleases.find((item) => item.date >= dateKey(startOfDay(new Date()))) || null;
     rail.innerHTML = `
       <section class="rail-panel" data-reveal>
         <p class="eyebrow">Next release</p>
-        <h2>${escapeHtml(nextRelease?.title || "No dated release")}</h2>
-        <p>${escapeHtml(nextRelease?.date || "TBA")}</p>
-        ${nextRelease ? renderPillRow(nextRelease.platforms || []) : "<p>Keep following the tracked list for date changes.</p>"}
+        <h2>${escapeHtml(nextRelease?.title || "No future date locked")}</h2>
+        <p>${escapeHtml(nextRelease?.date || `${visibleReleases.length} dated releases are still tracked in the slate.`)}</p>
+        ${nextRelease ? renderPillRow(nextRelease.platforms || []) : "<p>Keep following the tracked list for future date changes.</p>"}
       </section>
       <section class="rail-panel" data-reveal>
         <p class="eyebrow">Events</p>
@@ -1302,6 +1402,7 @@ async function init() {
     await renderEventsPage();
   }
 
+  document.body.classList.add("has-motion");
   observeRevealItems();
 }
 

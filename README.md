@@ -21,6 +21,11 @@ The public shell now uses focused pages instead of cramming everything into one 
 - `calendar.html` for releases only
 - `events.html` for conferences, showcases, awards, local times, and official watch links
 
+The current launch shell is designed as an editorial watch desk rather than a repo index:
+- a stronger homepage built around launch radar, live signals, and featured public candidates
+- a cleaner masthead and page framing across the whole public shell
+- more deliberate separation between lineup, coverage, releases, and events
+
 `Release Calendar` now stays focused on Windows PC, Xbox, and PlayStation release tracking, while `Events` handles conferences, showcases, and awards with local-time drill-downs and official watch destinations.
 
 That news layer is filtered to `Windows PC`, `Xbox`, and `PlayStation`. Xbox and PlayStation coverage should use specific model or service tags such as `Xbox Series X`, `Xbox Series S`, `PlayStation 5`, `Xbox Game Pass`, or `PlayStation Plus` where the source supports that detail.

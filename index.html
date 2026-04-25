@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Rajdhani:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
@@ -41,44 +41,46 @@
     </header>
 
     <main id="top">
-      <section class="hero">
+      <section class="hero hero--launch">
         <div class="hero__copy" data-reveal>
-          <p class="eyebrow">GameTrackDaily</p>
-          <h1>Track the games. Watch the calendar. Follow the signal.</h1>
+          <p class="eyebrow">GameTrackDaily // Launch Radar</p>
+          <h1>A sharper public signal for what matters in games.</h1>
           <p class="hero__lede">
-            A curated games destination for the active lineup, the release slate, the event season, and the review and
-            preview coverage that helps you keep up without the clutter.
+            GameTrackDaily is a curated games destination for the active lineup, the release slate, the event season,
+            and the review and preview coverage that helps you keep up without the sludge, feed-stuffing, and generic
+            dashboard clutter.
           </p>
           <div class="hero__actions">
             <a class="button button--primary" href="games.html">Browse games</a>
-            <a class="button button--ghost" href="news.html">Open games news</a>
-            <a class="button button--ghost" href="calendar.html">Open release calendar</a>
+            <a class="button button--ghost" href="calendar.html">Open launch radar</a>
+            <a class="button button--ghost" href="news.html">See coverage</a>
             <a class="button button--ghost" href="events.html">Open events</a>
           </div>
           <ul class="hero__facts" aria-label="Site facts">
-            <li>Tracked projects and playable demos</li>
+            <li>Playable projects and tracked public candidates</li>
             <li>Curated reviews and previews from the wider press</li>
             <li>Release dates, showcases, awards, and practical dev reference</li>
           </ul>
         </div>
 
         <div class="hero__visual" data-reveal>
-          <div class="hero-stack">
-            <article class="hero-stack__card hero-stack__card--front">
-              <img src="assets/mandate-2029.svg" alt="Mandate 2029 artwork" />
-              <div class="hero-stack__meta">
-                <span>Featured lineup</span>
-                <strong>GameTrackDaily</strong>
-              </div>
-            </article>
-            <article class="hero-stack__card hero-stack__card--left">
-              <img src="assets/swarmbreaker.svg" alt="Swarmbreaker artwork" />
-            </article>
-            <article class="hero-stack__card hero-stack__card--right">
-              <img src="assets/turbo-vector.svg" alt="Turbo Vector artwork" />
-            </article>
+          <div class="signal-deck">
+            <div class="signal-deck__topline">
+              <p class="eyebrow">Live site brief</p>
+              <span class="signal-deck__tag">Windows PC, Xbox, PlayStation</span>
+            </div>
+            <h2>One front door for launches, showcases, coverage, and the current slate.</h2>
+            <p>
+              Built like an editorial watch desk rather than a repo index. Follow what is playable, what is about to
+              release, what is worth watching, and where the noise actually becomes signal.
+            </p>
+            <div class="signal-grid" id="homeSignalGrid"></div>
           </div>
         </div>
+      </section>
+
+      <section class="ticker" aria-label="Signal tape" data-reveal>
+        <div class="ticker__track" id="homeTicker"></div>
       </section>
 
       <section class="studio-strip" aria-label="Site status" data-reveal>
@@ -121,14 +123,42 @@
 
       <section class="news-preview">
         <div class="section-head" data-reveal>
-          <p class="eyebrow">Highlights</p>
-          <h2>The rest of the public shell, at a glance.</h2>
+          <p class="eyebrow">Core surfaces</p>
+          <h2>The public shell, split into clean jobs.</h2>
           <p>
-            Release tracking, event watch links, wider press coverage, and the practical craft layer all live here now
-            as first-class surfaces.
+            Release tracking, event watch links, wider press coverage, and the practical craft layer all live here as
+            focused first-class surfaces.
           </p>
         </div>
         <div class="news-preview__grid" id="homeHighlightsGrid"></div>
+      </section>
+
+      <section class="news-preview">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Latest radar</p>
+          <h2>The coverage that makes the homepage feel alive.</h2>
+          <p>
+            Development shifts, gaming headlines, reviews, and previews all surface here as curated starting points,
+            not a chaotic wall of feed spam.
+          </p>
+        </div>
+        <div class="news-card-grid" id="homeRadarGrid"></div>
+      </section>
+
+      <section class="future">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">Launch posture</p>
+          <h2>Ready to move from prototype shell to public-facing site.</h2>
+          <p>
+            The structure is now clean enough to support a real domain, stronger design passes, richer feeds, and
+            better game detail pages without collapsing back into a single cluttered surface.
+          </p>
+          <div class="future__actions">
+            <a class="button button--primary" href="games.html">Open the lineup</a>
+            <a class="button button--ghost" href="calendar.html">Open the release calendar</a>
+            <a class="button button--ghost" href="events.html">Open event season</a>
+          </div>
+        </div>
       </section>
     </main>
 
