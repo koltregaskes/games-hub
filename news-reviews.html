@@ -15,6 +15,41 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+            "@context": "https://schema.org",
+            "@graph": [
+                  {
+                        "@type": "Organization",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#organization",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "parentOrganization": {
+                              "name": "E-lusion Studios"
+                        }
+                  },
+                  {
+                        "@type": "WebSite",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#website",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "publisher": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#organization"
+                        }
+                  },
+                  {
+                        "@type": "CollectionPage",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/news-reviews.html#page",
+                        "name": "Games Reviews // GameTrackDaily",
+                        "description": "Reviews rail for curated games criticism and scored outlet coverage.",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/news-reviews.html",
+                        "isPartOf": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#website"
+                        }
+                  }
+            ]
+      }
+    </script>
   </head>
   <body data-page="rail" data-rail="review">
     <a class="skip-link" href="#main-content">Skip to main content</a>

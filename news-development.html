@@ -15,6 +15,41 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+            "@context": "https://schema.org",
+            "@graph": [
+                  {
+                        "@type": "Organization",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#organization",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "parentOrganization": {
+                              "name": "E-lusion Studios"
+                        }
+                  },
+                  {
+                        "@type": "WebSite",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#website",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "publisher": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#organization"
+                        }
+                  },
+                  {
+                        "@type": "CollectionPage",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/news-development.html#page",
+                        "name": "Game Dev News // GameTrackDaily",
+                        "description": "Game development news rail for engines, tooling, production craft, and public-safe source notes.",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/news-development.html",
+                        "isPartOf": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#website"
+                        }
+                  }
+            ]
+      }
+    </script>
   </head>
   <body data-page="rail" data-rail="dev">
     <a class="skip-link" href="#main-content">Skip to main content</a>

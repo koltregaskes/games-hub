@@ -15,6 +15,41 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+            "@context": "https://schema.org",
+            "@graph": [
+                  {
+                        "@type": "Organization",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#organization",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "parentOrganization": {
+                              "name": "E-lusion Studios"
+                        }
+                  },
+                  {
+                        "@type": "WebSite",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#website",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "publisher": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#organization"
+                        }
+                  },
+                  {
+                        "@type": "CollectionPage",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/news-previews.html#page",
+                        "name": "Games Previews // GameTrackDaily",
+                        "description": "Previews rail for hands-on impressions, showcase reactions, and unscored first looks.",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/news-previews.html",
+                        "isPartOf": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#website"
+                        }
+                  }
+            ]
+      }
+    </script>
   </head>
   <body data-page="rail" data-rail="preview">
     <a class="skip-link" href="#main-content">Skip to main content</a>

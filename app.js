@@ -359,17 +359,19 @@
 
   function nav(active) {
     const links = [
-      ["home", "Home", "index.html"],
       ["releases", "Releases", "releases.html"],
       ["events", "Events", "events.html"],
       ["news", "News", "news.html"],
       ["reviews", "Reviews", "reviews.html"],
+      ["games", "Games", "games.html"],
+      ["development", "Craft", "game-development.html"],
     ];
+    const brandCurrent = active === "home" ? ' aria-current="page"' : "";
     return `
       <header class="nav">
-        <a class="nav__brand" href="index.html">GAME<span class="slash">/</span>TRACK<span class="slash">/</span>DAILY</a>
+        <a class="nav__brand" href="index.html"${brandCurrent}>GAME<span class="slash">/</span>TRACK<span class="slash">/</span>DAILY</a>
         <nav class="nav__links" aria-label="Primary">
-          ${links.slice(1).map(([id, label, href]) => `
+          ${links.map(([id, label, href]) => `
             <a class="nav__link" href="${href}" ${active === id ? 'aria-current="page"' : ""}>${label}</a>
           `).join("")}
         </nav>
@@ -391,6 +393,7 @@
   }
 
   function pageFrame(page, content, bottom = "") {
+    const activePage = page === "calendar" ? "releases" : page === "rail" ? "news" : page;
     const topItems = [
       "GameTrackDaily editorial watch desk",
       "Windows PC · Xbox · PlayStation",
@@ -402,7 +405,7 @@
       <div class="scanline-layer" aria-hidden="true"></div>
       <div class="page-shell">
         ${marquee(topItems)}
-        ${nav(page === "calendar" ? "releases" : page)}
+        ${nav(activePage)}
         <main id="main-content" class="rise">${content}</main>
         ${footer()}
         ${bottom}
