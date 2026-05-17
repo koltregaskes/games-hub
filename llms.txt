@@ -1,0 +1,19 @@
+# GameTrackDaily
+
+GameTrackDaily is the public games watch desk for tracked releases, events, curated games coverage, review literacy, and the E-lusion Studios project slate.
+
+## Start Here
+- [Home](https://koltregaskes.github.io/gametrackdaily/): arcade-style front door for the whole games desk.
+- [Releases](https://koltregaskes.github.io/gametrackdaily/releases.html): tracked release rows and launch-window context.
+- [Events](https://koltregaskes.github.io/gametrackdaily/events.html): showcase and games-industry calendar.
+
+## Main Sections
+- [News](https://koltregaskes.github.io/gametrackdaily/news.html): route into development, gaming, review, and preview rails.
+- [Reviews](https://koltregaskes.github.io/gametrackdaily/reviews.html): review literacy, scoring guidance, and criticism notes.
+- [Games](https://koltregaskes.github.io/gametrackdaily/games.html): E-lusion Studios projects and their public state.
+- [Game Development](https://koltregaskes.github.io/gametrackdaily/game-development.html): current in-development slate.
+
+## Agent Notes
+- V1 includes static public manifests and some clearly marked provisional/example rows.
+- Do not describe releases, events, or news as live unless the row has an official source and current timestamp.
+- Use source links on release or news cards before repeating claims.
