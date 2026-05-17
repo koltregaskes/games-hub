@@ -1,93 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GameTrackDaily // Review Coverage</title>
+    <title>Reviews // GameTrackDaily</title>
     <meta
       name="description"
-      content="A curated landing page for review and preview coverage from the wider games press."
+      content="Curated review and preview coverage from the wider games press, plus a practical guide to reading scores honestly."
     />
-    <meta property="og:title" content="GameTrackDaily // Review Coverage" />
-    <meta
-      property="og:description"
-      content="Separate final verdict coverage from first-look coverage, and keep the site honest about what each one means."
-    />
+    <link rel="canonical" href="https://koltregaskes.github.io/gametrackdaily/reviews.html" />
+    <meta property="og:title" content="Reviews // GameTrackDaily" />
+    <meta property="og:description" content="Curated verdicts, first looks, and review-literacy guides for the games press." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/reviews.html" />
-    <meta name="theme-color" content="#08101d" />
-    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/reviews.html" />
+    <meta property="og:url" content="https://koltregaskes.github.io/gametrackdaily/reviews.html" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="theme-color" content="#08090c" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Rajdhani:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://koltregaskes.github.io/gametrackdaily/reviews.html#page",
+        "name": "Reviews // GameTrackDaily",
+        "url": "https://koltregaskes.github.io/gametrackdaily/reviews.html",
+        "isPartOf": { "@id": "https://koltregaskes.github.io/gametrackdaily/#website" }
+      }
+    </script>
   </head>
-  <body data-page="review-coverage" data-section="review-coverage">
-    <div class="atmosphere" aria-hidden="true">
-      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
-      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
-      <div class="atmosphere__orb atmosphere__orb--gold"></div>
-      <div class="atmosphere__grid"></div>
-    </div>
-
-    <header class="site-header">
-      <a class="site-brand" href="index.html">GameTrackDaily</a>
-      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
-    </header>
-
-    <main class="docs-main">
-      <section class="docs-hero">
-        <div class="docs-hero__copy" data-reveal>
-          <p class="eyebrow">Review Coverage</p>
-          <h1>Follow the critics without pretending this site is the critic.</h1>
-          <p class="hero__lede">
-            GameTrackDaily is being positioned as a curated games publication, not a personal review desk. Reviews and
-            previews stay separate here so final verdicts do not get muddled with first impressions.
-          </p>
-        </div>
-        <div class="docs-hero__facts" data-reveal>
-          <article class="summary-chip">
-            <span class="summary-chip__label">Mode</span>
-            <strong class="summary-chip__value is-green">Curated coverage</strong>
-          </article>
-          <article class="summary-chip">
-            <span class="summary-chip__label">Split</span>
-            <strong class="summary-chip__value is-yellow">Reviews + previews</strong>
-          </article>
-          <article class="summary-chip">
-            <span class="summary-chip__label">Sources</span>
-            <strong class="summary-chip__value is-grey">Wider games press</strong>
-          </article>
-        </div>
-      </section>
-
-      <section class="docs-layout">
-        <article class="docs-viewer" data-reveal>
-          <div class="docs-viewer__meta">
-            <p class="eyebrow">Coverage split</p>
-            <h2>Keep verdicts and first impressions in their own lanes.</h2>
-            <p class="section-copy">
-              Final scored criticism belongs on one rail. Hands-on previews and showcase reactions belong on another.
-              That makes the site easier to trust and easier to browse.
-            </p>
-          </div>
-          <div class="news-preview__grid" id="reviewCoverageGrid"></div>
-        </article>
-        <aside class="docs-nav" id="reviewCoverageRail" data-reveal></aside>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <p>GameTrackDaily</p>
-      <p>Review Coverage is the public-facing criticism and preview map inside the wider GameTrackDaily site.</p>
-      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
-    </footer>
-
-    <script src="app.js"></script>
+  <body data-page="reviews">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="site-frame"></div>
+    <script src="app.js" defer></script>
   </body>
 </html>

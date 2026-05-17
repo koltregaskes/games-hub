@@ -1,8 +1,8 @@
-# Games Hub Agent Guide
+# GameTrackDaily Agent Guide
 
 ## Purpose
 
-`games-hub` is the public-facing showcase repo for the current game slate.
+`gametrackdaily` is the public-facing showcase repo for the current game slate.
 
 It is not the private studio console.
 

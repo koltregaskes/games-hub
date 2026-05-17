@@ -24,6 +24,26 @@
       "visibility": "public"
     },
     {
+      "id": "releases",
+      "title": "Releases",
+      "publicRoute": "releases.html",
+      "privateRoute": "local-hub/calendar.html",
+      "sharedDataSources": [
+        "data/release-calendar.json"
+      ],
+      "privateOverlaySources": [
+        "data/calendar-index.json"
+      ],
+      "pageType": "calendar",
+      "primaryContentRegion": "release-radar",
+      "allowedRailWidgets": [
+        "filters",
+        "next-release-window",
+        "calendar-health"
+      ],
+      "visibility": "private-mirror"
+    },
+    {
       "id": "games",
       "title": "Games",
       "publicRoute": "games.html",

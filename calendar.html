@@ -1,93 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GameTrackDaily // Release Calendar</title>
-    <meta
-      name="description"
-      content="A focused month and week release calendar for tracked Windows PC, Xbox, and PlayStation launches."
-    />
-    <meta property="og:title" content="GameTrackDaily // Release Calendar" />
-    <meta
-      property="og:description"
-      content="Track the release slate by month or week, filter by platform family, and open the full release list for the selected day."
-    />
+    <title>Release Calendar // GameTrackDaily</title>
+    <meta name="description" content="Compatibility route for the GameTrackDaily release calendar. The arcade design uses Releases as the canonical surface." />
+    <link rel="canonical" href="https://koltregaskes.github.io/gametrackdaily/releases.html" />
+    <meta property="og:title" content="Release Calendar // GameTrackDaily" />
+    <meta property="og:description" content="Compatibility route for the GameTrackDaily release radar." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/calendar.html" />
-    <meta name="theme-color" content="#08101d" />
-    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/calendar.html" />
+    <meta property="og:url" content="https://koltregaskes.github.io/gametrackdaily/calendar.html" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="theme-color" content="#08090c" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Rajdhani:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body data-page="calendar" data-section="calendar">
-    <div class="atmosphere" aria-hidden="true">
-      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
-      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
-      <div class="atmosphere__orb atmosphere__orb--gold"></div>
-      <div class="atmosphere__grid"></div>
-    </div>
-
-    <header class="site-header">
-      <a class="site-brand" href="index.html">GameTrackDaily</a>
-      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
-    </header>
-
-    <main class="docs-main">
-      <section class="docs-hero">
-        <div class="docs-hero__copy" data-reveal>
-          <p class="eyebrow">Release Calendar</p>
-          <h1>Keep the calendar about releases, not everything at once.</h1>
-          <p class="hero__lede">
-            This page is now focused on the release slate itself. Switch between month and week, filter by platform
-            family, and open the selected day to see the tracked launches. Major showcases and awards now live on the
-            separate Events page.
-          </p>
-        </div>
-        <div class="docs-hero__facts" id="calendarSummary" data-reveal></div>
-      </section>
-
-      <section class="calendar-page" data-reveal>
-        <div class="calendar-toolbar">
-          <div class="calendar-toolbar__left">
-            <div class="calendar-toggle" id="calendarViewToggle" aria-label="Calendar view">
-              <button class="calendar-toggle__button" data-view="month" type="button">Month</button>
-              <button class="calendar-toggle__button" data-view="week" type="button">Week</button>
-            </div>
-            <div class="news-tabs" id="calendarFilters"></div>
-          </div>
-          <div class="calendar-toolbar__right">
-            <button class="calendar-nav__button" id="calendarPrevButton" type="button">Previous</button>
-            <p class="calendar-range" id="calendarRangeLabel">Loading calendar...</p>
-            <button class="calendar-nav__button" id="calendarNextButton" type="button">Next</button>
-          </div>
-        </div>
-        <p class="calendar-toolbar__note" id="calendarNotice"></p>
-
-        <div class="docs-layout">
-          <article class="docs-viewer">
-            <div class="calendar-weekdays" id="calendarWeekdays" aria-hidden="true"></div>
-            <div class="calendar-grid" id="calendarGrid"></div>
-            <div class="calendar-detail" id="calendarDetail"></div>
-          </article>
-          <aside class="docs-nav" id="calendarRail"></aside>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <p>GameTrackDaily</p>
-      <p>Release Calendar is the focused launch-tracking layer inside the wider GameTrackDaily site.</p>
-      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
-    </footer>
-
-    <script src="app.js"></script>
+  <body data-page="calendar">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="site-frame"></div>
+    <script src="app.js" defer></script>
   </body>
 </html>
