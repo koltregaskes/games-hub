@@ -1,1411 +1,1196 @@
-const page = document.body.dataset.page || "home";
-const pageSection = document.body.dataset.section || page;
-const pageFeed = document.body.dataset.feed || null;
-const siteNav = document.getElementById("siteNav");
+/* GameTrackDaily Arcade app
+   Vanilla JS renderer for the static GitHub Pages site.
+   Public data stays in data/*.json; provisional design rows stay clearly marked.
+*/
 
-let revealObserver = null;
+(() => {
+  "use strict";
 
-function observeRevealItems() {
-  const revealItems = document.querySelectorAll("[data-reveal]");
-  if (!("IntersectionObserver" in window)) {
-    revealItems.forEach((item) => item.classList.add("is-visible"));
-    return;
-  }
+  const BASE_URL = "https://koltregaskes.github.io/gametrackdaily/";
+  const NOW = () => Date.now();
+  const DAY = 24 * 60 * 60 * 1000;
 
-  if (!revealObserver) {
-    revealObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            revealObserver.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.16,
-        rootMargin: "0px 0px -8% 0px",
-      },
-    );
-  }
-
-  revealItems.forEach((item, index) => {
-    if (item.dataset.revealObserved === "true") {
-      return;
-    }
-    item.dataset.revealObserved = "true";
-    item.style.transitionDelay = `${Math.min(index * 40, 180)}ms`;
-    revealObserver.observe(item);
-  });
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
-function renderInline(text) {
-  return escapeHtml(text)
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*([^*]+)\*/g, "<em>$1</em>")
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>');
-}
-
-function markdownToHtml(markdown) {
-  const lines = markdown.replace(/\r/g, "").split("\n");
-  const html = [];
-  let paragraph = [];
-  let bulletList = [];
-  let orderedList = [];
-  let codeLines = [];
-  let inCode = false;
-
-  const flushParagraph = () => {
-    if (!paragraph.length) return;
-    html.push(`<p>${renderInline(paragraph.join(" "))}</p>`);
-    paragraph = [];
+  const PLATFORMS = {
+    pc: { id: "pc", label: "PC", long: "Windows PC", css: "var(--pc)", schema: "Windows PC" },
+    xbox: { id: "xbox", label: "Xbox", long: "Xbox Series X|S", css: "var(--xbox)", schema: "Xbox Series X|S" },
+    ps: { id: "ps", label: "PS5", long: "PlayStation 5", css: "var(--ps)", schema: "PlayStation 5" },
+    browser: { id: "browser", label: "Web", long: "Browser", css: "var(--browser)", schema: "Web browser" },
   };
 
-  const flushBullets = () => {
-    if (!bulletList.length) return;
-    html.push(`<ul>${bulletList.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ul>`);
-    bulletList = [];
+  const RAILS = [
+    {
+      id: "dev",
+      feedIds: ["dev", "game-dev", "development"],
+      title: "Game Dev",
+      colour: "var(--pc)",
+      route: "news-development.html",
+      desc: "Engine releases, tooling, middleware, store policy, production craft, and the business of making games.",
+      sources: ["Game Developer", "GDC", "Godot", "Unity", "Unreal Engine", "Steamworks", "How To Market A Game"],
+    },
+    {
+      id: "gaming",
+      feedIds: ["gaming"],
+      title: "Gaming",
+      colour: "var(--brand)",
+      route: "news-gaming.html",
+      desc: "Platform moves, releases, notable studio stories, and the wider games industry.",
+      sources: ["IGN", "Eurogamer", "GamesIndustry.biz", "Polygon", "Rock Paper Shotgun", "Steam", "PlayStation Blog", "Xbox Wire"],
+    },
+    {
+      id: "review",
+      feedIds: ["review", "reviews"],
+      title: "Reviews",
+      colour: "var(--xbox)",
+      route: "news-reviews.html",
+      desc: "Final verdicts and scored criticism from major games outlets.",
+      sources: ["IGN", "GameSpot", "Eurogamer", "PC Gamer", "GamesRadar+", "Rock Paper Shotgun"],
+    },
+    {
+      id: "preview",
+      feedIds: ["preview", "previews"],
+      title: "Previews",
+      colour: "var(--ps)",
+      route: "news-previews.html",
+      desc: "Hands-on impressions, showcase reactions, and unscored first looks.",
+      sources: ["IGN", "GameSpot", "Eurogamer", "PC Gamer", "GamesRadar+", "PlayStation Blog", "Xbox Wire"],
+    },
+  ];
+
+  const PROVISIONAL_RELEASES = [
+    { id: "crimson-skylines", title: "Crimson Skylines", date: "2026-05-19", platforms: ["pc", "xbox"], launcher: ["Steam", "Game Pass"], hype: "high", genre: "Strategy", _example: true },
+    { id: "garrison-final-mile", title: "Garrison: Final Mile", date: "2026-05-22", platforms: ["pc", "ps"], launcher: ["Steam", "PS Store"], hype: "med", genre: "Tactical shooter", _example: true },
+    { id: "driftcourt", title: "Driftcourt", date: "2026-05-26", platforms: ["pc"], launcher: ["Steam"], hype: "low", genre: "Racing", _example: true },
+    { id: "vector-trials-2", title: "Vector Trials 2", date: "2026-05-27", platforms: ["pc"], launcher: ["Steam", "GOG"], hype: "med", genre: "Arcade", _example: true },
+    { id: "slow-light-engine", title: "Slow Light Engine", date: "2026-06-03", platforms: ["ps"], launcher: ["PS Store"], hype: "high", genre: "Adventure", _example: true },
+    { id: "mandate-2029-demo", title: "Mandate 2029 demo", date: "2026-06-06", platforms: ["browser"], launcher: ["Web"], hype: "ours", ours: true, genre: "Political strategy", _example: true },
+    { id: "holdback-republic", title: "Holdback Republic", date: "2026-06-12", platforms: ["pc", "xbox"], launcher: ["Steam", "Xbox Store", "Game Pass"], hype: "med", genre: "RPG", _example: true },
+    { id: "civicrise-beta", title: "Civicrise beta", date: "2026-06-18", platforms: ["browser"], launcher: ["Web"], hype: "ours", ours: true, genre: "City builder", _example: true },
+    { id: "azure-flag", title: "Azure Flag", date: "2026-06-25", platforms: ["pc", "xbox", "ps"], launcher: ["Steam", "Xbox Store", "PS Store"], hype: "high", genre: "Open world", _example: true },
+    { id: "swarmbreaker-public", title: "Swarmbreaker public build", date: "2026-07-02", platforms: ["pc"], launcher: ["itch.io"], hype: "ours", ours: true, genre: "Arcade", _example: true },
+  ];
+
+  const PROVISIONAL_NEWS = [
+    { feed: "dev", t: "Godot 5 hits stable with a redesigned visual scripting layer", src: "Game Developer", h: "example", tag: "engine", _example: true },
+    { feed: "dev", t: "Steamworks adds long-form Direct review notes for unreleased titles", src: "Steamworks", h: "example", tag: "platform", _example: true },
+    { feed: "dev", t: "Unity 7's render pipelines unify under one configurable graph", src: "Unity", h: "example", tag: "engine", _example: true },
+    { feed: "gaming", t: "PlayStation reorganises first-party output around longer windows", src: "Eurogamer", h: "example", tag: "platform", platforms: ["ps"], _example: true },
+    { feed: "gaming", t: "Xbox confirms Game Pass day-one slate for the summer showcase", src: "Xbox Wire", h: "example", tag: "platform", platforms: ["xbox"], _example: true },
+    { feed: "gaming", t: "Valve quietly tightens refund rules for early-access leavers", src: "PC Gamer", h: "example", tag: "platform", platforms: ["pc"], _example: true },
+    { feed: "review", t: "Crimson Skylines: a tense, restrained 8/10", src: "Rock Paper Shotgun", h: "example", tag: "review", score: 8, platforms: ["pc", "xbox"], _example: true },
+    { feed: "review", t: "Garrison: Final Mile: a difficult, durable shooter", src: "PC Gamer", h: "example", tag: "review", score: 82, platforms: ["pc", "ps"], _example: true },
+    { feed: "review", t: "Vector Trials 2: sequel finds its rhythm late", src: "Eurogamer", h: "example", tag: "review", score: 7, platforms: ["pc"], _example: true },
+    { feed: "preview", t: "Hands-on: Slow Light Engine's traversal loop", src: "Edge", h: "example", tag: "preview", platforms: ["ps"], _example: true },
+    { feed: "preview", t: "Holdback Republic preview: politics meets party RPG", src: "Eurogamer", h: "example", tag: "preview", platforms: ["pc", "xbox"], _example: true },
+    { feed: "preview", t: "Dune: Awakening preview: survival with politics layered in", src: "PC Gamer", h: "example", tag: "preview", platforms: ["pc"], _example: true },
+  ];
+
+  const fallbackLiteracy = [
+    { id: "write", title: "How To Write A Game Review", summary: "Structure, criticism, disclosure, and the difference between a useful review and a vague opinion dump.", path: "shared/game-reviews/how-to-write-a-game-review.md" },
+    { id: "score", title: "How To Score A Game", summary: "How major outlets use scales, when not to score at all, and how to avoid fake precision.", path: "shared/game-reviews/how-to-score-a-game.md" },
+    { id: "process", title: "Review Process And Disclosure", summary: "Assignment, play time, disclosure, review-in-progress logic, and updated-review rules.", path: "shared/game-reviews/review-process-previews-and-ethics.md" },
+    { id: "previews", title: "Previews Vs Reviews", summary: "Handling limited-access builds honestly. Previews inform; they should not pretend to be verdicts.", path: "shared/game-reviews/previews-vs-reviews.md" },
+    { id: "studio", title: "Studio Feedback Loops", summary: "How small teams use a standing reviewer session to feed criticism back into development.", path: "shared/game-reviews/internal-review-loops-for-studios.md" },
+  ];
+
+  let state = {
+    data: null,
+    countdownTimer: null,
   };
 
-  const flushOrdered = () => {
-    if (!orderedList.length) return;
-    html.push(`<ol>${orderedList.map((item) => `<li>${renderInline(item)}</li>`).join("")}</ol>`);
-    orderedList = [];
-  };
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-  const flushCode = () => {
-    if (!codeLines.length) return;
-    html.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
-    codeLines = [];
-  };
-
-  for (const rawLine of lines) {
-    const line = rawLine.trimEnd();
-
-    if (line.startsWith("```")) {
-      flushParagraph();
-      flushBullets();
-      flushOrdered();
-      if (inCode) {
-        flushCode();
-        inCode = false;
-      } else {
-        inCode = true;
-      }
-      continue;
-    }
-
-    if (inCode) {
-      codeLines.push(rawLine);
-      continue;
-    }
-
-    if (!line.trim()) {
-      flushParagraph();
-      flushBullets();
-      flushOrdered();
-      continue;
-    }
-
-    const heading = line.match(/^(#{1,3})\s+(.*)$/);
-    if (heading) {
-      flushParagraph();
-      flushBullets();
-      flushOrdered();
-      const level = Math.min(heading[1].length + 1, 4);
-      html.push(`<h${level}>${renderInline(heading[2])}</h${level}>`);
-      continue;
-    }
-
-    const ordered = line.match(/^\d+\.\s+(.*)$/);
-    if (ordered) {
-      flushParagraph();
-      flushBullets();
-      orderedList.push(ordered[1]);
-      continue;
-    }
-
-    const bullet = line.match(/^-+\s+(.*)$/);
-    if (bullet) {
-      flushParagraph();
-      flushOrdered();
-      bulletList.push(bullet[1]);
-      continue;
-    }
-
-    paragraph.push(line.trim());
+  function esc(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 
-  flushParagraph();
-  flushBullets();
-  flushOrdered();
-  flushCode();
-
-  return html.join("");
-}
-
-async function fetchJson(url) {
-  const response = await fetch(url, { cache: "no-store" });
-  if (!response.ok) {
-    throw new Error(`Could not load ${url}.`);
-  }
-  return response.json();
-}
-
-async function fetchMarkdown(url) {
-  const response = await fetch(url, { cache: "no-store" });
-  if (!response.ok) {
-    throw new Error(`Could not load ${url}.`);
-  }
-  return response.text();
-}
-
-function renderPillRow(labels = [], pillClass = "source-pill") {
-  if (!labels.length) {
-    return "";
+  function attrs(obj) {
+    return Object.entries(obj)
+      .filter(([, v]) => v !== undefined && v !== null && v !== false)
+      .map(([k, v]) => `${k}="${esc(v)}"`)
+      .join(" ");
   }
 
-  return `
-    <div class="source-pill-row">
-      ${labels.map((label) => `<span class="${pillClass}">${escapeHtml(label)}</span>`).join("")}
-    </div>
-  `;
-}
-
-function createReferenceList(references = []) {
-  if (!references.length) {
-    return "";
+  async function readJson(path, fallback) {
+    try {
+      const res = await fetch(path, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${path}: ${res.status}`);
+      return await res.json();
+    } catch (error) {
+      console.warn(`GameTrackDaily: using fallback for ${path}`, error);
+      return fallback;
+    }
   }
 
-  return `
-    <section class="docs-extras">
-      <div class="docs-extras__section">
-        <p class="feature__kicker">References</p>
-        <ul class="docs-link-list">
-          ${references
-            .map(
-              (reference) =>
-                `<li><a href="${reference.url}" target="_blank" rel="noreferrer">${escapeHtml(reference.label)}</a></li>`,
-            )
-            .join("")}
-        </ul>
-      </div>
-    </section>
-  `;
-}
-
-function createPromptSection(cards = []) {
-  if (!cards.length) {
-    return "";
-  }
-
-  return `
-    <section class="docs-extras">
-      <div class="docs-extras__section">
-        <p class="feature__kicker">Prompt Cards</p>
-        <div class="prompt-card-grid">
-          ${cards
-            .map(
-              (card) => `
-                <article class="prompt-card">
-                  <p class="feature__kicker">Agent Prompt</p>
-                  <h3>${escapeHtml(card.title)}</h3>
-                  <p>${escapeHtml(card.body)}</p>
-                  <pre><code>${escapeHtml(card.prompt)}</code></pre>
-                </article>
-              `,
-            )
-            .join("")}
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function createSummaryChip(label, value, tone = "is-grey") {
-  return `
-    <article class="summary-chip">
-      <span class="summary-chip__label">${escapeHtml(label)}</span>
-      <strong class="summary-chip__value ${tone}">${escapeHtml(String(value))}</strong>
-    </article>
-  `;
-}
-
-function createLinkButton(label, href, className = "button button--ghost") {
-  const external = /^https?:\/\//.test(href);
-  return `<a class="${className}" href="${href}"${external ? ' target="_blank" rel="noreferrer"' : ""}>${escapeHtml(label)}</a>`;
-}
-
-function parseDateKey(value) {
-  const [year, month, day] = String(value || "")
-    .split("-")
-    .map((item) => Number.parseInt(item, 10));
-  if (!year || !month || !day) {
+  function platformId(value) {
+    const v = String(value || "").toLowerCase();
+    if (v.includes("playstation") || v === "ps" || v === "ps5" || v.includes("ps vr")) return "ps";
+    if (v.includes("xbox")) return "xbox";
+    if (v.includes("windows") || v.includes("pc") || v.includes("steam") || v.includes("gog") || v.includes("epic")) return "pc";
+    if (v.includes("browser") || v.includes("web")) return "browser";
     return null;
   }
-  return new Date(year, month - 1, day);
-}
 
-function startOfDay(date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
-function addDays(date, amount) {
-  const next = new Date(date);
-  next.setDate(next.getDate() + amount);
-  return startOfDay(next);
-}
-
-function dateKey(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function monthKey(date) {
-  return dateKey(new Date(date.getFullYear(), date.getMonth(), 1)).slice(0, 7);
-}
-
-function startOfWeek(date) {
-  const normalized = startOfDay(date);
-  const dayIndex = (normalized.getDay() + 6) % 7;
-  return addDays(normalized, -dayIndex);
-}
-
-function formatLongDate(date) {
-  return new Intl.DateTimeFormat([], {
-    weekday: "long",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }).format(date);
-}
-
-function formatMonthLabel(date) {
-  return new Intl.DateTimeFormat([], {
-    month: "long",
-    year: "numeric",
-  }).format(date);
-}
-
-function formatWeekLabel(startDate) {
-  const endDate = addDays(startDate, 6);
-  const formatter = new Intl.DateTimeFormat([], {
-    month: "short",
-    day: "numeric",
-  });
-  return `${formatter.format(startDate)} - ${formatter.format(endDate)}, ${endDate.getFullYear()}`;
-}
-
-function formatEventTime(item) {
-  if (!item.startAt) {
-    return "Time TBA";
+  function normalisePlatforms(list) {
+    return [...new Set((list || []).map(platformId).filter(Boolean))];
   }
 
-  const start = new Date(item.startAt);
-  const end = item.endAt ? new Date(item.endAt) : null;
-  const formatter = new Intl.DateTimeFormat([], {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
-
-  if (!end) {
-    return formatter.format(start);
+  function gameArtPath(game) {
+    return `assets/games/${game.id}.svg`;
   }
 
-  return `${formatter.format(start)} - ${formatter.format(end)}`;
-}
+  function normaliseGames(manifest) {
+    return (manifest.games || []).map((game) => ({
+      id: game.id,
+      title: game.title,
+      tagline: game.tagline,
+      cat: game.category || game.cat || "Game",
+      stage: game.stage || "Emerging",
+      status: game.status || game.publicStatus || "In development",
+      platforms: normalisePlatforms(game.platforms),
+      art: gameArtPath(game),
+      play: game.playUrl,
+      repo: game.repoUrl,
+      summary: game.summary,
+      highlights: game.highlights || [],
+    }));
+  }
 
-function groupedPlatformCounts(items = []) {
-  const counts = new Map();
-  items.forEach((item) => {
-    (item.platforms || []).forEach((platform) => {
-      counts.set(platform, (counts.get(platform) || 0) + 1);
+  function normaliseRelease(item) {
+    const platforms = normalisePlatforms(item.platforms || item.platformFocus);
+    return {
+      id: item.id,
+      title: item.title,
+      date: item.date,
+      platforms: platforms.length ? platforms : ["pc"],
+      launcher: item.launcher || item.launchers || inferLaunchers(item.platforms),
+      hype: item.hype || (item.ours ? "ours" : "tracked"),
+      genre: item.genre || item.category || item.trackingState || "Tracked",
+      ours: Boolean(item.ours),
+      source: item.source || "Public manifest",
+      officialUrl: item.officialUrl || item.url,
+      _example: Boolean(item._example),
+    };
+  }
+
+  function inferLaunchers(platforms = []) {
+    const ids = normalisePlatforms(platforms);
+    const labels = [];
+    if (ids.includes("pc")) labels.push("Steam / PC");
+    if (ids.includes("xbox")) labels.push("Xbox Store");
+    if (ids.includes("ps")) labels.push("PS Store");
+    if (ids.includes("browser")) labels.push("Web");
+    return labels.length ? labels : ["Tracked"];
+  }
+
+  function normaliseEvents(calendar) {
+    return (calendar.events || []).map((event) => ({
+      id: event.id,
+      title: event.title,
+      date: event.date,
+      endDate: event.endDate,
+      startAtUTC: event.startAt || event.startAtUTC || `${event.date}T18:00:00Z`,
+      kind: event.kind || "event",
+      platforms: normalisePlatforms(event.platformFocus || event.platforms),
+      where: [event.venue, event.city].filter(Boolean).join(" · ") || event.where || "Online",
+      note: event.notes || event.note || "",
+      watch: event.watchUrl || event.officialUrl || "#",
+      watchLabel: event.watchLabel || "Watch event",
+      source: event.source || "Official event page",
+      status: event.status || "tracked",
+    })).sort((a, b) => new Date(a.startAtUTC) - new Date(b.startAtUTC));
+  }
+
+  function normaliseNews(newsManifest) {
+    const fromManifest = [];
+    (newsManifest.feeds || []).forEach((feed) => {
+      const rail = railForFeed(feed.id);
+      (feed.items || []).forEach((item) => {
+        fromManifest.push({
+          feed: rail.id,
+          t: item.title || item.t,
+          src: item.source || item.src || feed.title,
+          h: item.age || item.h || readableAge(item.publishedAt || feed.generatedAt),
+          tag: item.tag || item.category || rail.title,
+          platforms: normalisePlatforms(item.platforms || item.platformFocus),
+          score: item.score,
+          url: item.url,
+          _example: Boolean(item._example),
+        });
+      });
     });
-  });
-
-  return Array.from(counts.entries())
-    .sort((left, right) => {
-      if (right[1] === left[1]) {
-        return left[0].localeCompare(right[0]);
-      }
-      return right[1] - left[1];
-    })
-    .map(([platform, count]) => ({ platform, count }));
-}
-
-function getPlatformFamily(tag = "") {
-  const lower = tag.toLowerCase();
-  if (lower.includes("xbox")) return "xbox";
-  if (lower.includes("playstation") || lower.includes("ps ")) return "playstation";
-  if (lower.includes("windows") || lower.includes("pc") || lower.includes("steam") || lower.includes("gog")) return "windows";
-  return "other";
-}
-
-function matchesPlatformFamily(tags = [], family = "all") {
-  if (family === "all") return true;
-  return tags.some((tag) => getPlatformFamily(tag) === family);
-}
-
-function platformFamilyLabel(family) {
-  if (family === "windows") return "Windows";
-  if (family === "xbox") return "Xbox";
-  if (family === "playstation") return "PlayStation";
-  return "All";
-}
-
-function setSearchParam(name, value) {
-  const url = new URL(window.location.href);
-  if (value) {
-    url.searchParams.set(name, value);
-  } else {
-    url.searchParams.delete(name);
-  }
-  history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
-}
-
-async function loadRegistry() {
-  const data = await fetchJson("data/page-registry.json");
-  return data.pages || [];
-}
-
-function registryEntryMap(entries) {
-  return new Map(entries.map((entry) => [entry.id, entry]));
-}
-
-function buildSiteNav(entries) {
-  if (!siteNav) {
-    return;
+    return fromManifest.length ? fromManifest : PROVISIONAL_NEWS;
   }
 
-  const order = ["home", "games", "game-development", "news", "review-coverage", "calendar", "events"];
-  const entryMap = registryEntryMap(entries);
-  const links = order
-    .map((id) => entryMap.get(id))
-    .filter(Boolean)
-    .map((entry) => {
-      const active =
-        pageSection === entry.id ||
-        (entry.id === "news" && pageSection === "news") ||
-        (entry.id === "review-coverage" && pageSection === "review-coverage");
-      return `<a href="${entry.publicRoute}"${active ? ' aria-current="page"' : ""}>${escapeHtml(entry.title)}</a>`;
-    })
-    .join("");
+  function railForFeed(feedId) {
+    return RAILS.find((rail) => rail.feedIds.includes(feedId)) || RAILS[0];
+  }
 
-  siteNav.innerHTML = `${links}<a class="site-nav__cta" href="calendar.html">Launch radar</a>`;
-}
+  function readableAge(value) {
+    if (!value) return "undated";
+    const then = new Date(value).getTime();
+    if (!Number.isFinite(then)) return "undated";
+    const hours = Math.max(1, Math.round((NOW() - then) / (60 * 60 * 1000)));
+    return hours < 24 ? `${hours}h` : `${Math.round(hours / 24)}d`;
+  }
 
-function sectionLinksMarkup(entries) {
-  const interesting = ["games", "game-development", "news", "review-coverage", "calendar", "events"];
-  const entryMap = registryEntryMap(entries);
-  const summaries = {
-    games: "Playable projects, tracked candidates, and the public lineup.",
-    "game-development": "Public-safe craft notes, workflows, and reference.",
-    news: "Curated games coverage split into clean editorial rails.",
-    "review-coverage": "Review and preview coverage from the wider games press.",
-    calendar: "The release slate by month, week, and platform family.",
-    events: "Showcases, conferences, awards, local times, and watch links.",
-  };
-  return interesting
-    .map((id) => entryMap.get(id))
-    .filter(Boolean)
-    .map(
-      (entry) => `
-        <article class="preview-card" data-reveal>
-          <p class="feature__kicker">${escapeHtml(entry.pageType)}</p>
-          <h3>${escapeHtml(entry.title)}</h3>
-          <p>${escapeHtml(summaries[entry.id] || entry.primaryContentRegion.replaceAll("-", " "))}</p>
-          <p class="preview-card__meta">${escapeHtml(entry.primaryContentRegion.replaceAll("-", " "))}</p>
-          <a class="button button--ghost" href="${entry.publicRoute}">Open page</a>
-        </article>
-      `,
-    )
-    .join("");
-}
+  function normaliseLiteracy(manifest) {
+    return (manifest.sections || fallbackLiteracy).map((section) => ({
+      id: section.id,
+      title: section.title,
+      summary: section.summary,
+      path: section.path,
+      lastReviewed: section.lastReviewed,
+    }));
+  }
 
-function gameCardMarkup(game) {
-  const actions = [
-    game.playUrl ? createLinkButton("Play demo", game.playUrl, "button button--primary") : "",
-    game.repoUrl ? createLinkButton("View repo", game.repoUrl, "button button--ghost") : "",
-  ]
-    .filter(Boolean)
-    .join("");
+  async function loadData() {
+    const [gamesManifest, releaseCalendar, gamesNews, reviewsManifest] = await Promise.all([
+      readJson("data/games-manifest.json", { games: [] }),
+      readJson("data/release-calendar.json", { releases: [], undated: [], events: [] }),
+      readJson("data/games-news.json", { feeds: [] }),
+      readJson("data/reviews-manifest.json", { sections: fallbackLiteracy }),
+    ]);
 
-  return `
-    <article class="emerging-card" data-reveal>
-      <div class="emerging-card__media">
-        <img src="${game.art}" alt="${escapeHtml(game.title)} artwork" />
-        <span class="card-stage">${escapeHtml(game.stage || "Tracked")}</span>
+    const datedFutureReleases = (releaseCalendar.releases || [])
+      .filter((release) => release.date && new Date(`${release.date}T23:59:59Z`).getTime() >= NOW())
+      .map(normaliseRelease);
+    const usingProvisionalReleases = datedFutureReleases.length === 0;
+
+    const undated = (releaseCalendar.undated || []).map(normaliseRelease);
+    const releases = (usingProvisionalReleases ? PROVISIONAL_RELEASES : datedFutureReleases).map(normaliseRelease);
+    const news = normaliseNews(gamesNews);
+
+    return {
+      games: normaliseGames(gamesManifest),
+      releases,
+      undated,
+      events: normaliseEvents(releaseCalendar),
+      news,
+      literacy: normaliseLiteracy(reviewsManifest),
+      meta: {
+        gamesUpdated: gamesManifest.updatedAt,
+        releaseUpdated: releaseCalendar.updatedAt,
+        newsUpdated: gamesNews.updatedAt,
+        reviewsUpdated: reviewsManifest.updatedAt,
+        releaseNotice: releaseCalendar.notice,
+        newsNotice: gamesNews.notice,
+        usingProvisionalReleases,
+        usingProvisionalNews: news.every((item) => item._example),
+      },
+    };
+  }
+
+  function fmtDate(iso) {
+    const date = new Date(`${iso}${String(iso).length === 10 ? "T00:00:00Z" : ""}`);
+    if (!Number.isFinite(date.getTime())) return { day: "--", month: "---", dow: "---", long: "Date pending" };
+    return {
+      day: String(date.getUTCDate()).padStart(2, "0"),
+      month: date.toLocaleString("en-GB", { month: "short", timeZone: "UTC" }).toUpperCase(),
+      dow: date.toLocaleString("en-GB", { weekday: "short", timeZone: "UTC" }).toUpperCase(),
+      long: date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }),
+    };
+  }
+
+  function monthKey(iso) {
+    return new Date(`${iso}T00:00:00Z`).toLocaleString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" });
+  }
+
+  function platformColour(platform) {
+    return PLATFORMS[platform]?.css || "var(--ink)";
+  }
+
+  function platformPills(platforms = [], boxed = true) {
+    if (!platforms.length) return "";
+    return `<span class="pill-row">${platforms.map((id) => {
+      const p = PLATFORMS[id] || PLATFORMS.pc;
+      return `<span class="pf pf--${esc(p.id)} ${boxed ? "boxed" : ""}"><span class="pf-dot"></span>${esc(p.label)}</span>`;
+    }).join("")}</span>`;
+  }
+
+  function launcherList(launchers = []) {
+    return `<span class="launcher">${(launchers || []).map(esc).join("<span aria-hidden=\"true\">·</span>")}</span>`;
+  }
+
+  function dateBlock(iso, accent) {
+    const d = fmtDate(iso);
+    return `
+      <div class="date-block" style="--platform:${accent}">
+        <span class="bignum date-block__day">${d.day}</span>
+        <span class="date-block__month">${d.month}</span>
       </div>
-      <div class="emerging-card__body">
-        <div class="emerging-card__topline">
-          <p class="feature__kicker">${escapeHtml(game.category)}</p>
-          <span class="card-status">${escapeHtml(game.publicStatus || game.status || "Tracked")}</span>
+    `;
+  }
+
+  function gameArt(src, label = "", height = 200, accent = "var(--brand)") {
+    return `
+      <div class="game-art" style="--art-height:${height}px;--platform:${accent}">
+        ${src ? `<img src="${esc(src)}" alt="" loading="lazy" decoding="async">` : ""}
+        ${label ? `<span class="game-art__label">${esc(label)}</span>` : ""}
+      </div>
+    `;
+  }
+
+  function sectionHead(no, title, meta = "") {
+    return `
+      <div class="section-head">
+        <span class="section-head__no">${esc(no)}</span>
+        <h2 class="section-head__title">${title}</h2>
+        ${meta ? `<div class="section-head__meta">${meta}</div>` : ""}
+      </div>
+    `;
+  }
+
+  function marquee(items, kind = "") {
+    const doubled = [...items, ...items];
+    return `
+      <div class="marquee ${kind === "brand" ? "marquee--brand" : ""}">
+        <div class="marquee__track" aria-hidden="true">
+          ${doubled.map((item) => `<span>${esc(item)}</span><span class="dot">★</span>`).join("")}
         </div>
-        <h3>${escapeHtml(game.title)}</h3>
-        <p>${escapeHtml(game.summary)}</p>
-        ${renderPillRow(game.platforms || [])}
-        <ul class="feature__list">
-          ${(game.highlights || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
-        </ul>
-        <div class="feature__actions">${actions}</div>
       </div>
-    </article>
-  `;
-}
-
-function signalCardMarkup(label, value, detail, href, tone = "") {
-  const className = ["signal-card", tone].filter(Boolean).join(" ");
-  const wrapperStart = href ? `<a class="${className}" href="${href}">` : `<article class="${className}">`;
-  const wrapperEnd = href ? "</a>" : "</article>";
-  return `${wrapperStart}
-      <span class="signal-card__label">${escapeHtml(label)}</span>
-      <strong class="signal-card__value">${escapeHtml(value)}</strong>
-      <p class="signal-card__detail">${escapeHtml(detail)}</p>
-    ${wrapperEnd}`;
-}
-
-function newsItemCard(item, fallbackSection) {
-  return `
-    <article class="news-card" data-reveal>
-      <p class="feature__kicker">${escapeHtml(item.section || fallbackSection)}</p>
-      <h3><a href="${item.url}" target="_blank" rel="noreferrer">${escapeHtml(item.headline)}</a></h3>
-      <p>${escapeHtml(item.summary)}</p>
-      ${(item.platforms || []).length || (item.tags || []).length
-        ? `<div class="news-card__pills">
-            ${renderPillRow(item.platforms || [])}
-            ${renderPillRow(item.tags || [])}
-          </div>`
-        : ""}
-      <div class="news-card__meta">
-        <span>${escapeHtml(item.source || "Source")}</span>
-        <span>${escapeHtml(item.publishedDate || "Date TBA")}</span>
-      </div>
-    </article>
-  `;
-}
-
-function eventCardMarkup(item) {
-  const links = (item.watchLinks || [])
-    .filter((link) => link?.url)
-    .map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${escapeHtml(link.label || "Watch")}</a>`)
-    .join(" · ");
-  const official = item.officialUrl
-    ? `<a href="${item.officialUrl}" target="_blank" rel="noreferrer">Official page</a>`
-    : "";
-
-  return `
-    <article class="news-card" data-reveal>
-      <p class="feature__kicker">${escapeHtml(item.kind || "Event")}</p>
-      <h3>${official ? `<a href="${item.officialUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.title)}</a>` : escapeHtml(item.title)}</h3>
-      <p>${escapeHtml(formatEventTime(item))}</p>
-      <p>${escapeHtml(item.notes || item.summary || "Major games-industry event.")}</p>
-      ${renderPillRow(item.platformFocus || [])}
-      <div class="news-card__meta">
-        <span>${escapeHtml([item.venue, item.city].filter(Boolean).join(", ") || "Watch online")}</span>
-        <span>${links || official || escapeHtml(item.watchStatus || "Watch links pending")}</span>
-      </div>
-    </article>
-  `;
-}
-
-async function renderHome(registry) {
-  const featuredGamesGrid = document.getElementById("featuredGamesGrid");
-  const homeSectionLinks = document.getElementById("homeSectionLinks");
-  const homeHighlightsGrid = document.getElementById("homeHighlightsGrid");
-  const homeSignalGrid = document.getElementById("homeSignalGrid");
-  const homeTicker = document.getElementById("homeTicker");
-  const homeRadarGrid = document.getElementById("homeRadarGrid");
-  if (!featuredGamesGrid || !homeSectionLinks || !homeHighlightsGrid || !homeSignalGrid || !homeTicker || !homeRadarGrid) {
-    return;
-  }
-
-  const [gamesManifest, newsManifest, calendarManifest, knowledgeManifest] = await Promise.all([
-    fetchJson("data/games-manifest.json"),
-    fetchJson("data/games-news.json"),
-    fetchJson("data/release-calendar.json"),
-    fetchJson("data/knowledge-manifest.json"),
-  ]);
-
-  const featured = (gamesManifest.games || []).filter((game) => (gamesManifest.featuredIds || []).includes(game.id));
-  featuredGamesGrid.innerHTML = featured.map(gameCardMarkup).join("");
-  homeSectionLinks.innerHTML = sectionLinksMarkup(registry);
-
-  const todayKey = dateKey(startOfDay(new Date()));
-  const datedReleases = (calendarManifest.releases || [])
-    .filter((item) => item.date)
-    .sort((left, right) => String(left.date).localeCompare(String(right.date)));
-  const nextRelease = datedReleases.find((item) => item.date >= todayKey) || null;
-  const upcomingEvent = (calendarManifest.events || [])
-    .filter((item) => item.date)
-    .sort((left, right) => String(left.date).localeCompare(String(right.date)))[0];
-
-  const reviewFeed = (newsManifest.feeds || []).find((feed) => feed.id === "reviews");
-  const previewFeed = (newsManifest.feeds || []).find((feed) => feed.id === "previews");
-  const gamingFeed = (newsManifest.feeds || []).find((feed) => feed.id === "gaming");
-  const devFeed = (newsManifest.feeds || []).find((feed) => feed.id === "game-dev");
-  const totalTrackedCoverage = (newsManifest.feeds || []).reduce(
-    (sum, feed) => sum + ((feed.items || []).length || 0),
-    0,
-  );
-
-  homeSignalGrid.innerHTML = [
-    signalCardMarkup(
-      "Tracked lineup",
-      `${(gamesManifest.games || []).length} games`,
-      `${(gamesManifest.featuredIds || []).length} featured public candidates`,
-      "games.html",
-      "signal-card--lime",
-    ),
-    signalCardMarkup(
-      "Next release",
-      nextRelease?.title || `${datedReleases.length} dated releases`,
-      nextRelease?.date || "Release slate live",
-      "calendar.html",
-      "signal-card--gold",
-    ),
-    signalCardMarkup(
-      "Event season",
-      upcomingEvent?.title || "No event queued",
-      upcomingEvent ? formatEventTime(upcomingEvent) : "Watch links and timings update here",
-      "events.html",
-      "signal-card--crimson",
-    ),
-    signalCardMarkup(
-      "Coverage rails",
-      `${(newsManifest.feeds || []).length} desks`,
-      `${totalTrackedCoverage} linked items across news, reviews, and previews`,
-      "news.html",
-      "signal-card--ice",
-    ),
-  ].join("");
-
-  homeTicker.innerHTML = [
-    nextRelease ? `Next release: ${nextRelease.title} (${nextRelease.date})` : `Release slate live: ${datedReleases.length} dated releases tracked`,
-    upcomingEvent ? `Next event: ${upcomingEvent.title}` : "Next event: calendar live",
-    reviewFeed ? `${reviewFeed.title}: ${(reviewFeed.items || []).length} tracked items` : "Reviews rail ready",
-    previewFeed ? `${previewFeed.title}: ${(previewFeed.items || []).length} tracked items` : "Previews rail ready",
-    devFeed ? `${devFeed.title}: ${(devFeed.items || []).length} tracked items` : "Game dev rail ready",
-  ]
-    .map((item) => `<span class="ticker__item">${escapeHtml(item)}</span>`)
-    .join("");
-
-  homeHighlightsGrid.innerHTML = [
-    `
-      <article class="preview-card" data-reveal>
-        <p class="feature__kicker">Game Development</p>
-        <h3>${escapeHtml(knowledgeManifest.landing?.title || "Build games like a solo studio")}</h3>
-        <p>${escapeHtml(knowledgeManifest.summary || "Public-safe craft guidance for builders and small teams.")}</p>
-        <a class="button button--ghost" href="game-development.html">Open reference</a>
-      </article>
-    `,
-    `
-      <article class="preview-card" data-reveal>
-        <p class="feature__kicker">Release Calendar</p>
-        <h3>${escapeHtml(calendarManifest.defaultFocusMonth || "Tracked release slate")}</h3>
-        <p>${(calendarManifest.releases || []).length} dated releases and ${(calendarManifest.undated || []).length} still-TBD games are tracked on the public calendar.</p>
-        <a class="button button--ghost" href="calendar.html">Open calendar</a>
-      </article>
-    `,
-    reviewFeed
-      ? `
-        <article class="preview-card" data-reveal>
-          <p class="feature__kicker">Review Coverage</p>
-          <h3>${escapeHtml(reviewFeed.title)}</h3>
-          <p>${escapeHtml(reviewFeed.summary)}</p>
-          <a class="button button--ghost" href="news-reviews.html">Open reviews</a>
-        </article>
-      `
-      : "",
-    previewFeed
-      ? `
-        <article class="preview-card" data-reveal>
-          <p class="feature__kicker">Preview Coverage</p>
-          <h3>${escapeHtml(previewFeed.title)}</h3>
-          <p>${escapeHtml(previewFeed.summary)}</p>
-          <a class="button button--ghost" href="news-previews.html">Open previews</a>
-        </article>
-      `
-      : "",
-    upcomingEvent
-      ? `
-        <article class="preview-card" data-reveal>
-          <p class="feature__kicker">Next event</p>
-          <h3>${escapeHtml(upcomingEvent.title)}</h3>
-          <p>${escapeHtml(formatEventTime(upcomingEvent))}</p>
-          <a class="button button--ghost" href="events.html">Open events</a>
-        </article>
-      `
-      : "",
-  ]
-    .filter(Boolean)
-    .join("");
-
-  const radarItems = [gamingFeed, devFeed, reviewFeed, previewFeed]
-    .filter(Boolean)
-    .map((feed) => {
-      const firstItem = (feed.items || [])[0];
-      if (!firstItem) {
-        return null;
-      }
-      return newsItemCard({ ...firstItem, section: feed.title }, feed.title);
-    })
-    .filter(Boolean);
-
-  homeRadarGrid.innerHTML = radarItems.length
-    ? radarItems.join("")
-    : `<section class="empty-state"><h3>Coverage rails are ready</h3><p>${escapeHtml(newsManifest.notice || "The homepage radar will populate as new coverage is exported.")}</p></section>`;
-
-  observeRevealItems();
-}
-
-async function renderGamesPage() {
-  const summary = document.getElementById("gamesSummary");
-  const filters = document.getElementById("gamesFilters");
-  const catalog = document.getElementById("gamesCatalogGrid");
-  const rail = document.getElementById("gamesRail");
-  if (!summary || !filters || !catalog || !rail) {
-    return;
-  }
-
-  const manifest = await fetchJson("data/games-manifest.json");
-  const games = manifest.games || [];
-  const allFilters = [
-    { id: "all", label: "All" },
-    ...(manifest.filters?.platforms || []).map((value) => ({ id: `platform:${value}`, label: value })),
-    ...(manifest.filters?.stages || []).map((value) => ({ id: `stage:${value}`, label: value })),
-  ];
-  let activeFilter = new URL(window.location.href).searchParams.get("filter") || "all";
-
-  summary.innerHTML = [
-    createSummaryChip("Tracked games", games.length, "is-green"),
-    createSummaryChip("Featured", (manifest.featuredIds || []).length, "is-yellow"),
-    createSummaryChip("Platforms", (manifest.filters?.platforms || []).length, "is-grey"),
-  ].join("");
-
-  function filteredGames() {
-    if (activeFilter === "all") {
-      return games;
-    }
-    if (activeFilter.startsWith("platform:")) {
-      const value = activeFilter.slice("platform:".length);
-      return games.filter((game) => (game.platforms || []).includes(value));
-    }
-    if (activeFilter.startsWith("stage:")) {
-      const value = activeFilter.slice("stage:".length);
-      return games.filter((game) => game.stage === value);
-    }
-    return games;
-  }
-
-  function render() {
-    filters.innerHTML = allFilters
-      .map(
-        (item) => `
-          <button class="news-tab ${item.id === activeFilter ? "is-active" : ""}" type="button" data-filter="${item.id}">
-            ${escapeHtml(item.label)}
-          </button>
-        `,
-      )
-      .join("");
-
-    Array.from(filters.querySelectorAll("[data-filter]")).forEach((button) => {
-      button.addEventListener("click", () => {
-        activeFilter = button.dataset.filter || "all";
-        setSearchParam("filter", activeFilter === "all" ? "" : activeFilter);
-        render();
-      });
-    });
-
-    const visibleGames = filteredGames();
-    catalog.innerHTML = visibleGames.map(gameCardMarkup).join("");
-
-    const featuredGames = games.filter((game) => (manifest.featuredIds || []).includes(game.id));
-    rail.innerHTML = `
-      <section class="rail-panel" data-reveal>
-        <p class="eyebrow">Featured</p>
-        <h2>Strong public candidates</h2>
-        <p>${featuredGames.map((game) => escapeHtml(game.title)).join(", ")}</p>
-      </section>
-      <section class="rail-panel" data-reveal>
-        <p class="eyebrow">Current filter</p>
-        <h2>${escapeHtml(allFilters.find((item) => item.id === activeFilter)?.label || "All")}</h2>
-        <p>${visibleGames.length} game${visibleGames.length === 1 ? "" : "s"} currently visible.</p>
-      </section>
     `;
-
-    observeRevealItems();
   }
 
-  render();
-}
-
-async function renderKnowledgePage() {
-  const nav = document.getElementById("knowledgePageNav");
-  const meta = document.getElementById("knowledgePageMeta");
-  const title = document.getElementById("knowledgePageTitle");
-  const description = document.getElementById("knowledgePageDescription");
-  const content = document.getElementById("knowledgePageContent");
-  if (!nav || !meta || !title || !description || !content) {
-    return;
-  }
-
-  const manifest = await fetchJson("data/knowledge-manifest.json");
-  const landing = manifest.landing;
-  const sections = manifest.sections || [];
-  const documents = [
-    {
-      id: landing.id,
-      title: landing.title,
-      summary: manifest.summary,
-      description: landing.summary,
-      path: landing.path,
-      promptCards: [],
-      references: [],
-      group: "Start here",
-    },
-    ...sections.map((section) => ({
-      ...section,
-      description: section.summary,
-      group: "Categories",
-    })),
-    {
-      id: "research-prompt-packs",
-      title: "Research Prompt Packs",
-      description: "Reusable prompts for category refreshes and news-source curation.",
-      path: manifest.promptPacks.path,
-      promptCards: [],
-      references: [],
-      group: "Categories",
-    },
-  ];
-
-  async function openDocument(document) {
-    const markdown = await fetchMarkdown(document.path);
-    meta.textContent = document.group;
-    title.textContent = document.title;
-    description.textContent = document.description || "";
-    content.innerHTML = `
-      ${createReferenceList(document.references)}
-      ${createPromptSection(document.promptCards)}
-      <div class="markdown-body">${markdownToHtml(markdown)}</div>
-    `;
-
-    Array.from(nav.querySelectorAll(".docs-nav__button")).forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.docId === document.id);
-    });
-
-    history.replaceState(null, "", `#${encodeURIComponent(document.id)}`);
-  }
-
-  nav.innerHTML = `
-    <section class="docs-nav__group">
-      <h2>Start here</h2>
-      <button class="docs-nav__button" type="button" data-doc-id="${landing.id}">
-        <strong>${escapeHtml(landing.title)}</strong>
-        <span>${escapeHtml(landing.summary)}</span>
-      </button>
-    </section>
-    <section class="docs-nav__group">
-      <h2>Categories</h2>
-      ${documents
-        .filter((document) => document.group === "Categories")
-        .map(
-          (document) => `
-            <button class="docs-nav__button" type="button" data-doc-id="${document.id}">
-              <strong>${escapeHtml(document.title)}</strong>
-              <span>${escapeHtml(document.summary || document.description || "")}</span>
-            </button>
-          `,
-        )
-        .join("")}
-    </section>
-  `;
-
-  Array.from(nav.querySelectorAll("[data-doc-id]")).forEach((button) => {
-    button.addEventListener("click", () => {
-      const document = documents.find((item) => item.id === button.dataset.docId);
-      if (document) {
-        openDocument(document);
-      }
-    });
-  });
-
-  const requestedId = decodeURIComponent(window.location.hash.replace(/^#/, "")) || landing.id;
-  await openDocument(documents.find((document) => document.id === requestedId) || documents[0]);
-}
-
-async function renderNewsLanding() {
-  const grid = document.getElementById("newsLandingGrid");
-  const rail = document.getElementById("newsLandingRail");
-  if (!grid || !rail) {
-    return;
-  }
-
-  const [manifest, registry] = await Promise.all([fetchJson("data/games-news.json"), loadRegistry()]);
-  const registryMap = registryEntryMap(registry);
-
-  grid.innerHTML = (manifest.feeds || [])
-    .map((feed) => {
-      const routeById = {
-        "game-dev": registryMap.get("news-development")?.publicRoute || "news-development.html",
-        gaming: registryMap.get("news-gaming")?.publicRoute || "news-gaming.html",
-        reviews: registryMap.get("news-reviews")?.publicRoute || "news-reviews.html",
-        previews: registryMap.get("news-previews")?.publicRoute || "news-previews.html",
-      };
-      return `
-        <article class="preview-card" data-reveal>
-          <p class="feature__kicker">${escapeHtml(feed.title)}</p>
-          <h3>${escapeHtml(feed.title)}</h3>
-          <p>${escapeHtml(feed.summary)}</p>
-          <p>${feed.generatedAt ? `Latest output ${escapeHtml(feed.generatedAt)}.` : escapeHtml(manifest.notice)}</p>
-          ${renderPillRow(feed.platformFocus || [])}
-          <a class="button button--ghost" href="${routeById[feed.id] || "news.html"}">Open feed</a>
-        </article>
-      `;
-    })
-    .join("");
-
-  rail.innerHTML = `
-    <section class="rail-panel" data-reveal>
-      <p class="eyebrow">Platform scope</p>
-      <h2>Tracked platforms</h2>
-      ${renderPillRow(manifest.platformPolicy?.allowed || [])}
-      <p>${escapeHtml(manifest.platformPolicy?.summary || "")}</p>
-    </section>
-    <section class="rail-panel" data-reveal>
-      <p class="eyebrow">Editorial mode</p>
-      <h2>Curated, not scraped live</h2>
-      <p>${escapeHtml(manifest.notice)}</p>
-    </section>
-  `;
-
-  observeRevealItems();
-}
-
-async function renderReviewCoveragePage() {
-  const grid = document.getElementById("reviewCoverageGrid");
-  const rail = document.getElementById("reviewCoverageRail");
-  if (!grid || !rail) {
-    return;
-  }
-
-  const manifest = await fetchJson("data/games-news.json");
-  const reviewsFeed = (manifest.feeds || []).find((feed) => feed.id === "reviews");
-  const previewsFeed = (manifest.feeds || []).find((feed) => feed.id === "previews");
-
-  grid.innerHTML = [
-    reviewsFeed
-      ? `
-        <article class="preview-card" data-reveal>
-          <p class="feature__kicker">Reviews</p>
-          <h3>${escapeHtml(reviewsFeed.title)}</h3>
-          <p>${escapeHtml(reviewsFeed.summary)}</p>
-          <a class="button button--ghost" href="news-reviews.html">Open review coverage</a>
-        </article>
-      `
-      : "",
-    previewsFeed
-      ? `
-        <article class="preview-card" data-reveal>
-          <p class="feature__kicker">Previews</p>
-          <h3>${escapeHtml(previewsFeed.title)}</h3>
-          <p>${escapeHtml(previewsFeed.summary)}</p>
-          <a class="button button--ghost" href="news-previews.html">Open preview coverage</a>
-        </article>
-      `
-      : "",
-  ]
-    .filter(Boolean)
-    .join("");
-
-  rail.innerHTML = `
-    <section class="rail-panel" data-reveal>
-      <p class="eyebrow">Editorial stance</p>
-      <h2>No house-review pretense</h2>
-      <p>GameTrackDaily should curate intelligently, keep verdicts and first impressions separate, and let the wider games press do the actual scoring work unless you later add a true editorial review desk.</p>
-    </section>
-    <section class="rail-panel" data-reveal>
-      <p class="eyebrow">Source families</p>
-      <h2>Wider games press</h2>
-      ${renderPillRow(
-        Array.from(new Set([...(reviewsFeed?.sources || []), ...(previewsFeed?.sources || [])])).slice(0, 8),
-      )}
-    </section>
-  `;
-
-  observeRevealItems();
-}
-
-async function renderNewsFeedPage(feedId) {
-  const summary = document.getElementById("newsFeedSummary");
-  const filters = document.getElementById("newsFeedFilters");
-  const body = document.getElementById("newsFeedBody");
-  const rail = document.getElementById("newsFeedRail");
-  const heroTitle = document.getElementById("newsFeedTitle");
-  const heroCopy = document.getElementById("newsFeedCopy");
-  if (!summary || !filters || !body || !rail || !heroTitle || !heroCopy) {
-    return;
-  }
-
-  const manifest = await fetchJson("data/games-news.json");
-  const feed = (manifest.feeds || []).find((item) => item.id === feedId) || manifest.feeds?.[0];
-  if (!feed) {
-    body.innerHTML = `<section class="empty-state"><h3>No feed configured</h3><p>The selected feed could not be loaded.</p></section>`;
-    return;
-  }
-
-  let activeFamily = new URL(window.location.href).searchParams.get("platform") || "all";
-  const families = ["all", "windows", "xbox", "playstation"];
-
-  heroTitle.textContent = feed.title;
-  heroCopy.textContent = feed.summary;
-
-  function filteredItems() {
-    return (feed.items || []).filter((item) => matchesPlatformFamily(item.platforms || [], activeFamily));
-  }
-
-  function render() {
-    const items = filteredItems();
-    summary.innerHTML = [
-      createSummaryChip("Items", items.length, "is-green"),
-      createSummaryChip("Sources", (feed.sources || []).length, "is-grey"),
-      createSummaryChip("Updated", feed.generatedAt || "Pending", "is-yellow"),
-    ].join("");
-
-    filters.innerHTML = families
-      .map(
-        (family) => `
-          <button class="news-tab ${family === activeFamily ? "is-active" : ""}" type="button" data-family="${family}">
-            ${escapeHtml(platformFamilyLabel(family))}
-          </button>
-        `,
-      )
-      .join("");
-
-    Array.from(filters.querySelectorAll("[data-family]")).forEach((button) => {
-      button.addEventListener("click", () => {
-        activeFamily = button.dataset.family || "all";
-        setSearchParam("platform", activeFamily === "all" ? "" : activeFamily);
-        render();
-      });
-    });
-
-    body.innerHTML = items.length
-      ? `<section class="news-card-grid">${items.map((item) => newsItemCard(item, feed.title)).join("")}</section>`
-      : `<section class="empty-state"><h3>Feed ready, first export still pending</h3><p>${escapeHtml(manifest.notice)}</p></section>`;
-
-    rail.innerHTML = `
-      <section class="rail-panel" data-reveal>
-        <p class="eyebrow">Tracked sources</p>
-        <h2>${escapeHtml(feed.title)}</h2>
-        ${renderPillRow(feed.sources || [])}
-      </section>
-      <section class="rail-panel" data-reveal>
-        <p class="eyebrow">Platform focus</p>
-        <h2>${escapeHtml(platformFamilyLabel(activeFamily))}</h2>
-        ${renderPillRow(feed.platformFocus || [])}
-      </section>
-      <section class="rail-panel" data-reveal>
-        <p class="eyebrow">Related feeds</p>
-        <h2>Stay in context</h2>
-        <p>
-          <a href="news-development.html">Game Dev</a><br />
-          <a href="news-gaming.html">Gaming</a><br />
-          <a href="news-reviews.html">Reviews</a><br />
-          <a href="news-previews.html">Previews</a>
-        </p>
-      </section>
-    `;
-
-    observeRevealItems();
-  }
-
-  render();
-}
-
-function buildReleaseModel(manifest) {
-  const dated = (manifest.releases || [])
-    .filter((item) => item.date)
-    .map((item) => {
-      const releaseDate = parseDateKey(item.date);
-      return releaseDate ? { ...item, releaseDate } : null;
-    })
-    .filter(Boolean)
-    .sort((left, right) => {
-      if (left.date === right.date) {
-        return left.title.localeCompare(right.title);
-      }
-      return left.date.localeCompare(right.date);
-    });
-
-  const byDate = new Map();
-  dated.forEach((item) => {
-    const items = byDate.get(item.date) || [];
-    items.push(item);
-    byDate.set(item.date, items);
-  });
-
-  return {
-    dated,
-    byDate,
-    undated: manifest.undated || [],
-  };
-}
-
-async function renderCalendarPage() {
-  const summary = document.getElementById("calendarSummary");
-  const filters = document.getElementById("calendarFilters");
-  const notice = document.getElementById("calendarNotice");
-  const weekdays = document.getElementById("calendarWeekdays");
-  const grid = document.getElementById("calendarGrid");
-  const detail = document.getElementById("calendarDetail");
-  const rangeLabel = document.getElementById("calendarRangeLabel");
-  const prevButton = document.getElementById("calendarPrevButton");
-  const nextButton = document.getElementById("calendarNextButton");
-  const viewToggle = document.getElementById("calendarViewToggle");
-  const rail = document.getElementById("calendarRail");
-  if (!summary || !filters || !notice || !weekdays || !grid || !detail || !rangeLabel || !prevButton || !nextButton || !viewToggle || !rail) {
-    return;
-  }
-
-  const manifest = await fetchJson("data/release-calendar.json");
-  const model = buildReleaseModel(manifest);
-  const defaultFocusMonth = String(manifest.defaultFocusMonth || "");
-  const focusMonthMatch = defaultFocusMonth.match(/^(\d{4})-(\d{2})$/);
-  const firstDate = focusMonthMatch
-    ? new Date(Number.parseInt(focusMonthMatch[1], 10), Number.parseInt(focusMonthMatch[2], 10) - 1, 1)
-    : parseDateKey(model.dated[0]?.date) || new Date();
-  let view = new URL(window.location.href).searchParams.get("view") || "month";
-  let family = new URL(window.location.href).searchParams.get("platform") || "all";
-  let cursorDate = startOfDay(firstDate);
-  let selectedDateKey = new URL(window.location.href).searchParams.get("date") || manifest.defaultSelectedDate || null;
-
-  weekdays.innerHTML = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((label) => `<span>${label}</span>`).join("");
-  notice.textContent = `${manifest.notice} Major showcases and awards now live on the separate Events page.`;
-
-  function filteredReleases() {
-    return model.dated.filter((item) => matchesPlatformFamily(item.platforms || [], family));
-  }
-
-  function groupedByDate(items) {
-    const map = new Map();
-    items.forEach((item) => {
-      const entries = map.get(item.date) || [];
-      entries.push(item);
-      map.set(item.date, entries);
-    });
-    return map;
-  }
-
-  function cellsForCurrentView() {
-    if (view === "week") {
-      const start = startOfWeek(cursorDate);
-      return Array.from({ length: 7 }, (_, index) => {
-        const day = addDays(start, index);
-        return { date: day, key: dateKey(day), outsideMonth: false };
-      });
-    }
-
-    const monthStart = new Date(cursorDate.getFullYear(), cursorDate.getMonth(), 1);
-    const gridStart = startOfWeek(monthStart);
-    return Array.from({ length: 42 }, (_, index) => {
-      const day = addDays(gridStart, index);
-      return { date: day, key: dateKey(day), outsideMonth: monthKey(day) !== monthKey(monthStart) };
-    });
-  }
-
-  function render() {
-    const visibleReleases = filteredReleases();
-    const visibleByDate = groupedByDate(visibleReleases);
-    const cells = cellsForCurrentView();
-
-    summary.innerHTML = [
-      createSummaryChip("Dated releases", visibleReleases.length, "is-green"),
-      createSummaryChip("Still TBD", (manifest.undated || []).filter((item) => matchesPlatformFamily(item.platforms || [], family)).length, "is-grey"),
-      createSummaryChip("View", view === "week" ? "Week" : "Month", "is-yellow"),
-    ].join("");
-
-    filters.innerHTML = ["all", "windows", "xbox", "playstation"]
-      .map(
-        (item) => `
-          <button class="news-tab ${item === family ? "is-active" : ""}" type="button" data-family="${item}">
-            ${escapeHtml(platformFamilyLabel(item))}
-          </button>
-        `,
-      )
-      .join("");
-
-    Array.from(filters.querySelectorAll("[data-family]")).forEach((button) => {
-      button.addEventListener("click", () => {
-        family = button.dataset.family || "all";
-        setSearchParam("platform", family === "all" ? "" : family);
-        render();
-      });
-    });
-
-    Array.from(viewToggle.querySelectorAll(".calendar-toggle__button")).forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.view === view);
-    });
-
-    rangeLabel.textContent = view === "week" ? formatWeekLabel(startOfWeek(cursorDate)) : formatMonthLabel(cursorDate);
-    grid.classList.toggle("is-week", view === "week");
-    grid.innerHTML = cells
-      .map((cell) => {
-        const releases = visibleByDate.get(cell.key) || [];
-        const platformCounts = groupedPlatformCounts(releases)
-          .slice(0, 2)
-          .map((item) => `<span>${escapeHtml(`${item.count} ${item.platform}`)}</span>`)
-          .join("");
-        return `
-          <button
-            class="calendar-day ${releases.length ? "is-active" : "is-empty"} ${cell.outsideMonth ? "is-outside-month" : ""} ${selectedDateKey === cell.key ? "is-selected" : ""}"
-            type="button"
-            data-date-key="${cell.key}"
-          >
-            <span class="calendar-day__date">${escapeHtml(
-              new Intl.DateTimeFormat([], { month: "short", day: "numeric" }).format(cell.date),
-            )}</span>
-            <strong class="calendar-day__count">${releases.length ? `${releases.length} release${releases.length === 1 ? "" : "s"}` : "Quiet"}</strong>
-            <span class="calendar-day__platforms">${platformCounts || "&nbsp;"}</span>
-          </button>
-        `;
-      })
-      .join("");
-
-    Array.from(grid.querySelectorAll("[data-date-key]")).forEach((button) => {
-      button.addEventListener("click", () => {
-        selectedDateKey = button.dataset.dateKey;
-        setSearchParam("date", selectedDateKey);
-        render();
-      });
-    });
-
-    const selectedReleases = selectedDateKey ? visibleByDate.get(selectedDateKey) || [] : [];
-    const selectedDate = selectedDateKey ? parseDateKey(selectedDateKey) : null;
-    detail.innerHTML = `
-      <div class="calendar-detail__head">
-        <div>
-          <p class="feature__kicker">Selected day</p>
-          <h2>${selectedDate ? escapeHtml(formatLongDate(selectedDate)) : "Choose a day"}</h2>
+  function nav(active) {
+    const links = [
+      ["releases", "Releases", "releases.html"],
+      ["events", "Events", "events.html"],
+      ["news", "News", "news.html"],
+      ["reviews", "Reviews", "reviews.html"],
+      ["games", "Games", "games.html"],
+      ["development", "Craft", "game-development.html"],
+    ];
+    const brandCurrent = active === "home" ? ' aria-current="page"' : "";
+    return `
+      <header class="nav">
+        <a class="nav__brand" href="index.html"${brandCurrent}>GAME<span class="slash">/</span>TRACK<span class="slash">/</span>DAILY</a>
+        <nav class="nav__links" aria-label="Primary">
+          ${links.map(([id, label, href]) => `
+            <a class="nav__link" href="${href}" ${active === id ? 'aria-current="page"' : ""}>${label}</a>
+          `).join("")}
+        </nav>
+        <div class="nav__right">
+          <button class="nav__utility" type="button" data-scanline-toggle aria-pressed="false">CRT off</button>
+          <span class="nav__live" data-clock>Local time</span>
         </div>
-        <p>${selectedReleases.length ? `${selectedReleases.length} tracked release${selectedReleases.length === 1 ? "" : "s"}` : "No tracked releases on this day."}</p>
-      </div>
-      ${
-        selectedReleases.length
-          ? `<ul class="calendar-release-list">
-              ${selectedReleases
-                .map(
-                  (item) => `
-                    <li class="calendar-release-item">
-                      <div>
-                        <strong>${item.igdbUrl ? `<a href="${item.igdbUrl}" target="_blank" rel="noreferrer">${escapeHtml(item.title)}</a>` : escapeHtml(item.title)}</strong>
-                        <p>${escapeHtml((item.platforms || []).join(", ") || "Platform not recorded")}</p>
-                      </div>
-                      <span>${escapeHtml(item.source || "Tracked list")}</span>
-                    </li>
-                  `,
-                )
-                .join("")}
-            </ul>`
-          : `<div class="empty-state"><h3>Quiet day</h3><p>No tracked releases match the active filter on this date.</p></div>`
-      }
+      </header>
     `;
-
-    const nextRelease = visibleReleases.find((item) => item.date >= dateKey(startOfDay(new Date()))) || null;
-    rail.innerHTML = `
-      <section class="rail-panel" data-reveal>
-        <p class="eyebrow">Next release</p>
-        <h2>${escapeHtml(nextRelease?.title || "No future date locked")}</h2>
-        <p>${escapeHtml(nextRelease?.date || `${visibleReleases.length} dated releases are still tracked in the slate.`)}</p>
-        ${nextRelease ? renderPillRow(nextRelease.platforms || []) : "<p>Keep following the tracked list for future date changes.</p>"}
-      </section>
-      <section class="rail-panel" data-reveal>
-        <p class="eyebrow">Events</p>
-        <h2>Separate events page</h2>
-        <p>Showcases, awards, stream links, and local times now live on their own dedicated page so the release calendar can stay focused.</p>
-        <a class="button button--ghost" href="events.html">Open events</a>
-      </section>
-    `;
-
-    observeRevealItems();
   }
 
-  Array.from(viewToggle.querySelectorAll(".calendar-toggle__button")).forEach((button) => {
-    button.addEventListener("click", () => {
-      view = button.dataset.view || "month";
-      setSearchParam("view", view === "month" ? "" : view);
-      render();
+  function footer() {
+    return `
+      <footer class="footer">
+        <p>GameTrackDaily - a curated games tracking site for Windows PC, Xbox, PlayStation, and E-lusion Studios browser demos.</p>
+        <p style="text-align:right">© 2026 Kol Tregaskes</p>
+      </footer>
+    `;
+  }
+
+  function pageFrame(page, content, bottom = "") {
+    const activePage = page === "calendar" ? "releases" : page === "rail" ? "news" : page;
+    const topItems = [
+      "GameTrackDaily editorial watch desk",
+      "Windows PC · Xbox · PlayStation",
+      "Studio slate highlighted in brand red",
+      "Provisional data is labelled",
+      "Events use official watch destinations",
+    ];
+    return `
+      <div class="scanline-layer" aria-hidden="true"></div>
+      <div class="page-shell">
+        ${marquee(topItems)}
+        ${nav(activePage)}
+        <main id="main-content" class="rise">${content}</main>
+        ${footer()}
+        ${bottom}
+      </div>
+    `;
+  }
+
+  function nextRelease(data) {
+    return data.releases
+      .filter((release) => release.date)
+      .map((release) => ({ ...release, t: new Date(`${release.date}T22:00:00Z`).getTime() }))
+      .filter((release) => release.t >= NOW() - DAY)
+      .sort((a, b) => a.t - b.t)[0];
+  }
+
+  function nextEvent(data) {
+    return data.events
+      .map((event) => ({ ...event, t: new Date(event.startAtUTC).getTime() }))
+      .filter((event) => event.t >= NOW() - DAY)
+      .sort((a, b) => a.t - b.t)[0];
+  }
+
+  function renderHome(data) {
+    const release = nextRelease(data);
+    const event = nextEvent(data);
+    const heroTarget = release || event;
+    const targetIso = release ? `${release.date}T22:00:00Z` : event?.startAtUTC;
+    const title = release ? release.title : event?.title || "Schedule pending";
+    const heroType = release ? "Next tracked drop" : "Next confirmed event";
+    const platforms = release ? release.platforms : event?.platforms || ["pc"];
+    const launchers = release ? release.launcher : [event?.watchLabel || "Official page"];
+    const genre = release ? release.genre : event?.kind || "Event";
+    const heroArtSrc = data.games.find((game) => game.id === "civicrise")?.art || data.games[0]?.art;
+    const thisWeek = data.releases.filter((item) => {
+      const t = new Date(`${item.date}T22:00:00Z`).getTime();
+      return t >= NOW() - DAY && t < NOW() + 7 * DAY;
     });
-  });
+    const next2 = data.releases.filter((item) => {
+      const t = new Date(`${item.date}T22:00:00Z`).getTime();
+      return t >= NOW() + 7 * DAY && t < NOW() + 21 * DAY;
+    }).slice(0, 4);
 
-  prevButton.addEventListener("click", () => {
-    cursorDate = view === "week" ? addDays(cursorDate, -7) : new Date(cursorDate.getFullYear(), cursorDate.getMonth() - 1, 1);
-    render();
-  });
+    const metrics = [
+      ["Tracked titles", String(data.releases.length + data.undated.length).padStart(2, "0"), "var(--ink)"],
+      ["This week", String(thisWeek.length).padStart(2, "0"), "var(--brand)"],
+      ["Events queued", String(data.events.filter((e) => new Date(e.startAtUTC).getTime() >= NOW() - DAY).length).padStart(2, "0"), "var(--pc)"],
+      ["Our slate", String(data.games.length).padStart(2, "0"), "var(--xbox)"],
+    ];
 
-  nextButton.addEventListener("click", () => {
-    cursorDate = view === "week" ? addDays(cursorDate, 7) : new Date(cursorDate.getFullYear(), cursorDate.getMonth() + 1, 1);
-    render();
-  });
+    return pageFrame("home", `
+      <section class="hero shell">
+        <div class="hero-grid">
+          <div class="hero__stack">
+            <div>
+              <div class="eyebrow"><span class="acc">●</span> ${esc(heroType)} · T-minus</div>
+              ${targetIso ? `<div class="countdown" data-countdown="${esc(targetIso)}" data-countdown-style="big"></div>` : ""}
+              <div style="margin-top:22px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">
+                <h1 class="display glitch" style="font-size:clamp(2.4rem,5.5vw,4.4rem);margin:0">${esc(title)}</h1>
+                ${release?.ours ? '<span class="tag brand">OURS</span>' : ""}
+              </div>
+              <div style="margin-top:14px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+                ${platformPills(platforms)}
+                ${launcherList(launchers)}
+                <span class="eyebrow">${esc(genre)}</span>
+              </div>
+              ${data.meta.usingProvisionalReleases ? `<div class="notice"><span class="acc">◇ PROVISIONAL</span><span>The public release manifest currently has no future dated releases. These release rows come from the design handoff and are labelled as examples until the release pipeline is refreshed.</span></div>` : ""}
+            </div>
+            <div class="action-row">
+              <a class="btn btn--brand" href="releases.html">See the release schedule <span class="arrow">-></span></a>
+              <a class="btn btn--ghost" href="events.html">Tonight's events</a>
+            </div>
+          </div>
+          <article class="card" style="overflow:hidden">
+            <div style="position:absolute;top:14px;left:14px;z-index:3"><span class="tag live">TRACKED</span></div>
+            ${gameArt(heroArtSrc, "MAIN EVENT", 460)}
+            <div style="padding:18px;border-top:2px solid var(--ink)">
+              <div class="eyebrow">// ${release ? `Launch window · ${fmtDate(release.date).month} ${fmtDate(release.date).day}` : "Event window"}</div>
+              <div class="display" style="font-size:34px;margin-top:6px">${release ? "Target time <span class='acc'>22:00 BST</span>" : "Official page <span class='acc'>linked</span>"}</div>
+              <p class="copy" style="margin:10px 0 0;font-size:14px">Curated tracking for launches, showcases, and studio demos. Seeded values stay marked until a public pipeline proves them.</p>
+            </div>
+          </article>
+        </div>
+      </section>
 
-  render();
-}
+      <section class="shell">
+        <div class="cols-4 rise-stagger" style="margin-top:20px">
+          ${metrics.map(([k, v, c]) => `<div class="metric"><div class="eyebrow">${esc(k)}</div><div class="bignum metric__value" style="color:${c}">${esc(v)}</div></div>`).join("")}
+        </div>
+      </section>
 
-async function renderEventsPage() {
-  const summary = document.getElementById("eventsSummary");
-  const controls = document.getElementById("eventsControls");
-  const timeline = document.getElementById("eventsTimeline");
-  const rail = document.getElementById("eventsRail");
-  if (!summary || !controls || !timeline || !rail) {
-    return;
+      <section class="shell" style="margin-top:40px">
+        ${sectionHead("ROUND 01", "This week's card", `<span class="tag">${thisWeek.length} bouts</span><a class="btn btn--ghost btn--small" href="releases.html">Full card <span class="arrow">-></span></a>`)}
+        <div class="row-grid">
+          ${thisWeek.length ? thisWeek.map(releaseRow).join("") : `<div style="padding:32px 22px;color:var(--ink-3);font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase">No dated releases inside this exact window. Open the release schedule for provisional and undated tracked items.</div>`}
+        </div>
+      </section>
+
+      <section class="shell" style="margin-top:36px">
+        ${sectionHead("ROUND 02", "The two-week horizon", `<span class="tag">${next2.length} bouts · mixed platforms</span>`)}
+        <div class="cols-2">
+          ${next2.length ? next2.map((r, i) => vsCell(r, i % 2 ? "R" : "L")).join("") : data.undated.slice(0, 4).map((r, i) => vsCell({ ...r, date: "" }, i % 2 ? "R" : "L")).join("")}
+        </div>
+      </section>
+
+      <section class="shell" style="margin-top:44px">
+        ${sectionHead("ROSTER", `Our slate <span class="acc">-</span> seven in motion`, `<span class="pf pf--browser boxed"><span class="pf-dot"></span>Browser</span><span class="pf pf--pc boxed"><span class="pf-dot"></span>PC</span>`)}
+        <div class="cols-4 rise-stagger">
+          ${data.games.slice(0, 4).map((game, i) => rosterCard(game, i + 1)).join("")}
+        </div>
+        <div class="cols-3 rise-stagger" style="margin-top:-2px">
+          ${data.games.slice(4, 7).map((game, i) => rosterCard(game, i + 5)).join("")}
+        </div>
+      </section>
+
+      <section class="shell" style="margin-top:44px">
+        ${sectionHead("WIRE", "Tonight's signal", `<span class="tag">${data.news.length} items</span><a class="btn btn--ghost btn--small" href="news.html">Open wire <span class="arrow">-></span></a>`)}
+        <div class="cols-4">
+          ${RAILS.map((rail) => {
+            const items = data.news.filter((item) => item.feed === rail.id).slice(0, 2);
+            return `<article class="rail-card" style="--rail:${rail.colour}">
+              <span class="tag brand-ghost">${esc(rail.title)}</span>
+              <div style="margin-top:14px">${items.map((item, i) => `
+                <div style="padding:12px 0;border-top:${i ? "1px dashed var(--line)" : "0"}">
+                  <div style="font-weight:600;line-height:1.25">${esc(item.t)}</div>
+                  <div class="eyebrow" style="margin-top:8px;font-size:9px">${esc(item.src)} · ${esc(item.h)}${item.score ? ` · <span class="acc">${scoreOutOfTen(item.score)}/10</span>` : ""}</div>
+                </div>`).join("")}</div>
+            </article>`;
+          }).join("")}
+        </div>
+      </section>
+    `, `<div style="margin-top:56px">${marquee(["Insert coin", "1986 -> 2026", "GameTrackDaily - built for players who watch the card", "Windows PC · Xbox · PlayStation", "Studio slate in brand red"], "brand")}</div>`);
   }
 
-  const manifest = await fetchJson("data/release-calendar.json");
-  const events = (manifest.events || [])
-    .filter((item) => item.date)
-    .sort((left, right) => String(left.date).localeCompare(String(right.date)));
-
-  let activeKind = new URL(window.location.href).searchParams.get("kind") || "all";
-  let activeFamily = new URL(window.location.href).searchParams.get("platform") || "all";
-
-  const kinds = ["all", ...Array.from(new Set(events.map((item) => item.kind).filter(Boolean))).sort()];
-
-  function filteredEvents() {
-    return events.filter((item) => {
-      const kindMatch = activeKind === "all" || item.kind === activeKind;
-      const familyMatch = matchesPlatformFamily(item.platformFocus || [], activeFamily);
-      return kindMatch && familyMatch;
-    });
-  }
-
-  function render() {
-    const visible = filteredEvents();
-    const nextEvent = visible.find((item) => item.date >= dateKey(startOfDay(new Date()))) || visible[0];
-
-    summary.innerHTML = [
-      createSummaryChip("Tracked events", visible.length, "is-green"),
-      createSummaryChip("Kinds", kinds.length - 1, "is-grey"),
-      createSummaryChip("Platform lens", platformFamilyLabel(activeFamily), "is-yellow"),
-    ].join("");
-
-    controls.innerHTML = `
-      <div class="news-tabs">
-        ${kinds
-          .map(
-            (kind) => `
-              <button class="news-tab ${kind === activeKind ? "is-active" : ""}" type="button" data-kind="${escapeHtml(kind)}">
-                ${escapeHtml(kind === "all" ? "All events" : kind)}
-              </button>
-            `,
-          )
-          .join("")}
-      </div>
-      <div class="news-tabs">
-        ${["all", "windows", "xbox", "playstation"]
-          .map(
-            (family) => `
-              <button class="news-tab ${family === activeFamily ? "is-active" : ""}" type="button" data-family="${family}">
-                ${escapeHtml(platformFamilyLabel(family))}
-              </button>
-            `,
-          )
-          .join("")}
-      </div>
+  function releaseRow(release, index = 1) {
+    const primary = release.platforms[0] || "pc";
+    const colour = platformColour(primary);
+    const d = release.date ? dateBlock(release.date, colour) : `<div class="date-block" style="--platform:${colour}"><span class="bignum date-block__day">TBD</span><span class="date-block__month">DATE</span></div>`;
+    return `
+      <article class="release-row ${release.ours ? "is-ours" : ""}" data-platforms="${esc(release.platforms.join(" "))}" data-ours="${release.ours ? "true" : "false"}" data-release-card style="--platform:${colour}">
+        <div class="stripe-cell" style="background:${colour}">${String(index).padStart(2, "0")}</div>
+        <div class="cell" style="padding:0">${d}</div>
+        <div class="cell">
+          <h3 class="display glitch row-title">${esc(release.title)}${release.ours ? " <span class='acc'>★</span>" : ""}</h3>
+          <div class="eyebrow" style="margin-top:6px;font-size:10px">${esc(release.genre)}${release.hype === "high" ? " · <span class='acc'>High signal</span>" : ""}${release._example ? " · example" : ""}</div>
+        </div>
+        <div class="cell">${launcherList(release.launcher)}</div>
+        <div class="cell">${platformPills(release.platforms)}</div>
+        <div class="row-arrow">-></div>
+      </article>
     `;
+  }
 
-    Array.from(controls.querySelectorAll("[data-kind]")).forEach((button) => {
+  function releaseCard(release) {
+    const primary = release.platforms[0] || "pc";
+    const colour = platformColour(primary);
+    return `
+      <article class="release-card" data-platforms="${esc(release.platforms.join(" "))}" data-ours="${release.ours ? "true" : "false"}" data-release-card style="--platform:${colour}">
+        <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-top:8px">
+          ${release.date ? dateBlock(release.date, colour) : `<span class="tag">TBD</span>`}
+          ${platformPills(release.platforms)}
+        </div>
+        <h3 class="display glitch row-title" style="margin-top:14px">${esc(release.title)}${release.ours ? " <span class='acc'>★</span>" : ""}</h3>
+        <div class="eyebrow" style="margin-top:8px;font-size:10px">${esc(release.genre)}${release._example ? " · example" : ""}</div>
+        <div style="margin-top:14px">${launcherList(release.launcher)}</div>
+      </article>
+    `;
+  }
+
+  function vsCell(release, side) {
+    const textAlign = side === "L" ? "left" : "right";
+    return `
+      <article style="padding:22px 26px;background:${release.ours ? "color-mix(in oklab, var(--brand) 14%, transparent)" : "transparent"};text-align:${textAlign}">
+        <div class="eyebrow">${release.date ? `${fmtDate(release.date).dow} ${fmtDate(release.date).day} ${fmtDate(release.date).month}` : "Date pending"}</div>
+        <h3 class="display glitch" style="font-size:36px;line-height:.95;margin:6px 0 0">${esc(release.title)}${release.ours ? " <span class='acc'>★</span>" : ""}</h3>
+        <div style="margin-top:12px;display:flex;gap:10px;align-items:center;justify-content:${side === "L" ? "flex-start" : "flex-end"};flex-wrap:wrap">
+          ${platformPills(release.platforms)}
+          ${launcherList(release.launcher)}
+        </div>
+      </article>
+    `;
+  }
+
+  function rosterCard(game, index) {
+    const flagship = game.stage === "Flagship";
+    return `
+      <article class="roster-card card ${flagship ? "card--ours" : ""}" style="display:flex;flex-direction:column;border:${flagship ? "2px solid var(--brand)" : "none"}">
+        ${gameArt(game.art, "", 170, platformColour(game.platforms[0]))}
+        <div style="display:flex;flex-direction:column;gap:8px;flex:1;padding-top:16px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+            <span class="eyebrow" style="font-size:10px">No. ${String(index).padStart(2, "0")} · ${esc(game.stage)}</span>
+            ${platformPills(game.platforms)}
+          </div>
+          <h3 class="display glitch" style="font-size:28px;line-height:.95;margin:0">${esc(game.title)}</h3>
+          <div class="eyebrow" style="font-size:10px;color:var(--brand)">${esc(game.cat)}</div>
+          <p class="copy" style="margin:4px 0 0;font-size:13px">${esc(game.tagline)}.</p>
+          <div style="margin-top:auto;padding-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            ${game.play ? `<a class="btn btn--brand btn--small" href="${esc(game.play)}" target="_blank" rel="noreferrer">Play demo <span class="arrow">-></span></a>` : `<span class="tag">${esc(game.status)}</span>`}
+            ${game.repo ? `<a class="btn btn--ghost btn--small" href="${esc(game.repo)}" target="_blank" rel="noreferrer">Repo <span class="arrow">-></span></a>` : ""}
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderReleases(data, alias = false) {
+    const grouped = groupByMonth(data.releases);
+    return pageFrame("releases", `
+      <section class="hero shell">
+        <div class="eyebrow"><span class="acc">// 01</span> Release radar · Windows PC · Xbox · PlayStation</div>
+        <h1 class="display hero-title">The card,<br><span class="acc">ninety days</span> out.</h1>
+        <p class="hero-lede">Every tracked release on the three platforms we cover. Filter by platform to scan one slate at a time. Brand-red rows are E-lusion Studios drops or provisional studio slots.</p>
+        ${alias ? `<div class="notice"><span class="acc">Route note</span><span><code>calendar.html</code> is kept as a public-safe alias. The arcade design's canonical release surface is <a href="releases.html">releases.html</a>.</span></div>` : ""}
+        ${data.meta.usingProvisionalReleases ? `<div class="notice"><span class="acc">◇ PROVISIONAL</span><span>The public release manifest is currently seeded and has no future dated release rows. The visible dated slate uses handoff examples until the release tracker is refreshed.</span></div>` : ""}
+        <div class="filter-row" style="margin-top:26px">
+          ${filterButton("all", "All", "var(--ink)", true)}
+          ${filterButton("pc", "PC", "var(--pc)")}
+          ${filterButton("xbox", "Xbox", "var(--xbox)")}
+          ${filterButton("ps", "PS5", "var(--ps)")}
+          ${filterButton("ours", "Ours", "var(--brand)")}
+          <div class="segmented" style="margin-left:auto">
+            <button type="button" data-release-view="list" class="is-active">List</button>
+            <button type="button" data-release-view="grid">Grid</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell" style="margin-top:36px" data-release-section>
+        <div data-release-list>
+          ${Object.entries(grouped).map(([month, items], monthIndex) => `
+            <section style="margin-bottom:36px" data-release-month>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:18px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:16px;flex-wrap:wrap">
+                <div style="display:flex;align-items:baseline;gap:18px">
+                  <span class="eyebrow" style="color:var(--brand)">// ${String(monthIndex + 1).padStart(2, "0")}</span>
+                  <h2 class="display" style="font-size:clamp(2rem,4vw,2.8rem);margin:0">${esc(month)}</h2>
+                </div>
+                <span class="tag">${items.length} drops</span>
+              </div>
+              <div class="row-grid" data-view-list>${items.map((release, i) => releaseRow(release, i + 1)).join("")}</div>
+              <div class="grid-view is-hidden" data-view-grid>${items.map(releaseCard).join("")}</div>
+            </section>
+          `).join("")}
+          <div class="notice is-hidden" data-release-empty><span class="acc">No rows</span><span>Nothing matches this platform filter. Try All, or check the undated watchlist below.</span></div>
+        </div>
+      </section>
+
+      <section class="shell" style="margin-top:40px">
+        ${sectionHead("//", "Undated watchlist", `<span class="tag">${data.undated.length} tracked</span>`)}
+        <div class="row-grid">
+          ${data.undated.slice(0, 8).map((release, i) => releaseRow({ ...release, date: "" }, i + 1)).join("")}
+        </div>
+      </section>
+
+      <section class="shell" style="margin-top:40px">
+        ${sectionHead("//", "Platform legend")}
+        <div class="cols-4">
+          ${Object.values(PLATFORMS).map((p) => `<article style="padding:22px"><div style="width:36px;height:36px;background:${p.css};margin-bottom:14px"></div><h3 class="display" style="font-size:22px;line-height:1;color:${p.css};margin:0">${esc(p.long)}</h3><p class="eyebrow" style="font-size:10px;margin-top:10px">${legendCopy(p.id)}</p></article>`).join("")}
+        </div>
+      </section>
+    `);
+  }
+
+  function filterButton(id, label, colour, active = false) {
+    return `<button type="button" class="filter-button" style="--filter:${colour}" data-release-filter="${id}" aria-pressed="${active ? "true" : "false"}">${active ? "● " : ""}${esc(label)}</button>`;
+  }
+
+  function legendCopy(id) {
+    return {
+      pc: "Steam · GOG · Epic · Xbox app · EA",
+      xbox: "Series X · Series S · Game Pass",
+      ps: "PS5 · PS Plus · PS Store",
+      browser: "Itch · GitHub Pages · Web demos",
+    }[id] || "Tracked";
+  }
+
+  function groupByMonth(releases) {
+    return releases.reduce((acc, release) => {
+      const key = release.date ? monthKey(release.date) : "Date pending";
+      acc[key] = acc[key] || [];
+      acc[key].push(release);
+      return acc;
+    }, {});
+  }
+
+  function renderEvents(data) {
+    const future = data.events.filter((event) => new Date(event.startAtUTC).getTime() >= NOW() - DAY);
+    const next = future[0] || data.events[0];
+    const sgf = data.events.filter((event) => event.date >= "2026-06-03" && event.date <= "2026-06-09");
+    const july = data.events.filter((event) => event.date >= "2026-07-01" && event.date <= "2026-07-31");
+    const late = data.events.filter((event) => event.date >= "2026-08-01" && event.date <= "2026-09-30");
+    const winter = data.events.filter((event) => event.date >= "2026-10-01");
+
+    return pageFrame("events", `
+      <section class="hero shell">
+        <div class="eyebrow"><span class="acc">// 02</span> Events watch desk · 2026</div>
+        <h1 class="display hero-title">Showcases,<br>conferences,<br><span class="acc">awards.</span></h1>
+        ${next ? `
+          <article class="card" style="margin-top:32px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;padding:0">
+            <div style="padding:26px 28px;background:var(--brand);color:#0a0a0c;display:flex;flex-direction:column;align-items:center;min-width:140px">
+              <span class="bignum" style="font-size:48px">${fmtDate(next.date).day}</span>
+              <span style="font-family:var(--mono);font-weight:800;font-size:12px;letter-spacing:.22em;margin-top:6px">${fmtDate(next.date).month}</span>
+            </div>
+            <div class="cell">
+              <div class="eyebrow"><span class="acc">●</span> Next event · T-minus</div>
+              <h2 class="display glitch" style="font-size:38px;margin:6px 0 0">${esc(next.title)}</h2>
+              <div style="display:flex;gap:16px;align-items:center;margin-top:10px;flex-wrap:wrap">
+                <span class="countdown countdown--compact bignum" data-countdown="${esc(next.startAtUTC)}" data-countdown-style="compact"></span>
+                ${platformPills(next.platforms)}
+              </div>
+            </div>
+            <div class="cell"><a class="btn btn--brand" href="${esc(next.watch)}" target="_blank" rel="noreferrer">${esc(next.watchLabel)} <span class="arrow">-></span></a></div>
+          </article>` : ""}
+      </section>
+      ${eventSection("03", "Summer Game Fest · 03-09 Jun", sgf, "grid")}
+      ${eventSection("04", "July · Develop season", july, "rows")}
+      ${eventSection("05", "Gamescom · Cologne", late, "grid2")}
+      ${eventSection("06", "Awards season", winter, "rows")}
+    `);
+  }
+
+  function eventSection(no, title, events, mode) {
+    if (!events.length) return "";
+    return `
+      <section class="shell" style="margin-top:56px">
+        ${sectionHead(`// ${no}`, title, `<span class="tag">${events.length} events</span>`)}
+        ${mode === "rows" ? `<div class="row-grid">${events.map(eventRow).join("")}</div>` : `<div class="${mode === "grid2" ? "cols-2" : "cols-3"} rise-stagger">${events.map(eventCard).join("")}</div>`}
+      </section>
+    `;
+  }
+
+  function eventCard(event) {
+    const colour = platformColour(event.platforms[0] || "pc");
+    const isLive = isEventLive(event);
+    return `
+      <article class="event-card" style="--platform:${colour};background:${isLive ? "color-mix(in oklab, var(--brand) 14%, transparent)" : "transparent"}">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:8px">
+          <div style="display:flex;align-items:baseline;gap:12px"><span class="bignum" style="font-size:44px;color:${colour}">${fmtDate(event.date).day}</span><span class="eyebrow">${fmtDate(event.date).month}</span></div>
+          <span class="tag ${isLive ? "live" : ""}">${isLive ? "LIVE" : esc(event.kind)}</span>
+        </div>
+        <h3 class="display glitch" style="font-size:30px;line-height:.95;margin:14px 0 0">${esc(event.title)}</h3>
+        <div class="eyebrow" style="margin-top:8px">${esc(event.where)}</div>
+        <p class="copy" style="margin:12px 0 0;font-size:13px;flex:1">${esc(event.note)}</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:12px;flex-wrap:wrap">
+          ${platformPills(event.platforms)}
+          <a class="btn btn--ghost btn--small" href="${esc(event.watch)}" target="_blank" rel="noreferrer">${esc(event.watchLabel)} <span class="arrow">-></span></a>
+        </div>
+      </article>
+    `;
+  }
+
+  function eventRow(event) {
+    const colour = platformColour(event.platforms[0] || "pc");
+    const past = new Date(event.startAtUTC).getTime() < NOW() - DAY;
+    return `
+      <article class="event-row" style="--platform:${colour}">
+        <div class="stripe-cell" style="background:${colour}"></div>
+        <div class="cell" style="align-items:center;text-align:center"><span class="bignum" style="font-size:26px">${fmtDate(event.date).day}</span><span class="eyebrow" style="font-size:9px;color:${colour}">${fmtDate(event.date).month}</span></div>
+        <div class="cell"><h3 class="display glitch row-title">${esc(event.title)}</h3><span class="eyebrow" style="margin-top:6px;font-size:9px">${esc(event.kind)} · ${esc(event.where)}</span></div>
+        <div class="cell">${past ? `<span class="tag">Concluded</span>` : `<span class="countdown countdown--compact bignum" data-countdown="${esc(event.startAtUTC)}" data-countdown-style="compact"></span>`}</div>
+        <div class="cell">${platformPills(event.platforms)}</div>
+        <div class="cell"><a class="btn btn--ghost btn--small" href="${esc(event.watch)}" target="_blank" rel="noreferrer">Watch <span class="arrow">-></span></a></div>
+      </article>
+    `;
+  }
+
+  function isEventLive(event) {
+    const start = new Date(event.startAtUTC).getTime();
+    return start <= NOW() && start > NOW() - 30 * 60 * 1000;
+  }
+
+  function renderNews(data, forcedRail = null) {
+    const visibleRails = forcedRail ? RAILS.filter((rail) => rail.id === forcedRail) : RAILS;
+    return pageFrame("news", `
+      <section class="hero shell">
+        <div class="eyebrow"><span class="acc">// 03</span> Curated wire · public rails</div>
+        <h1 class="display hero-title">Four feeds,<br><span class="acc">one watch desk.</span></h1>
+        <p class="hero-lede">Game-dev craft, platform and industry stories, scored reviews, and unscored previews. The public pipeline is still being populated, so examples stay labelled.</p>
+        <div class="tabs-row" style="margin-top:28px">
+          <button class="tab-button" style="--filter:var(--ink)" data-rail-tab="all" aria-pressed="${forcedRail ? "false" : "true"}">All rails</button>
+          ${RAILS.map((rail) => `<button class="tab-button" style="--filter:${rail.colour}" data-rail-tab="${rail.id}" aria-pressed="${forcedRail === rail.id ? "true" : "false"}">${esc(rail.title)}</button>`).join("")}
+        </div>
+        ${data.meta.usingProvisionalNews ? `<div class="notice"><span class="acc">◇ PROVISIONAL</span><span>Items shown are examples in the brand voice. The public news pipeline has not yet populated all four rails.</span></div>` : ""}
+      </section>
+      <div data-rail-sections>
+        ${visibleRails.map((rail, idx) => railBlock(rail, data.news.filter((item) => item.feed === rail.id), idx + 1)).join("")}
+      </div>
+    `);
+  }
+
+  function railBlock(rail, items, no) {
+    return `
+      <section class="shell" style="margin-top:50px" data-rail-section="${rail.id}">
+        <div class="rail-header" style="--rail:${rail.colour}">
+          <div class="rail-header__top"><span class="rail-swatch"></span><span class="eyebrow">// ${String(no).padStart(2, "0")} · ${esc(rail.title)} wire · ${items.length} items</span></div>
+          <h2 class="display rail-title">${esc(rail.title)}</h2>
+          <p class="copy" style="margin:10px 0 0;max-width:720px;font-size:14px">${esc(rail.desc)}</p>
+        </div>
+        <div class="row-grid">
+          ${items.map((item) => newsRow(item, rail.colour)).join("") || `<div style="padding:28px 22px" class="eyebrow">No public items in this rail yet.</div>`}
+        </div>
+        <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap">
+          <span class="eyebrow">Sources · ${esc(rail.sources.join(" · "))}</span>
+          <a class="btn btn--ghost btn--small" href="${esc(rail.route)}">Full ${esc(rail.title)} archive <span class="arrow">-></span></a>
+        </div>
+      </section>
+    `;
+  }
+
+  function newsRow(item, colour) {
+    return `
+      <article class="news-row" style="--rail:${colour}">
+        <div class="stripe-cell" style="background:${colour}"></div>
+        <div class="cell"><span class="eyebrow" style="color:${colour}">${esc(item.h)}</span><span class="eyebrow" style="font-size:9px">${esc(item.tag)}</span></div>
+        <div class="cell"><h3 class="display glitch row-title" style="font-size:24px">${esc(item.t)}</h3><div class="eyebrow" style="margin-top:8px;font-size:10px">${esc(item.src)}${item.score ? ` · <span class="acc">${scoreOutOfTen(item.score)}/10</span>` : ""}${item._example ? " · example" : ""}</div></div>
+        <div class="cell">${item.platforms?.length ? platformPills(item.platforms) : "<span class='eyebrow'>Multi-platform</span>"}</div>
+        <div class="row-arrow" style="color:${colour}">-></div>
+      </article>
+    `;
+  }
+
+  function renderReviews(data) {
+    const reviews = data.news.filter((item) => item.feed === "review");
+    const previews = data.news.filter((item) => item.feed === "preview");
+    const featured = [...reviews].sort((a, b) => scoreOutOfTen(b.score || 0) - scoreOutOfTen(a.score || 0))[0];
+    const heroArtSrc = data.games.find((game) => game.id === "starfall-protocol")?.art || data.games[0]?.art;
+    return pageFrame("reviews", `
+      <section class="hero shell">
+        <div class="eyebrow"><span class="acc">// 04</span> Critical coverage · curated, not house-review led</div>
+        <h1 class="display hero-title">Verdicts<br><span class="acc">worth your time.</span></h1>
+        <p class="hero-lede">Reviews and previews from the wider games press. GameTrackDaily curates the coverage and explains the scoring language; it does not pretend to be the critic.</p>
+        ${data.meta.usingProvisionalNews ? `<div class="notice"><span class="acc">◇ PROVISIONAL</span><span>Review rows are example coverage until the public news pipeline publishes real scored items.</span></div>` : ""}
+      </section>
+      ${featured ? `
+        <section class="shell" style="margin-top:36px">
+          <article style="display:grid;grid-template-columns:1.1fr 1fr;border:2px solid var(--ink)">
+            <div style="position:relative;overflow:hidden">
+              ${gameArt(heroArtSrc, "", 460)}
+              <div style="position:absolute;top:22px;left:22px;z-index:3"><span class="tag brand">Featured verdict</span></div>
+              <div style="position:absolute;bottom:22px;right:22px;z-index:3;transform:rotate(-6deg)">${scoreStamp(featured.score, 120)}</div>
+            </div>
+            <div class="cell">
+              <span class="eyebrow">${esc(featured.src)} · ${esc(featured.h)}</span>
+              <h2 class="display glitch" style="font-size:clamp(2rem,4vw,3rem);line-height:.96;margin:12px 0 0">${esc(featured.t)}</h2>
+              <p class="copy" style="margin:20px 0 0;border-left:3px solid var(--brand);padding-left:14px">Curated coverage only. Pull-quotes are omitted until a source article can be linked directly.</p>
+              <div style="display:flex;gap:10px;align-items:center;margin-top:22px;flex-wrap:wrap">${platformPills(featured.platforms)}<span class="tag dashed">Source link pending</span></div>
+            </div>
+          </article>
+        </section>` : ""}
+      <section class="shell" style="margin-top:50px">
+        ${sectionHead("// 05", "More reviews", `<span class="tag">${reviews.length} verdicts</span>`)}
+        <div class="cols-3 rise-stagger">${reviews.filter((r) => r !== featured).map(reviewCard).join("")}</div>
+      </section>
+      <section class="shell" style="margin-top:50px">
+        ${sectionHead("// 06", "Previews & first-looks", `<span class="tag">${previews.length} unscored</span>`)}
+        <div class="row-grid">${previews.map(previewRow).join("")}</div>
+      </section>
+      <section class="shell" style="margin-top:64px">
+        ${sectionHead("// 07", "How we read scores", `<span class="tag">Review literacy · ${data.literacy.length} guides</span>`)}
+        <div class="cols-2 rise-stagger" style="margin-bottom:-2px">${data.literacy.slice(0, 2).map((item, i) => literacyCard(item, i + 1)).join("")}</div>
+        <div class="cols-3">${data.literacy.slice(2, 5).map((item, i) => literacyCard(item, i + 3, true)).join("")}</div>
+      </section>
+    `);
+  }
+
+  function scoreOutOfTen(score) {
+    const n = Number(score || 0);
+    if (!n) return "";
+    return n > 10 ? Math.round(n / 10) : n;
+  }
+
+  function scoreStamp(score, size = 60) {
+    return `<div class="score-stamp" style="--stamp-size:${size}px"><span class="bignum score-stamp__score">${esc(scoreOutOfTen(score))}</span><span class="score-stamp__suffix">/10</span></div>`;
+  }
+
+  function reviewCard(item) {
+    return `
+      <article class="review-card" style="--platform:var(--xbox)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-top:10px;gap:16px">
+          <span class="eyebrow" style="color:var(--xbox)">${esc(item.src)} · ${esc(item.h)}</span>
+          ${item.score ? scoreStamp(item.score, 50) : ""}
+        </div>
+        <h3 class="display glitch row-title" style="font-size:22px;margin-top:14px">${esc(item.t)}</h3>
+        <div style="margin-top:22px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">${platformPills(item.platforms)}<span class="eyebrow" style="color:var(--xbox)">Read -></span></div>
+      </article>
+    `;
+  }
+
+  function previewRow(item) {
+    return `
+      <article class="preview-row">
+        <div class="stripe-cell" style="background:var(--ps)"></div>
+        <div class="cell"><span class="eyebrow" style="color:var(--ps)">Preview · unscored</span><h3 class="display glitch row-title">${esc(item.t)}</h3></div>
+        <div class="cell"><span class="eyebrow">${esc(item.src)} · ${esc(item.h)}</span></div>
+        <div class="cell">${platformPills(item.platforms)}</div>
+        <div class="row-arrow" style="color:var(--ps)">-></div>
+      </article>
+    `;
+  }
+
+  function literacyCard(item, no, compact = false) {
+    return `
+      <article class="literacy-card">
+        <span class="bignum" style="font-size:${compact ? 36 : 52}px;color:var(--brand)">${String(no).padStart(2, "0")}</span>
+        <h3 class="display" style="font-size:${compact ? 22 : 28}px;line-height:.95;margin:12px 0 0">${esc(item.title)}</h3>
+        <p class="copy" style="margin:10px 0 0;font-size:13px">${esc(item.summary)}</p>
+        ${item.path ? `<a class="eyebrow" style="margin-top:auto;color:var(--brand);display:inline-block" href="${esc(item.path)}">Read the guide -></a>` : ""}
+      </article>
+    `;
+  }
+
+  function renderGames(data) {
+    return pageFrame("home", `
+      <section class="hero shell">
+        <div class="eyebrow"><span class="acc">// Lineup</span> E-lusion Studios</div>
+        <h1 class="display hero-title">Seven games,<br><span class="acc">one slate.</span></h1>
+        <p class="hero-lede">A public-safe roster of browser demos, desktop builds, and proof slices. The cards link out to playable demos and repositories where those are already public.</p>
+      </section>
+      <section class="shell" style="margin-top:36px">
+        ${sectionHead("ROSTER", "Browse the slate", `<span class="tag">${data.games.length} projects</span>`)}
+        <div class="cols-4 rise-stagger">${data.games.slice(0, 4).map((game, i) => rosterCard(game, i + 1)).join("")}</div>
+        <div class="cols-3 rise-stagger" style="margin-top:-2px">${data.games.slice(4).map((game, i) => rosterCard(game, i + 5)).join("")}</div>
+      </section>
+    `);
+  }
+
+  function renderDevelopment(data) {
+    return pageFrame("home", `
+      <section class="hero shell">
+        <div class="eyebrow"><span class="acc">// Craft</span> Public-safe game development reference</div>
+        <h1 class="display hero-title">Build notes,<br><span class="acc">not ops.</span></h1>
+        <p class="hero-lede">A public reference layer for engines, distribution, playtesting, marketing, scope, UI, and store readiness. Private launch controls stay out of this repo.</p>
+      </section>
+      <section class="shell" style="margin-top:36px">
+        ${sectionHead("//", "Craft library", `<span class="tag">Public markdown</span>`)}
+        <div class="cols-3">
+          ${["engines", "qa-playtesting-and-performance", "launch-and-store-readiness", "marketing", "production-and-scope", "ui-ux-and-onboarding"].map((slug, i) => `
+            <article class="literacy-card"><span class="bignum" style="font-size:38px;color:var(--brand)">${String(i + 1).padStart(2, "0")}</span><h2 class="display" style="font-size:24px;margin:12px 0 0">${esc(slug.replaceAll("-", " "))}</h2><a class="eyebrow" style="color:var(--brand);margin-top:16px;display:inline-block" href="shared/game-development/${slug}.md">Open note -></a></article>
+          `).join("")}
+        </div>
+      </section>
+    `);
+  }
+
+  function injectJsonLd(page, data) {
+    const graph = [
+      {
+        "@type": "Organization",
+        "@id": `${BASE_URL}#organization`,
+        name: "GameTrackDaily",
+        url: BASE_URL,
+        parentOrganization: { name: "E-lusion Studios" },
+        founder: { "@id": "https://koltregaskes.com/#person-kol" },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${BASE_URL}#website`,
+        name: "GameTrackDaily",
+        url: BASE_URL,
+        publisher: { "@id": `${BASE_URL}#organization` },
+      },
+    ];
+
+    if (page === "home" || page === "games") {
+      graph.push({
+        "@type": "ItemList",
+        "@id": `${BASE_URL}#studio-slate`,
+        name: "E-lusion Studios game slate",
+        itemListElement: data.games.map((game, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": "VideoGame",
+            "@id": `${BASE_URL}#game-${game.id}`,
+            name: game.title,
+            description: game.summary || game.tagline,
+            gamePlatform: game.platforms.map((id) => PLATFORMS[id]?.schema || id),
+            url: game.play || game.repo || BASE_URL,
+            creator: { "@id": `${BASE_URL}#organization` },
+          },
+        })),
+      });
+    }
+
+    if (page === "releases" || page === "calendar") {
+      graph.push({
+        "@type": "ItemList",
+        "@id": `${BASE_URL}releases.html#release-slate`,
+        name: "Tracked release slate",
+        itemListElement: data.releases.slice(0, 20).map((release, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": release.ours ? "VideoGame" : "CreativeWork",
+            name: release.title,
+            datePublished: release._example ? undefined : release.date,
+            description: `${release.genre}. ${release._example ? "Example row from the design handoff; not a verified release claim." : "Tracked public release row."}`,
+          },
+        })),
+      });
+    }
+
+    if (page === "news" || page === "reviews") {
+      graph.push({
+        "@type": "ItemList",
+        "@id": `${BASE_URL}${page}.html#coverage`,
+        name: "Curated games coverage",
+        itemListElement: data.news.slice(0, 12).map((item, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": item.feed === "review" ? "Review" : "NewsArticle",
+            headline: item.t,
+            publisher: { name: item.src },
+            description: item._example ? "Example item used while the public feed pipeline is empty." : item.t,
+          },
+        })),
+      });
+    }
+
+    let script = $("#structured-data-runtime");
+    if (!script) {
+      script = document.createElement("script");
+      script.id = "structured-data-runtime";
+      script.type = "application/ld+json";
+      document.head.appendChild(script);
+    }
+    script.textContent = JSON.stringify({ "@context": "https://schema.org", "@graph": graph }, null, 2);
+  }
+
+  function wireReleaseControls() {
+    let active = "all";
+    let view = "list";
+    const update = () => {
+      $$("[data-release-filter]").forEach((button) => {
+        const isActive = button.dataset.releaseFilter === active;
+        button.setAttribute("aria-pressed", String(isActive));
+        button.textContent = `${isActive ? "● " : ""}${button.textContent.replace(/^●\s*/, "")}`;
+      });
+      $$("[data-release-card]").forEach((card) => {
+        const platforms = (card.dataset.platforms || "").split(/\s+/);
+        const isOurs = card.dataset.ours === "true";
+        const show = active === "all" || (active === "ours" ? isOurs : platforms.includes(active));
+        card.classList.toggle("is-hidden", !show);
+      });
+      $$("[data-release-month]").forEach((month) => {
+        month.classList.toggle("is-hidden", $$("[data-release-card]:not(.is-hidden)", month).length === 0);
+      });
+      const visible = $$("[data-release-card]:not(.is-hidden)").length;
+      const empty = $("[data-release-empty]");
+      if (empty) empty.classList.toggle("is-hidden", visible !== 0);
+      $$("[data-view-list]").forEach((el) => el.classList.toggle("is-hidden", view !== "list"));
+      $$("[data-view-grid]").forEach((el) => el.classList.toggle("is-hidden", view !== "grid"));
+      $$("[data-release-view]").forEach((button) => button.classList.toggle("is-active", button.dataset.releaseView === view));
+    };
+    $$("[data-release-filter]").forEach((button) => {
       button.addEventListener("click", () => {
-        activeKind = button.dataset.kind || "all";
-        setSearchParam("kind", activeKind === "all" ? "" : activeKind);
-        render();
+        active = button.dataset.releaseFilter;
+        update();
       });
     });
-
-    Array.from(controls.querySelectorAll("[data-family]")).forEach((button) => {
+    $$("[data-release-view]").forEach((button) => {
       button.addEventListener("click", () => {
-        activeFamily = button.dataset.family || "all";
-        setSearchParam("platform", activeFamily === "all" ? "" : activeFamily);
-        render();
+        view = button.dataset.releaseView;
+        update();
       });
     });
+    update();
+  }
 
-    timeline.innerHTML = visible.length
-      ? `<section class="news-card-grid">${visible.map(eventCardMarkup).join("")}</section>`
-      : `<section class="empty-state"><h3>No events match the current filters</h3><p>Try widening the platform or event-kind filters.</p></section>`;
-
-    rail.innerHTML = `
-      <section class="rail-panel" data-reveal>
-        <p class="eyebrow">Next event</p>
-        <h2>${escapeHtml(nextEvent?.title || "No upcoming event")}</h2>
-        <p>${escapeHtml(nextEvent ? formatEventTime(nextEvent) : "TBA")}</p>
-        ${
-          nextEvent?.watchLinks?.length
-            ? `<p>${nextEvent.watchLinks
-                .map((link) => `<a href="${link.url}" target="_blank" rel="noreferrer">${escapeHtml(link.label || "Watch")}</a>`)
-                .join("<br />")}</p>`
-            : `<p>${escapeHtml(nextEvent?.watchStatus || "Watch links pending")}</p>`
+  function wireNewsTabs() {
+    const sectionsWrap = $("[data-rail-sections]");
+    if (!sectionsWrap) return;
+    const allMarkup = sectionsWrap.innerHTML;
+    $$("[data-rail-tab]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const rail = button.dataset.railTab;
+        $$("[data-rail-tab]").forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+        sectionsWrap.innerHTML = allMarkup;
+        if (rail !== "all") {
+          $$("[data-rail-section]", sectionsWrap).forEach((section) => {
+            section.classList.toggle("is-hidden", section.dataset.railSection !== rail);
+          });
         }
-      </section>
-      <section class="rail-panel" data-reveal>
-        <p class="eyebrow">Refresh rhythm</p>
-        <h2>Weekly by default</h2>
-        <p>${escapeHtml(manifest.eventPolicy?.refreshCadence?.baseline || "Review tracked events weekly.")}</p>
-        <p>${escapeHtml(
-          manifest.eventPolicy?.refreshCadence?.intensifyWithinDays
-            ? `Tighten the check cadence inside ${manifest.eventPolicy.refreshCadence.intensifyWithinDays} days of the event.`
-            : "Tighten the check cadence as event dates get closer.",
-        )}</p>
-      </section>
-    `;
-
-    observeRevealItems();
+      });
+    });
   }
 
-  render();
-}
-
-async function init() {
-  const registry = await loadRegistry();
-  buildSiteNav(registry);
-
-  if (page === "home") {
-    await renderHome(registry);
-  } else if (page === "games") {
-    await renderGamesPage();
-  } else if (page === "game-development") {
-    await renderKnowledgePage();
-  } else if (page === "news-landing") {
-    await renderNewsLanding();
-  } else if (page === "review-coverage") {
-    await renderReviewCoveragePage();
-  } else if (page === "news-feed") {
-    await renderNewsFeedPage(pageFeed);
-  } else if (page === "calendar") {
-    await renderCalendarPage();
-  } else if (page === "events") {
-    await renderEventsPage();
+  function wireScanlines() {
+    const button = $("[data-scanline-toggle]");
+    if (!button) return;
+    const set = (enabled) => {
+      document.body.classList.toggle("scanlines", enabled);
+      button.setAttribute("aria-pressed", String(enabled));
+      button.textContent = enabled ? "CRT on" : "CRT off";
+      localStorage.setItem("gtd-scanlines", enabled ? "1" : "0");
+    };
+    set(localStorage.getItem("gtd-scanlines") === "1");
+    button.addEventListener("click", () => set(!document.body.classList.contains("scanlines")));
   }
 
-  document.body.classList.add("has-motion");
-  observeRevealItems();
-}
+  function updateClock() {
+    const el = $("[data-clock]");
+    if (!el) return;
+    const parts = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "Europe/London",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZoneName: "short",
+    }).format(new Date());
+    el.textContent = `Local · ${parts}`;
+  }
 
-init().catch((error) => {
-  console.error(error);
-});
+  function updateCountdowns() {
+    $$("[data-countdown]").forEach((el) => {
+      const target = new Date(el.dataset.countdown).getTime();
+      const ms = target - NOW();
+      if (!Number.isFinite(target)) {
+        el.textContent = "Time pending";
+        return;
+      }
+      if (ms <= 0) {
+        el.textContent = "LIVE NOW";
+        el.style.color = "var(--brand)";
+        return;
+      }
+      const totalSeconds = Math.floor(ms / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      const pad = (n) => String(n).padStart(2, "0");
+      if (el.dataset.countdownStyle === "compact") {
+        el.textContent = `T-${pad(days)}d ${pad(hours)}h ${pad(minutes)}m`;
+      } else {
+        el.innerHTML = `
+          <span class="bignum countdown__num">${pad(days)}</span><span class="bignum countdown__unit">d</span>
+          <span class="bignum countdown__num">${pad(hours)}</span><span class="bignum countdown__unit">h</span>
+          <span class="bignum countdown__num">${pad(minutes)}</span><span class="bignum countdown__unit">m</span>
+          <span class="bignum countdown__sec">${pad(seconds)}</span><span class="bignum countdown__unit" style="color:var(--ink-3)">s</span>
+        `;
+      }
+    });
+  }
+
+  function bootTimers() {
+    updateClock();
+    updateCountdowns();
+    clearInterval(state.countdownTimer);
+    state.countdownTimer = setInterval(() => {
+      updateClock();
+      updateCountdowns();
+    }, 1000);
+    document.addEventListener("visibilitychange", () => {
+      document.documentElement.classList.toggle("is-tab-hidden", document.hidden);
+    });
+  }
+
+  function render(page, data) {
+    const frame = $("#site-frame");
+    if (!frame) return;
+    const rail = document.body.dataset.rail;
+    const html = {
+      home: () => renderHome(data),
+      releases: () => renderReleases(data),
+      calendar: () => renderReleases(data, true),
+      events: () => renderEvents(data),
+      news: () => renderNews(data),
+      reviews: () => renderReviews(data),
+      games: () => renderGames(data),
+      development: () => renderDevelopment(data),
+      rail: () => renderNews(data, rail || "dev"),
+    }[page]?.() || renderHome(data);
+    frame.innerHTML = html;
+    injectJsonLd(page, data);
+    wireReleaseControls();
+    wireNewsTabs();
+    wireScanlines();
+    bootTimers();
+  }
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const page = document.body.dataset.page || "home";
+    const frame = $("#site-frame");
+    if (frame) frame.innerHTML = `<div class="shell" style="padding:40px 0"><span class="eyebrow">Loading GameTrackDaily arcade desk...</span></div>`;
+    const data = await loadData();
+    state.data = data;
+    render(page, data);
+  });
+})();

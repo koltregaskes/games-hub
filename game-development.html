@@ -1,90 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GameTrackDaily // Game Development</title>
-    <meta
-      name="description"
-      content="Public-safe game-development guidance from GameTrackDaily for solo studios, vibe coders, and agent-assisted game teams."
-    />
-    <meta property="og:title" content="GameTrackDaily // Game Development" />
-    <meta
-      property="og:description"
-      content="Practical guidance for building games with better production habits, clearer scope, smarter tooling, and stronger release discipline."
-    />
+    <title>Game Development // GameTrackDaily</title>
+    <meta name="description" content="Public-safe game-development notes for engines, scope, QA, store readiness, and studio workflow." />
+    <link rel="canonical" href="https://koltregaskes.github.io/gametrackdaily/game-development.html" />
+    <meta property="og:title" content="Game Development // GameTrackDaily" />
+    <meta property="og:description" content="Public-safe game-development notes inside GameTrackDaily." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/game-development.html" />
-    <meta name="theme-color" content="#08101d" />
-    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/game-development.html" />
+    <meta property="og:url" content="https://koltregaskes.github.io/gametrackdaily/game-development.html" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="theme-color" content="#08090c" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Rajdhani:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+            "@context": "https://schema.org",
+            "@graph": [
+                  {
+                        "@type": "Organization",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#organization",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "parentOrganization": {
+                              "name": "E-lusion Studios"
+                        }
+                  },
+                  {
+                        "@type": "WebSite",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#website",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "publisher": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#organization"
+                        }
+                  },
+                  {
+                        "@type": "CollectionPage",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/game-development.html#page",
+                        "name": "Game Development // GameTrackDaily",
+                        "description": "Public-safe game-development notes for engines, scope, QA, store readiness, and studio workflow.",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/game-development.html",
+                        "isPartOf": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#website"
+                        }
+                  }
+            ]
+      }
+    </script>
   </head>
-  <body data-page="game-development" data-section="game-development">
-    <div class="atmosphere" aria-hidden="true">
-      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
-      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
-      <div class="atmosphere__orb atmosphere__orb--gold"></div>
-      <div class="atmosphere__grid"></div>
-    </div>
-
-    <header class="site-header">
-      <a class="site-brand" href="index.html">GameTrackDaily</a>
-      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
-    </header>
-
-    <main class="docs-main">
-      <section class="docs-hero">
-        <div class="docs-hero__copy" data-reveal>
-          <p class="eyebrow">Build Games Like a Solo Studio</p>
-          <h1>Practical game-development reference without the theatre.</h1>
-          <p class="hero__lede">
-            Public-safe guidance for small teams and agent-assisted builders who need clearer standards for production,
-            scope, engines, graphics, sound, QA, marketing, distribution, and criticism.
-          </p>
-        </div>
-        <div class="docs-hero__facts" data-reveal>
-          <article class="summary-chip">
-            <span class="summary-chip__label">Audience</span>
-            <strong class="summary-chip__value is-green">Solo studios</strong>
-          </article>
-          <article class="summary-chip">
-            <span class="summary-chip__label">Tone</span>
-            <strong class="summary-chip__value is-yellow">Plain English</strong>
-          </article>
-          <article class="summary-chip">
-            <span class="summary-chip__label">Use case</span>
-            <strong class="summary-chip__value is-grey">Humans + agents</strong>
-          </article>
-        </div>
-      </section>
-
-      <section class="docs-layout">
-        <aside class="docs-nav" id="knowledgePageNav" data-reveal></aside>
-        <article class="docs-viewer" data-reveal>
-          <div class="docs-viewer__meta">
-            <p class="eyebrow" id="knowledgePageMeta">Game Development</p>
-            <h2 id="knowledgePageTitle">Loading reference...</h2>
-            <p class="section-copy" id="knowledgePageDescription"></p>
-          </div>
-          <div class="docs-viewer__content" id="knowledgePageContent"></div>
-        </article>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <p>GameTrackDaily</p>
-      <p>Game Development is the practical craft and release-discipline layer inside the wider GameTrackDaily site.</p>
-      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
-    </footer>
-
-    <script src="app.js"></script>
+  <body data-page="development">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="site-frame"></div>
+    <script src="app.js" defer></script>
   </body>
 </html>

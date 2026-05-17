@@ -1,10 +1,10 @@
 {
   "name": "GameTrackDaily",
   "short_name": "GameTrackDaily",
-  "start_url": "/games-hub/",
+  "start_url": "/gametrackdaily/",
   "display": "standalone",
-  "background_color": "#08101d",
-  "theme_color": "#08101d",
+  "background_color": "#08090c",
+  "theme_color": "#08090c",
   "icons": [
     {
       "src": "favicon.svg",

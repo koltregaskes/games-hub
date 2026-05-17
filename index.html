@@ -1,173 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GameTrackDaily</title>
     <meta
       name="description"
-      content="A curated games destination for tracked projects, release dates, major events, review coverage, preview coverage, and practical game-development reference."
+      content="GameTrackDaily is an arcade-styled games watch desk for tracked releases, events, curated coverage, and the E-lusion Studios slate."
     />
+    <link rel="canonical" href="https://koltregaskes.github.io/gametrackdaily/" />
     <meta property="og:title" content="GameTrackDaily" />
     <meta
       property="og:description"
-      content="Track the lineup, follow the release slate, watch the event season, and browse review, preview, and game-development coverage in one place."
+      content="Tracked releases, events, curated games coverage, and the E-lusion Studios slate in one public watch desk."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/" />
-    <meta name="theme-color" content="#08101d" />
-    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/" />
+    <meta property="og:url" content="https://koltregaskes.github.io/gametrackdaily/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="theme-color" content="#08090c" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Rajdhani:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://koltregaskes.github.io/gametrackdaily/#website",
+        "name": "GameTrackDaily",
+        "url": "https://koltregaskes.github.io/gametrackdaily/",
+        "publisher": {
+          "@type": "Organization",
+          "@id": "https://koltregaskes.github.io/gametrackdaily/#organization",
+          "name": "GameTrackDaily"
+        }
+      }
+    </script>
   </head>
-  <body data-page="home" data-section="home">
-    <div class="atmosphere" aria-hidden="true">
-      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
-      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
-      <div class="atmosphere__orb atmosphere__orb--gold"></div>
-      <div class="atmosphere__grid"></div>
-    </div>
-
-    <header class="site-header">
-      <a class="site-brand" href="index.html">GameTrackDaily</a>
-      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
-    </header>
-
-    <main id="top">
-      <section class="hero hero--launch">
-        <div class="hero__copy" data-reveal>
-          <p class="eyebrow">GameTrackDaily // Launch Radar</p>
-          <h1>A sharper public signal for what matters in games.</h1>
-          <p class="hero__lede">
-            GameTrackDaily is a curated games destination for the active lineup, the release slate, the event season,
-            and the review and preview coverage that helps you keep up without the sludge, feed-stuffing, and generic
-            dashboard clutter.
-          </p>
-          <div class="hero__actions">
-            <a class="button button--primary" href="games.html">Browse games</a>
-            <a class="button button--ghost" href="calendar.html">Open launch radar</a>
-            <a class="button button--ghost" href="news.html">See coverage</a>
-            <a class="button button--ghost" href="events.html">Open events</a>
-          </div>
-          <ul class="hero__facts" aria-label="Site facts">
-            <li>Playable projects and tracked public candidates</li>
-            <li>Curated reviews and previews from the wider press</li>
-            <li>Release dates, showcases, awards, and practical dev reference</li>
-          </ul>
-        </div>
-
-        <div class="hero__visual" data-reveal>
-          <div class="signal-deck">
-            <div class="signal-deck__topline">
-              <p class="eyebrow">Live site brief</p>
-              <span class="signal-deck__tag">Windows PC, Xbox, PlayStation</span>
-            </div>
-            <h2>One front door for launches, showcases, coverage, and the current slate.</h2>
-            <p>
-              Built like an editorial watch desk rather than a repo index. Follow what is playable, what is about to
-              release, what is worth watching, and where the noise actually becomes signal.
-            </p>
-            <div class="signal-grid" id="homeSignalGrid"></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="ticker" aria-label="Signal tape" data-reveal>
-        <div class="ticker__track" id="homeTicker"></div>
-      </section>
-
-      <section class="studio-strip" aria-label="Site status" data-reveal>
-        <div>
-          <span class="studio-strip__label">Editorial mode</span>
-          <strong>Curated, not personal-review led</strong>
-        </div>
-        <div>
-          <span class="studio-strip__label">Platforms</span>
-          <strong>Windows PC, Xbox, PlayStation</strong>
-        </div>
-        <div>
-          <span class="studio-strip__label">Coverage</span>
-          <strong>Games, news, calendar, events, development</strong>
-        </div>
-      </section>
-
-      <section class="lineup">
-        <div class="section-head" data-reveal>
-          <p class="eyebrow">Section map</p>
-          <h2>Everything important gets its own page now.</h2>
-          <p>
-            The landing page stays lightweight. The real work happens in focused pages for the lineup, the calendar,
-            events, review coverage, and practical game-development reference.
-          </p>
-        </div>
-        <div class="news-preview__grid" id="homeSectionLinks"></div>
-      </section>
-
-      <section class="emerging" id="featured-games">
-        <div class="section-head" data-reveal>
-          <p class="eyebrow">Featured games</p>
-          <h2>The strongest public-facing candidates right now.</h2>
-          <p>
-            Start here for the most promising demo and release candidates before drilling into the full lineup page.
-          </p>
-        </div>
-        <div class="emerging-grid" id="featuredGamesGrid"></div>
-      </section>
-
-      <section class="news-preview">
-        <div class="section-head" data-reveal>
-          <p class="eyebrow">Core surfaces</p>
-          <h2>The public shell, split into clean jobs.</h2>
-          <p>
-            Release tracking, event watch links, wider press coverage, and the practical craft layer all live here as
-            focused first-class surfaces.
-          </p>
-        </div>
-        <div class="news-preview__grid" id="homeHighlightsGrid"></div>
-      </section>
-
-      <section class="news-preview">
-        <div class="section-head" data-reveal>
-          <p class="eyebrow">Latest radar</p>
-          <h2>The coverage that makes the homepage feel alive.</h2>
-          <p>
-            Development shifts, gaming headlines, reviews, and previews all surface here as curated starting points,
-            not a chaotic wall of feed spam.
-          </p>
-        </div>
-        <div class="news-card-grid" id="homeRadarGrid"></div>
-      </section>
-
-      <section class="future">
-        <div class="section-head" data-reveal>
-          <p class="eyebrow">Launch posture</p>
-          <h2>Ready to move from prototype shell to public-facing site.</h2>
-          <p>
-            The structure is now clean enough to support a real domain, stronger design passes, richer feeds, and
-            better game detail pages without collapsing back into a single cluttered surface.
-          </p>
-          <div class="future__actions">
-            <a class="button button--primary" href="games.html">Open the lineup</a>
-            <a class="button button--ghost" href="calendar.html">Open the release calendar</a>
-            <a class="button button--ghost" href="events.html">Open event season</a>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <p>GameTrackDaily</p>
-      <p>Curated games tracking, release coverage, event watch links, and practical game-development reference.</p>
-      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
-    </footer>
-
-    <script src="app.js"></script>
+  <body data-page="home">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <noscript>
+      <main id="main-content" class="shell agent-readable-summary">
+        <p class="eyebrow">GameTrackDaily // static agent summary</p>
+        <h1>GameTrackDaily tracks games, releases, events, news rails, reviews, and the E-lusion Studios slate.</h1>
+        <p>
+          The public site is an arcade-styled games watch desk. It separates release tracking, events, news, reviews,
+          and in-development E-lusion Studios projects so visitors can find the right route quickly.
+        </p>
+        <ul>
+          <li><a href="releases.html">Releases</a> lists tracked launch windows and provisional release rows.</li>
+          <li><a href="events.html">Events</a> groups the calendar around showcases and games-industry moments.</li>
+          <li><a href="news.html">News</a> routes into development, gaming, review, and preview rails.</li>
+          <li><a href="reviews.html">Reviews</a> explains the review literacy and scoring approach.</li>
+          <li><a href="games.html">Games</a> shows the E-lusion Studios project lineup and current public state.</li>
+        </ul>
+        <p>
+          Caveat: v1 uses static public manifests and clearly marked provisional rows. Do not treat release rows as live
+          store data unless a linked official source says so.
+        </p>
+      </main>
+    </noscript>
+    <div id="site-frame"></div>
+    <script src="app.js" defer></script>
   </body>
 </html>

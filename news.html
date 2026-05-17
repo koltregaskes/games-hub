@@ -1,93 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GameTrackDaily // Games News</title>
+    <title>News // GameTrackDaily</title>
     <meta
       name="description"
-      content="Curated games news from GameTrackDaily covering game development, gaming, review coverage, and preview coverage."
+      content="A four-rail games wire for development, gaming, review, and preview coverage, with provisional items labelled until the public pipeline fills."
     />
-    <meta property="og:title" content="GameTrackDaily // Games News" />
-    <meta
-      property="og:description"
-      content="A cleaner landing page for the four public news rails: development, gaming, reviews, and previews."
-    />
+    <link rel="canonical" href="https://koltregaskes.github.io/gametrackdaily/news.html" />
+    <meta property="og:title" content="News // GameTrackDaily" />
+    <meta property="og:description" content="Curated game-dev, gaming, review, and preview rails for Windows PC, Xbox, and PlayStation coverage." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/news.html" />
-    <meta name="theme-color" content="#08101d" />
-    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/news.html" />
+    <meta property="og:url" content="https://koltregaskes.github.io/gametrackdaily/news.html" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="theme-color" content="#08090c" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Rajdhani:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "@id": "https://koltregaskes.github.io/gametrackdaily/news.html#page",
+        "name": "News // GameTrackDaily",
+        "url": "https://koltregaskes.github.io/gametrackdaily/news.html",
+        "isPartOf": { "@id": "https://koltregaskes.github.io/gametrackdaily/#website" }
+      }
+    </script>
   </head>
-  <body data-page="news-landing" data-section="news">
-    <div class="atmosphere" aria-hidden="true">
-      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
-      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
-      <div class="atmosphere__orb atmosphere__orb--gold"></div>
-      <div class="atmosphere__grid"></div>
-    </div>
-
-    <header class="site-header">
-      <a class="site-brand" href="index.html">GameTrackDaily</a>
-      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
-    </header>
-
-    <main class="docs-main">
-      <section class="docs-hero">
-        <div class="docs-hero__copy" data-reveal>
-          <p class="eyebrow">Games News</p>
-          <h1>Four rails, four different jobs.</h1>
-          <p class="hero__lede">
-            Keep development news, wider gaming news, final review coverage, and preview coverage separate so the site
-            stays readable and the reader always knows what kind of signal they are looking at.
-          </p>
-        </div>
-        <div class="docs-hero__facts" data-reveal>
-          <article class="summary-chip">
-            <span class="summary-chip__label">Rails</span>
-            <strong class="summary-chip__value is-green">4</strong>
-          </article>
-          <article class="summary-chip">
-            <span class="summary-chip__label">Mode</span>
-            <strong class="summary-chip__value is-yellow">Curated</strong>
-          </article>
-          <article class="summary-chip">
-            <span class="summary-chip__label">Platforms</span>
-            <strong class="summary-chip__value is-grey">Windows, Xbox, PlayStation</strong>
-          </article>
-        </div>
-      </section>
-
-      <section class="docs-layout">
-        <article class="docs-viewer" data-reveal>
-          <div class="docs-viewer__meta">
-            <p class="eyebrow">Coverage map</p>
-            <h2>Choose the rail that matches the question you are asking.</h2>
-            <p class="section-copy">
-              The landing page is just the switchboard. Each feed gets its own page so the main body can stay focused
-              on that one slice of coverage.
-            </p>
-          </div>
-          <div class="news-preview__grid" id="newsLandingGrid"></div>
-        </article>
-        <aside class="docs-nav" id="newsLandingRail" data-reveal></aside>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <p>GameTrackDaily</p>
-      <p>Games News is the curated publishing layer for development, industry, review, and preview coverage.</p>
-      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
-    </footer>
-
-    <script src="app.js"></script>
+  <body data-page="news">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="site-frame"></div>
+    <script src="app.js" defer></script>
   </body>
 </html>

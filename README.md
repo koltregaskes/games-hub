@@ -12,17 +12,18 @@ This repo is set up as a static GitHub Pages site. It intentionally does not inc
 
 Those `Reviews` and `Previews` rails are curated coverage from the wider games press. They are not intended to become a personal house-review publication.
 
-The public shell now uses focused pages instead of cramming everything into one surface:
+The public shell now uses the Arcade design system and focused pages instead of cramming everything into one surface:
+- `releases.html` for the Arcade release radar and platform-filtered schedule
 - `games.html` for the full lineup
 - `game-development.html` for public-safe craft/reference
 - `news.html` as the news landing page
 - `news-development.html`, `news-gaming.html`, `news-reviews.html`, and `news-previews.html` for the four feed rails
 - `reviews.html` for review/previews coverage navigation
-- `calendar.html` for releases only
+- `calendar.html` as a compatibility alias for the release radar
 - `events.html` for conferences, showcases, awards, local times, and official watch links
 
 The current launch shell is designed as an editorial watch desk rather than a repo index:
-- a stronger homepage built around launch radar, live signals, and featured public candidates
+- a stronger homepage built around launch radar, labelled provisional data, and featured public candidates
 - a cleaner masthead and page framing across the whole public shell
 - more deliberate separation between lineup, coverage, releases, and events
 

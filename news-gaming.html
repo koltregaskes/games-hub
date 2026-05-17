@@ -1,59 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GameTrackDaily // Gaming News</title>
-    <meta name="description" content="Curated gaming news from GameTrackDaily." />
-    <meta property="og:title" content="GameTrackDaily // Gaming News" />
-    <meta property="og:description" content="Releases, platform moves, announcements, and wider games-industry coverage." />
+    <title>Gaming News // GameTrackDaily</title>
+    <meta name="description" content="Gaming rail for platform moves, studio stories, releases, and the wider games industry." />
+    <link rel="canonical" href="https://koltregaskes.github.io/gametrackdaily/news-gaming.html" />
+    <meta property="og:title" content="Gaming News // GameTrackDaily" />
+    <meta property="og:description" content="The GameTrackDaily wider gaming news rail." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://koltregaskes.github.io/games-hub/news-gaming.html" />
-    <meta name="theme-color" content="#08101d" />
-    <link rel="canonical" href="https://koltregaskes.github.io/games-hub/news-gaming.html" />
+    <meta property="og:url" content="https://koltregaskes.github.io/gametrackdaily/news-gaming.html" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="theme-color" content="#08090c" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="site.webmanifest" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Rajdhani:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+            "@context": "https://schema.org",
+            "@graph": [
+                  {
+                        "@type": "Organization",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#organization",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "parentOrganization": {
+                              "name": "E-lusion Studios"
+                        }
+                  },
+                  {
+                        "@type": "WebSite",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/#website",
+                        "name": "GameTrackDaily",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/",
+                        "publisher": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#organization"
+                        }
+                  },
+                  {
+                        "@type": "CollectionPage",
+                        "@id": "https://koltregaskes.github.io/gametrackdaily/news-gaming.html#page",
+                        "name": "Gaming News // GameTrackDaily",
+                        "description": "Gaming news rail for platform, studio, business, and release signals.",
+                        "url": "https://koltregaskes.github.io/gametrackdaily/news-gaming.html",
+                        "isPartOf": {
+                              "@id": "https://koltregaskes.github.io/gametrackdaily/#website"
+                        }
+                  }
+            ]
+      }
+    </script>
   </head>
-  <body data-page="news-feed" data-section="news" data-feed="gaming">
-    <div class="atmosphere" aria-hidden="true">
-      <div class="atmosphere__orb atmosphere__orb--cyan"></div>
-      <div class="atmosphere__orb atmosphere__orb--crimson"></div>
-      <div class="atmosphere__orb atmosphere__orb--gold"></div>
-      <div class="atmosphere__grid"></div>
-    </div>
-    <header class="site-header">
-      <a class="site-brand" href="index.html">GameTrackDaily</a>
-      <nav class="site-nav" id="siteNav" aria-label="Primary"></nav>
-    </header>
-    <main class="docs-main">
-      <section class="docs-hero">
-        <div class="docs-hero__copy" data-reveal>
-          <p class="eyebrow">Games News</p>
-          <h1 id="newsFeedTitle">Gaming News</h1>
-          <p class="hero__lede" id="newsFeedCopy">Loading feed...</p>
-        </div>
-        <div class="docs-hero__facts" id="newsFeedSummary" data-reveal></div>
-      </section>
-      <section class="docs-layout">
-        <article class="docs-viewer" data-reveal>
-          <div class="news-tabs" id="newsFeedFilters"></div>
-          <div id="newsFeedBody"></div>
-        </article>
-        <aside class="docs-nav" id="newsFeedRail" data-reveal></aside>
-      </section>
-    </main>
-    <footer class="site-footer">
-      <p>GameTrackDaily</p>
-      <p>Gaming News is the releases and wider-industry feed inside the wider GameTrackDaily site.</p>
-      <p>&copy; 2026 Kol Tregaskes. All rights reserved.</p>
-    </footer>
-    <script src="app.js"></script>
+  <body data-page="rail" data-rail="gaming">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div id="site-frame"></div>
+    <script src="app.js" defer></script>
   </body>
 </html>

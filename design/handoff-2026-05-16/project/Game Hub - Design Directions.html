@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Game Hub — Design Directions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap"
+    />
+    <style>
+      html, body { margin: 0; padding: 0; background: #1a1b1f; color: #f4efe7; font-family: 'Inter', sans-serif; }
+      /* Subtle paper texture on the canvas backdrop so dark-themed artboards still pop */
+      body::before {
+        content: ""; position: fixed; inset: 0; pointer-events: none;
+        background:
+          radial-gradient(circle at 20% 10%, rgba(215,161,111,0.08), transparent 50%),
+          radial-gradient(circle at 80% 90%, rgba(155,176,194,0.06), transparent 50%);
+        z-index: 0;
+      }
+    </style>
+
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+    <script type="text/babel" src="design-canvas.jsx"></script>
+    <script type="text/babel" src="directions/wf-shared.jsx"></script>
+    <script type="text/babel" src="directions/01-signal-desk.jsx"></script>
+    <script type="text/babel" src="directions/02-edge-magazine.jsx"></script>
+    <script type="text/babel" src="directions/03-release-spine.jsx"></script>
+    <script type="text/babel" src="directions/04-arcade-marquee.jsx"></script>
+    <script type="text/babel" src="directions/05-cabinet.jsx"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel" data-presets="react">
+      function App() {
+        return (
+          <DesignCanvas
+            title="GameTrackDaily — design directions"
+            subtitle="Five wireframe directions for a games tracking site. Each commits to a distinct posture — pick one (or stitch elements together) and I'll take it to high fidelity."
+          >
+            <DCSection
+              id="directions"
+              title="01 · Five postures"
+              description="Same content (lineup, releases, events, four news rails) — five very different ways to organise it."
+            >
+              <DCArtboard
+                id="signal-desk"
+                label="01 — Signal Desk · trading-terminal density"
+                width={1480}
+                height={2000}
+              >
+                <SignalDesk />
+              </DCArtboard>
+
+              <DCArtboard
+                id="edge-magazine"
+                label="02 — Edge Magazine · editorial-led"
+                width={1480}
+                height={2240}
+              >
+                <EdgeMagazine />
+              </DCArtboard>
+
+              <DCArtboard
+                id="release-spine"
+                label="03 — Release Spine · timeline as homepage"
+                width={1480}
+                height={1880}
+              >
+                <ReleaseSpine />
+              </DCArtboard>
+
+              <DCArtboard
+                id="arcade-marquee"
+                label="04 — Arcade Marquee · brutalist, loud"
+                width={1480}
+                height={2040}
+              >
+                <ArcadeMarquee />
+              </DCArtboard>
+
+              <DCArtboard
+                id="cabinet"
+                label="05 — Cabinet · spatial shelf, tactile"
+                width={1480}
+                height={2120}
+              >
+                <Cabinet />
+              </DCArtboard>
+            </DCSection>
+          </DesignCanvas>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
